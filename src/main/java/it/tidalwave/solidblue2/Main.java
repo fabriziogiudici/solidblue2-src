@@ -20,7 +20,7 @@
  *
  * *********************************************************************************************************************
  *
- * $Id: Main.java,v 38beb8bb2efc 2015/11/01 10:13:14 fabrizio $
+ * $Id: Main.java,v 5754edaf2127 2015/11/01 21:04:34 fabrizio $
  *
  * *********************************************************************************************************************
  * #L%
@@ -41,6 +41,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import static java.nio.channels.FileChannel.MapMode.*;
@@ -51,7 +53,7 @@ import static java.util.stream.Collectors.*;
 /***********************************************************************************************************************
  *
  * @author  Fabrizio Giudici <Fabrizio dot Giudici at tidalwave dot it>
- * @version $Id: Main.java,v 38beb8bb2efc 2015/11/01 10:13:14 fabrizio $
+ * @version $Id: Main.java,v 5754edaf2127 2015/11/01 21:04:34 fabrizio $
  *
  **********************************************************************************************************************/
 public class Main
@@ -59,6 +61,11 @@ public class Main
     private static final List<String> FILE_EXTENSIONS = Arrays.asList("nef", "arw", "dng", "tif", "jpg");
 
     private static final Logger log = LoggerFactory.getLogger(Main.class);
+
+    private final static AtomicInteger discoveryCount = new AtomicInteger();
+    private final static AtomicInteger scanCount = new AtomicInteger();
+    private final static AtomicLong discoverySize = new AtomicLong();
+    private final static AtomicLong scanSize = new AtomicLong();
 
     /*******************************************************************************************************************
      *
@@ -72,7 +79,7 @@ public class Main
         log.info("Scanning {}...", targetPath);
         final Map<String, String> storage = Files.walk(targetPath, FOLLOW_LINKS)
                                                  .filter(Main::matchesExtension)
-                                                 .peek(p -> log.info("Discovered {}", p.getFileName()))
+                                                 .peek(Main::notifyDiscoveredFile)
                                                  .collect(toMap(p -> p.getFileName().toString(),
                                                                 p -> computeFingerprint(p, "MD5"),
                                                                 (v1, v2) -> v2));
@@ -105,6 +112,65 @@ public class Main
 
     /*******************************************************************************************************************
      *
+     * Updates the statistics for a freshly discovered file.
+     *
+     * @param   file            the file
+     *
+     ******************************************************************************************************************/
+    private static void notifyDiscoveredFile (final Path file)
+      {
+        try
+          {
+            log.info("Discovered {}", file.getFileName());
+            discoveryCount.incrementAndGet();
+            discoverySize.accumulateAndGet(Files.size(file), Long::sum);
+            logProgress();
+          }
+        catch (IOException e)
+          {
+            log.warn("", e);
+          }
+      }
+
+    /*******************************************************************************************************************
+     *
+     * Updates the statistics for a freshly scanned file.
+     *
+     * @param   file            the file
+     *
+     ******************************************************************************************************************/
+    private static void notifyScannedFile (final Path file)
+      {
+        try
+          {
+            scanCount.incrementAndGet();
+            scanSize.accumulateAndGet(Files.size(file), Long::sum);
+            logProgress();
+          }
+        catch (IOException e)
+          {
+            log.warn("", e);
+          }
+      }
+
+    /*******************************************************************************************************************
+     *
+     * Logs the current progress.
+     *
+     ******************************************************************************************************************/
+    private static void logProgress()
+      {
+        final int sc = scanCount.get();
+        final int dc = discoveryCount.get();
+        final long ss = scanSize.get();
+        final long ds = discoverySize.get();
+        log.info("{}", String.format("Processed files: %d/%d (%d%%) - size: %dMB/%dMB (%d%%)",
+                                     sc, dc, (100 * sc / dc),
+                                     ss / 1_000_000, ds / 1_000_000, (100 * ss / ds)));
+      }
+
+    /*******************************************************************************************************************
+     *
      * Computes the fingerprint of a file.
      *
      * @param   file            the file
@@ -130,6 +196,10 @@ public class Main
         catch (NoSuchAlgorithmException | IOException e)
           {
             return e.getMessage();
+          }
+        finally
+          {
+            notifyScannedFile(file);
           }
       }
 
