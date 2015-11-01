@@ -20,7 +20,7 @@
  *
  * *********************************************************************************************************************
  *
- * $Id: Main.java,v 5754edaf2127 2015/11/01 21:04:34 fabrizio $
+ * $Id: Main.java,v 2b4eabb12374 2015/11/01 21:04:57 fabrizio $
  *
  * *********************************************************************************************************************
  * #L%
@@ -53,7 +53,7 @@ import static java.util.stream.Collectors.*;
 /***********************************************************************************************************************
  *
  * @author  Fabrizio Giudici <Fabrizio dot Giudici at tidalwave dot it>
- * @version $Id: Main.java,v 5754edaf2127 2015/11/01 21:04:34 fabrizio $
+ * @version $Id: Main.java,v 2b4eabb12374 2015/11/01 21:04:57 fabrizio $
  *
  **********************************************************************************************************************/
 public class Main
@@ -80,6 +80,8 @@ public class Main
         final Map<String, String> storage = Files.walk(targetPath, FOLLOW_LINKS)
                                                  .filter(Main::matchesExtension)
                                                  .peek(Main::notifyDiscoveredFile)
+                                                 .collect(toList())
+                                                 .stream()
                                                  .collect(toMap(p -> p.getFileName().toString(),
                                                                 p -> computeFingerprint(p, "MD5"),
                                                                 (v1, v2) -> v2));
