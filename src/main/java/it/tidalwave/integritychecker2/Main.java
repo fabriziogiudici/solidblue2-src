@@ -20,7 +20,7 @@
  *
  * *********************************************************************************************************************
  *
- * $Id: Main.java,v f48850f49198 2015/11/03 19:54:55 fabrizio $
+ * $Id: Main.java,v 2f6993d969f5 2015/11/03 20:02:57 fabrizio $
  *
  * *********************************************************************************************************************
  * #L%
@@ -53,7 +53,7 @@ import static java.util.stream.Collectors.*;
 /***********************************************************************************************************************
  *
  * @author  Fabrizio Giudici <Fabrizio dot Giudici at tidalwave dot it>
- * @version $Id: Main.java,v f48850f49198 2015/11/03 19:54:55 fabrizio $
+ * @version $Id: Main.java,v 2f6993d969f5 2015/11/03 20:02:57 fabrizio $
  *
  **********************************************************************************************************************/
 public class Main
@@ -62,10 +62,10 @@ public class Main
 
     private static final Logger log = LoggerFactory.getLogger(Main.class);
 
-    private final static AtomicInteger discoveryCount = new AtomicInteger();
-    private final static AtomicInteger scanCount = new AtomicInteger();
-    private final static AtomicLong discoverySize = new AtomicLong();
-    private final static AtomicLong scanSize = new AtomicLong();
+    private final AtomicInteger discoveryCount = new AtomicInteger();
+    private final AtomicInteger scanCount = new AtomicInteger();
+    private final AtomicLong discoverySize = new AtomicLong();
+    private final AtomicLong scanSize = new AtomicLong();
 
     /*******************************************************************************************************************
      *
@@ -75,11 +75,21 @@ public class Main
     public static void main (final String ... args)
       throws IOException
       {
-        final Path targetPath = Paths.get(args[0]);
+        new Main().scan(Paths.get(args[0]));
+      }
+
+    /*******************************************************************************************************************
+     *
+     *
+     *
+     ******************************************************************************************************************/
+    private void scan (final Path targetPath)
+      throws IOException
+      {
         log.info("Scanning {}...", targetPath);
         final Map<String, String> storage = Files.walk(targetPath, FOLLOW_LINKS)
                                                  .filter(Main::matchesExtension)
-                                                 .peek(Main::notifyDiscoveredFile)
+                                                 .peek(this::notifyDiscoveredFile)
                                                  .collect(toList())
                                                  .stream()
                                                  .collect(toMap(p -> p.getFileName().toString(),
@@ -96,7 +106,7 @@ public class Main
      * @param   storage         the data
      *
      ******************************************************************************************************************/
-    private static void store (final Path targetPath, final Map<String, String> storage)
+    private void store (final Path targetPath, final Map<String, String> storage)
       throws IOException
       {
         final Path folder = targetPath.resolve(".it.tidalwave.solidblue2");
@@ -119,7 +129,7 @@ public class Main
      * @param   file            the file
      *
      ******************************************************************************************************************/
-    private static void notifyDiscoveredFile (final Path file)
+    private void notifyDiscoveredFile (final Path file)
       {
         try
           {
@@ -141,7 +151,7 @@ public class Main
      * @param   file            the file
      *
      ******************************************************************************************************************/
-    private static void notifyScannedFile (final Path file)
+    private void notifyScannedFile (final Path file)
       {
         try
           {
@@ -160,7 +170,7 @@ public class Main
      * Logs the current progress.
      *
      ******************************************************************************************************************/
-    private static void logProgress()
+    private void logProgress()
       {
         final int sc = scanCount.get();
         final int dc = discoveryCount.get();
@@ -180,7 +190,7 @@ public class Main
      * @return                  the fingerprint
      *
      ******************************************************************************************************************/
-    private static String computeFingerprint (final Path file, final String algorithm)
+    private String computeFingerprint (final Path file, final String algorithm)
       {
         try
           {
