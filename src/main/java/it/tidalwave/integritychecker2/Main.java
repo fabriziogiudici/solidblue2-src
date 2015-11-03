@@ -20,7 +20,7 @@
  *
  * *********************************************************************************************************************
  *
- * $Id: Main.java,v 2f6993d969f5 2015/11/03 20:02:57 fabrizio $
+ * $Id: Main.java,v 91dd9dc0d25a 2015/11/03 20:25:03 fabrizio $
  *
  * *********************************************************************************************************************
  * #L%
@@ -41,8 +41,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import static java.nio.channels.FileChannel.MapMode.*;
@@ -53,7 +51,7 @@ import static java.util.stream.Collectors.*;
 /***********************************************************************************************************************
  *
  * @author  Fabrizio Giudici <Fabrizio dot Giudici at tidalwave dot it>
- * @version $Id: Main.java,v 2f6993d969f5 2015/11/03 20:02:57 fabrizio $
+ * @version $Id: Main.java,v 91dd9dc0d25a 2015/11/03 20:25:03 fabrizio $
  *
  **********************************************************************************************************************/
 public class Main
@@ -62,10 +60,7 @@ public class Main
 
     private static final Logger log = LoggerFactory.getLogger(Main.class);
 
-    private final AtomicInteger discoveryCount = new AtomicInteger();
-    private final AtomicInteger scanCount = new AtomicInteger();
-    private final AtomicLong discoverySize = new AtomicLong();
-    private final AtomicLong scanSize = new AtomicLong();
+    private final ProgressTracker progressTracker = new ProgressTracker();
 
     /*******************************************************************************************************************
      *
@@ -89,7 +84,7 @@ public class Main
         log.info("Scanning {}...", targetPath);
         final Map<String, String> storage = Files.walk(targetPath, FOLLOW_LINKS)
                                                  .filter(Main::matchesExtension)
-                                                 .peek(this::notifyDiscoveredFile)
+                                                 .peek(progressTracker::notifyDiscoveredFile)
                                                  .collect(toList())
                                                  .stream()
                                                  .collect(toMap(p -> p.getFileName().toString(),
@@ -124,65 +119,6 @@ public class Main
 
     /*******************************************************************************************************************
      *
-     * Updates the statistics for a freshly discovered file.
-     *
-     * @param   file            the file
-     *
-     ******************************************************************************************************************/
-    private void notifyDiscoveredFile (final Path file)
-      {
-        try
-          {
-            log.info("Discovered {}", file.getFileName());
-            discoveryCount.incrementAndGet();
-            discoverySize.accumulateAndGet(Files.size(file), Long::sum);
-            logProgress();
-          }
-        catch (IOException e)
-          {
-            log.warn("", e);
-          }
-      }
-
-    /*******************************************************************************************************************
-     *
-     * Updates the statistics for a freshly scanned file.
-     *
-     * @param   file            the file
-     *
-     ******************************************************************************************************************/
-    private void notifyScannedFile (final Path file)
-      {
-        try
-          {
-            scanCount.incrementAndGet();
-            scanSize.accumulateAndGet(Files.size(file), Long::sum);
-            logProgress();
-          }
-        catch (IOException e)
-          {
-            log.warn("", e);
-          }
-      }
-
-    /*******************************************************************************************************************
-     *
-     * Logs the current progress.
-     *
-     ******************************************************************************************************************/
-    private void logProgress()
-      {
-        final int sc = scanCount.get();
-        final int dc = discoveryCount.get();
-        final long ss = scanSize.get();
-        final long ds = discoverySize.get();
-        log.info("{}", String.format("Processed files: %d/%d (%d%%) - size: %dMB/%dMB (%d%%)",
-                                     sc, dc, (100 * sc / dc),
-                                     ss / 1_000_000, ds / 1_000_000, (100 * ss / ds)));
-      }
-
-    /*******************************************************************************************************************
-     *
      * Computes the fingerprint of a file.
      *
      * @param   file            the file
@@ -211,7 +147,7 @@ public class Main
           }
         finally
           {
-            notifyScannedFile(file);
+            progressTracker.notifyScannedFile(file);
           }
       }
 
