@@ -20,12 +20,12 @@
  *
  * *********************************************************************************************************************
  *
- * $Id: Main.java,v 2b4eabb12374 2015/11/01 21:04:57 fabrizio $
+ * $Id: Main.java,v f48850f49198 2015/11/03 19:54:55 fabrizio $
  *
  * *********************************************************************************************************************
  * #L%
  */
-package it.tidalwave.solidblue2;
+package it.tidalwave.integritychecker2;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -53,7 +53,7 @@ import static java.util.stream.Collectors.*;
 /***********************************************************************************************************************
  *
  * @author  Fabrizio Giudici <Fabrizio dot Giudici at tidalwave dot it>
- * @version $Id: Main.java,v 2b4eabb12374 2015/11/01 21:04:57 fabrizio $
+ * @version $Id: Main.java,v f48850f49198 2015/11/03 19:54:55 fabrizio $
  *
  **********************************************************************************************************************/
 public class Main
