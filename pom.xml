@@ -47,7 +47,7 @@
         <!-- disables javancss since it's broken with JDK 1.7 -->
         <tft.profile.metrics.defaultGoal>install findbugs:findbugs pmd:cpd pmd:pmd checkstyle:checkstyle clirr:clirr dependency:analyze</tft.profile.metrics.defaultGoal>
 
-        <tft.mainClass>it.tidalwave.solidblue2.Main</tft.mainClass>
+        <tft.mainClass>it.tidalwave.integritychecker2.Main</tft.mainClass>
     </properties>
 
     <!-- Repeated because of http://jira.codehaus.org/browse/SCM-442 -->
