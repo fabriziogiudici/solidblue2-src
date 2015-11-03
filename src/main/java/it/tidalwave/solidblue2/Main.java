@@ -1,32 +1,34 @@
-/*
- * #%L
- * *********************************************************************************************************************
- *
- * SolidBlue - open source safe data
- * http://solidblue.tidalwave.it - hg clone https://bitbucket.org/tidalwave/solidblue2-src
- * %%
- * Copyright (C) 2015 - 2015 Tidalwave s.a.s. (http://tidalwave.it)
- * %%
- * *********************************************************************************************************************
- *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
- * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations under the License.
- *
- * *********************************************************************************************************************
- *
- * $Id: Main.java,v 2b4eabb12374 2015/11/01 21:04:57 fabrizio $
- *
- * *********************************************************************************************************************
- * #L%
- */
+    /*
+     * #%L
+     * *********************************************************************************************************************
+     *
+     * SolidBlue - open source safe data
+     * http://solidblue.tidalwave.it - hg clone https://bitbucket.org/tidalwave/solidblue2-src
+     * %%
+     * Copyright (C) 2015 - 2015 Tidalwave s.a.s. (http://tidalwave.it)
+     * %%
+     * *********************************************************************************************************************
+     *
+     * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+     * the License. You may obtain a copy of the License at
+     *
+     *     http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+     * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the License for the
+     * specific language governing permissions and limitations under the License.
+     *
+     * *********************************************************************************************************************
+     *
+     * $Id: Main.java,v a805d99df4b0 2015/11/03 19:51:11 fabrizio $
+     *
+     * *********************************************************************************************************************
+     * #L%
+     */
 package it.tidalwave.solidblue2;
 
+import it.tidalwave.solidblue2.ui.IntegrityCheckerFieldsBean;
+import it.tidalwave.solidblue2.ui.JFXIntegrityCheckerPresentation;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.RandomAccessFile;
@@ -48,16 +50,25 @@ import org.slf4j.LoggerFactory;
 import static java.nio.channels.FileChannel.MapMode.*;
 import static java.nio.file.FileVisitOption.*;
 import static java.util.Comparator.*;
+import java.util.concurrent.Executors;
 import static java.util.stream.Collectors.*;
+import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
 /***********************************************************************************************************************
  *
  * @author  Fabrizio Giudici <Fabrizio dot Giudici at tidalwave dot it>
- * @version $Id: Main.java,v 2b4eabb12374 2015/11/01 21:04:57 fabrizio $
+ * @version $Id: Main.java,v a805d99df4b0 2015/11/03 19:51:11 fabrizio $
  *
  **********************************************************************************************************************/
-public class Main
+public class Main extends Application
   {
+    private static Path targetPath;
+
     private static final List<String> FILE_EXTENSIONS = Arrays.asList("nef", "arw", "dng", "tif", "jpg");
 
     private static final Logger log = LoggerFactory.getLogger(Main.class);
@@ -67,6 +78,8 @@ public class Main
     private final static AtomicLong discoverySize = new AtomicLong();
     private final static AtomicLong scanSize = new AtomicLong();
 
+    private static JFXIntegrityCheckerPresentation presentation;
+
     /*******************************************************************************************************************
      *
      *
@@ -75,17 +88,55 @@ public class Main
     public static void main (final String ... args)
       throws IOException
       {
-        final Path targetPath = Paths.get(args[0]);
-        log.info("Scanning {}...", targetPath);
-        final Map<String, String> storage = Files.walk(targetPath, FOLLOW_LINKS)
-                                                 .filter(Main::matchesExtension)
-                                                 .peek(Main::notifyDiscoveredFile)
-                                                 .collect(toList())
-                                                 .stream()
-                                                 .collect(toMap(p -> p.getFileName().toString(),
-                                                                p -> computeFingerprint(p, "MD5"),
-                                                                (v1, v2) -> v2));
-        store(targetPath, storage);
+        targetPath = Paths.get(args[0]);
+        launch(args);
+      }
+
+    /*******************************************************************************************************************
+     *
+     *
+     *
+     ******************************************************************************************************************/
+    @Override
+    public void start (final Stage primaryStage)
+      throws IOException
+      {
+        final FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/tidalwave/solidblue2/ui/JFXIntegrityCheckerPresentation.fxml"));
+        loader.load();
+        final Parent root = loader.getRoot();
+        presentation = loader.getController();
+
+        final Scene scene = new Scene(root, 600, 200);
+        primaryStage.setTitle("SolidBlue II");
+        primaryStage.setScene(scene);
+        primaryStage.show();
+        Executors.newSingleThreadExecutor().execute(() -> scan());
+      }
+
+    /*******************************************************************************************************************
+     *
+     *
+     *
+     ******************************************************************************************************************/
+    private void scan()
+      {
+        try
+          {
+            log.info("Scanning {}...", targetPath);
+            final Map<String, String> storage = Files.walk(targetPath, FOLLOW_LINKS)
+                                                     .filter(Main::matchesExtension)
+                                                     .peek(Main::notifyDiscoveredFile)
+                                                     .collect(toList())
+                                                     .stream()
+                                                     .collect(toMap(p -> p.getFileName().toString(),
+                                                                    p -> computeFingerprint(p, "MD5"),
+                                                                    (v1, v2) -> v2));
+            store(targetPath, storage);
+          }
+        catch (IOException e)
+          {
+            log.error("", e);
+          }
       }
 
     /*******************************************************************************************************************
@@ -169,6 +220,12 @@ public class Main
         log.info("{}", String.format("Processed files: %d/%d (%d%%) - size: %dMB/%dMB (%d%%)",
                                      sc, dc, (100 * sc / dc),
                                      ss / 1_000_000, ds / 1_000_000, (100 * ss / ds)));
+
+        final IntegrityCheckerFieldsBean fields = new IntegrityCheckerFieldsBean();
+        fields.setProcessed(String.format("%d/%d", sc, dc));
+        fields.setTotal(String.format("%dMB/%dMB", ss / 1_000_000, ds / 1_000_000));
+        fields.setProgress((float)ss / ds);
+        Platform.runLater(() -> presentation.populate(fields));
       }
 
     /*******************************************************************************************************************
