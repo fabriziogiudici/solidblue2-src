@@ -20,7 +20,7 @@
  *
  * *********************************************************************************************************************
  *
- * $Id: Main.java,v ef115b31251c 2015/11/06 13:12:40 fabrizio $
+ * $Id: Main.java,v b7457e2dc902 2015/11/06 20:25:15 fabrizio $
  *
  * *********************************************************************************************************************
  * #L%
@@ -51,7 +51,7 @@ import static java.util.stream.Collectors.*;
 /***********************************************************************************************************************
  *
  * @author  Fabrizio Giudici <Fabrizio dot Giudici at tidalwave dot it>
- * @version $Id: Main.java,v ef115b31251c 2015/11/06 13:12:40 fabrizio $
+ * @version $Id: Main.java,v b7457e2dc902 2015/11/06 20:25:15 fabrizio $
  *
  **********************************************************************************************************************/
 public class Main
@@ -82,15 +82,18 @@ public class Main
       throws IOException
       {
         log.info("Scanning {}...", targetPath);
-        final Map<String, String> storage = Files.walk(targetPath, FOLLOW_LINKS)
-                                                 .filter(Main::matchesExtension)
+
+        try (final Stream<Path> s = Files.walk(targetPath, FOLLOW_LINKS))
+          {
+            final Map<String, String> storage = s.filter(Main::matchesExtension)
                                                  .peek(progressTracker::notifyDiscoveredFile)
                                                  .collect(toList())
                                                  .stream()
                                                  .collect(toMap(p -> p.getFileName().toString(),
                                                                 p -> computeFingerprint(p, "MD5"),
                                                                 (v1, v2) -> v2));
-        store(targetPath, storage);
+            store(targetPath, storage);
+          }
       }
 
     /*******************************************************************************************************************
@@ -109,7 +112,7 @@ public class Main
         Files.createDirectories(folder);
         log.info("Storing results into {} ...", file);
         final Stream<String> s = storage.entrySet().stream()
-                                                   .sorted(comparing(Entry::getKey))
+                          .sorted(comparing(Entry::getKey))
                                                    .map(e -> String.format("MD5(%s)=%s", e.getKey(), e.getValue()));
         Files.write(file, (Iterable<String>)s::iterator, Charset.forName("UTF-8"));
       }
