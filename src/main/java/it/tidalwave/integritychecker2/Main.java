@@ -20,7 +20,7 @@
  *
  * *********************************************************************************************************************
  *
- * $Id: Main.java,v 91dd9dc0d25a 2015/11/03 20:25:03 fabrizio $
+ * $Id: Main.java,v ef115b31251c 2015/11/06 13:12:40 fabrizio $
  *
  * *********************************************************************************************************************
  * #L%
@@ -28,7 +28,6 @@
 package it.tidalwave.integritychecker2;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.io.RandomAccessFile;
 import java.nio.MappedByteBuffer;
 import java.nio.charset.Charset;
@@ -41,6 +40,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import static java.nio.channels.FileChannel.MapMode.*;
@@ -51,7 +51,7 @@ import static java.util.stream.Collectors.*;
 /***********************************************************************************************************************
  *
  * @author  Fabrizio Giudici <Fabrizio dot Giudici at tidalwave dot it>
- * @version $Id: Main.java,v 91dd9dc0d25a 2015/11/03 20:25:03 fabrizio $
+ * @version $Id: Main.java,v ef115b31251c 2015/11/06 13:12:40 fabrizio $
  *
  **********************************************************************************************************************/
 public class Main
@@ -108,13 +108,10 @@ public class Main
         final Path file = folder.resolve("fingerprints-j8.txt");
         Files.createDirectories(folder);
         log.info("Storing results into {} ...", file);
-
-        try (final PrintWriter w = new PrintWriter(Files.newBufferedWriter(file, Charset.forName("UTF-8"))))
-          {
-            storage.entrySet().stream()
-                              .sorted(comparing(Entry::getKey))
-                              .forEach(e -> w.printf("MD5(%s)=%s\n", e.getKey(), e.getValue()));
-          }
+        final Stream<String> s = storage.entrySet().stream()
+                                                   .sorted(comparing(Entry::getKey))
+                                                   .map(e -> String.format("MD5(%s)=%s", e.getKey(), e.getValue()));
+        Files.write(file, (Iterable<String>)s::iterator, Charset.forName("UTF-8"));
       }
 
     /*******************************************************************************************************************
