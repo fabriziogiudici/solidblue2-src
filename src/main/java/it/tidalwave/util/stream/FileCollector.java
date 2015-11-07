@@ -20,7 +20,7 @@
  *
  * *********************************************************************************************************************
  *
- * $Id: FileCollector.java,v ef3854f8082e 2015/11/07 08:38:53 fabrizio $
+ * $Id: FileCollector.java,v bfe8bea5b104 2015/11/07 08:41:06 fabrizio $
  *
  * *********************************************************************************************************************
  * #L%
@@ -33,13 +33,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
-import java.util.Collections;
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.BiConsumer;
-import java.util.function.BinaryOperator;
-import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.Collector;
 
 /***********************************************************************************************************************
@@ -49,15 +43,11 @@ import java.util.stream.Collector;
  * in this case, the file could be partially written.
  *
  * @author  Fabrizio Giudici <Fabrizio dot Giudici at tidalwave dot it>
- * @version $Id: FileCollector.java,v ef3854f8082e 2015/11/07 08:38:53 fabrizio $
+ * @version $Id: FileCollector.java,v bfe8bea5b104 2015/11/07 08:41:06 fabrizio $
  *
  **********************************************************************************************************************/
-public final class FileCollector implements Collector<String, PrintWriter, Void>
+public final class FileCollector
   {
-    private final PrintWriter pw;
-
-    private final AtomicBoolean parallelChecker = new AtomicBoolean();
-
     /*******************************************************************************************************************
      * Creates a new instance.
      *
@@ -73,7 +63,13 @@ public final class FileCollector implements Collector<String, PrintWriter, Void>
                                                   final OpenOption ... openOptions)
       throws IOException
       {
-        return new FileCollector(file, charset, openOptions);
+        final PrintWriter pw = new PrintWriter(Files.newBufferedWriter(file, charset, openOptions));
+        final AtomicBoolean parallelChecker = new AtomicBoolean();
+
+        return Collector.of(() -> safeGetPrintWriter(parallelChecker.getAndSet(true), pw),
+                            PrintWriter::println,
+                            (a, b) -> safeGetPrintWriter(true, pw), // never called
+                            pw2 -> { pw2.close(); return null; });
       }
 
     private FileCollector()
@@ -81,55 +77,14 @@ public final class FileCollector implements Collector<String, PrintWriter, Void>
         throw new UnsupportedOperationException();
       }
 
-    private FileCollector (final Path file, final Charset charset, final OpenOption ... openOptions)
-      throws IOException
+    private static PrintWriter safeGetPrintWriter (final boolean condition, final PrintWriter pw)
       {
-        pw = new PrintWriter(Files.newBufferedWriter(file, charset, openOptions));
-      }
-
-    @Override
-    public Supplier<PrintWriter> supplier()
-      {
-        return this::oneShotPrintWriterSupplier;
-      }
-
-    @Override
-    public BiConsumer<PrintWriter, String> accumulator()
-      {
-        return PrintWriter::println;
-      }
-
-    @Override
-    public BinaryOperator<PrintWriter> combiner()
-      {
-        return (a, b) -> { fail(); return null; }; // never called
-      }
-
-    @Override
-    public Function<PrintWriter, Void> finisher()
-      {
-        return pw -> { pw.close(); return null; };
-      }
-
-    @Override
-    public Set<Characteristics> characteristics()
-      {
-        return Collections.emptySet();
-      }
-
-    private PrintWriter oneShotPrintWriterSupplier()
-      {
-        if (parallelChecker.getAndSet(true))
+        if (condition)
           {
-            fail();
+            pw.close();
+            throw new IllegalStateException("Can't be used with a parallel Stream!");
           }
 
         return pw;
-      }
-
-    private void fail()
-      {
-        pw.close();
-        throw new IllegalStateException("Can't be used with a parallel Stream!");
       }
   }
