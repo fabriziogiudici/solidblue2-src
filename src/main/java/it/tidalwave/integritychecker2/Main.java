@@ -20,7 +20,7 @@
  *
  * *********************************************************************************************************************
  *
- * $Id: Main.java,v b7457e2dc902 2015/11/06 20:25:15 fabrizio $
+ * $Id: Main.java,v b4f706516290 2015/11/07 08:47:17 fabrizio $
  *
  * *********************************************************************************************************************
  * #L%
@@ -43,6 +43,7 @@ import java.util.Map.Entry;
 import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import static it.tidalwave.util.stream.FileCollector.*;
 import static java.nio.channels.FileChannel.MapMode.*;
 import static java.nio.file.FileVisitOption.*;
 import static java.util.Comparator.*;
@@ -51,7 +52,7 @@ import static java.util.stream.Collectors.*;
 /***********************************************************************************************************************
  *
  * @author  Fabrizio Giudici <Fabrizio dot Giudici at tidalwave dot it>
- * @version $Id: Main.java,v b7457e2dc902 2015/11/06 20:25:15 fabrizio $
+ * @version $Id: Main.java,v b4f706516290 2015/11/07 08:47:17 fabrizio $
  *
  **********************************************************************************************************************/
 public class Main
@@ -111,10 +112,10 @@ public class Main
         final Path file = folder.resolve("fingerprints-j8.txt");
         Files.createDirectories(folder);
         log.info("Storing results into {} ...", file);
-        final Stream<String> s = storage.entrySet().stream()
+        storage.entrySet().stream()
                           .sorted(comparing(Entry::getKey))
-                                                   .map(e -> String.format("MD5(%s)=%s", e.getKey(), e.getValue()));
-        Files.write(file, (Iterable<String>)s::iterator, Charset.forName("UTF-8"));
+                          .map(e -> String.format("MD5(%s)=%s", e.getKey(), e.getValue()))
+                          .collect(toFile(file, Charset.forName("UTF-8")));
       }
 
     /*******************************************************************************************************************
