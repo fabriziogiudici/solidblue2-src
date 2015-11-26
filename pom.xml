@@ -28,8 +28,9 @@
         <netbeans.checkstyle.format>true</netbeans.checkstyle.format>
         <netbeans.compile.on.save>test</netbeans.compile.on.save>
 
-        <scm.repo.url>ssh://hg@bitbucket.org/tidalwave/solidblue2-src</scm.repo.url>
-        <scm.repo.readonly.url>https://bitbucket.org/tidalwave/solidblue2-src</scm.repo.readonly.url>
+        <tft.scm>git</tft.scm>
+        <scm.repo.url>git@bitbucket.org:tidalwave/solidblue2-src.git</scm.repo.url>
+        <scm.repo.readonly.url>https://bitbucket.org/tidalwave/solidblue2-src.git</scm.repo.readonly.url>
         <scm.repo.browse.url>https://bitbucket.org/tidalwave/solidblue2-src/src</scm.repo.browse.url>
         <!--        <tidalwave.ci.view>SolidBlue</tidalwave.ci.view>
         <tidalwave.issues>SLB</tidalwave.issues>-->
@@ -55,8 +56,7 @@
         <connection>scm:hg:${scm.repo.readonly.url}</connection>
         <developerConnection>scm:hg:${scm.repo.effective.url}</developerConnection>
         <url>${scm.repo.browse.url}</url>
-      <tag>HEAD</tag>
-  </scm>
+    </scm>
 
     <dependencies>
         <dependency>
