@@ -27,14 +27,9 @@
  */
 package it.tidalwave.integritychecker2.persistence.impl;
 
-import it.tidalwave.integritychecker2.persistence.impl.springjdbc.SJPersistentFileScan;
-import it.tidalwave.integritychecker2.persistence.impl.springjdbc.SJPersistentScan;
-import it.tidalwave.integritychecker2.persistence.impl.springjdbc.SJScanDao;
 import it.tidalwave.integritychecker2.persistence.PersistentFileScan;
 import it.tidalwave.integritychecker2.persistence.PersistentScan;
 import it.tidalwave.integritychecker2.persistence.ScanDao;
-import it.tidalwave.integritychecker2.persistence.impl.springjdbc.SJIdFactory;
-import it.tidalwave.role.IdFactory;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -43,16 +38,10 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Stream;
-import javax.sql.DataSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.testng.annotations.Test;
-import org.testng.annotations.BeforeMethod;
 import static it.tidalwave.util.test.FileComparisonUtils.assertSameContents;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import static org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType.*;
 
 /***********************************************************************************************************************
  *
@@ -60,24 +49,11 @@ import static org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType.
  * @version $Id: Class.java,v 631568052e17 2013/02/19 15:45:02 fabrizio $
  *
  **********************************************************************************************************************/
-public class PersistenceIntegrationTest
+public abstract class PersistenceIntegrationTestSupport
   {
     private static final Charset UTF_8 = Charset.forName("UTF-8");
 
-    private ScanDao scanDao;
-
-    @BeforeMethod
-    public void prepare()
-      {
-        final DataSource dataSource = createDataSource();
-        final NamedParameterJdbcOperations jdbcOps = new NamedParameterJdbcTemplate(dataSource);
-//        final IdFactory idFactory = new MockIdFactory();
-        final IdFactory idFactory = new SJIdFactory();
-        scanDao = new SJScanDao(jdbcOps, idFactory);
-
-        SJPersistentScan.createTable(jdbcOps);
-        SJPersistentFileScan.createTable(jdbcOps);
-      }
+    protected ScanDao scanDao;
 
     @Test
     public void must_properly_insert_a_single_Scan()
@@ -143,14 +119,5 @@ public class PersistenceIntegrationTest
         assertThat(fileScans2.get(0), is(fileScan2a));
         assertThat(fileScans2.get(1), is(fileScan2b));
         assertThat(fileScans2.get(2), is(fileScan2c));
-      }
-
-    private DataSource createDataSource()
-      {
-        return new EmbeddedDatabaseBuilder()
-                .generateUniqueName(true)
-                .setType(H2)
-                .setScriptEncoding("UTF-8")
-                .build();
       }
   }
