@@ -105,7 +105,7 @@ public abstract class PersistenceIntegrationTestSupport
         assertThat(allScans.get(0), is(scan));
       }
 
-    @Test
+    @Test(dependsOnMethods = "must_properly_insert_a_single_Scan")
     public void must_properly_insert_two_Scans()
       {
         final PersistentScan scan1 = scanDao.createScan(LocalDateTime.of(2015, 11, 30, 11, 42, 03));
@@ -117,25 +117,7 @@ public abstract class PersistenceIntegrationTestSupport
         assertThat(allScans.get(1), is(scan2));
       }
 
-    @Test
-    public void must_properly_import_and_export_scan()
-      throws IOException
-      {
-        final Path expectedFile = Paths.get("target/test-classes/fingerprints-20151112_1449.txt");
-        final Path actualFile = Paths.get("target/fingerprints-exported.txt");
-
-        final PersistentScan scan = scanDao.createScan(LocalDateTime.of(2015, 11, 30, 11, 42, 03));
-        Files.lines(expectedFile, UTF_8)
-             .forEach(scan::importFileScanFromString);
-
-        final Stream<String> s = scan.findAllFileScans().stream()
-                                                        .map(PersistentFileScan::toExportString);
-        Files.write(actualFile, (Iterable<String>)s::iterator, UTF_8);
-
-        assertSameContents(expectedFile.toFile(), actualFile.toFile());
-      }
-
-    @Test
+    @Test(dependsOnMethods = "must_properly_insert_two_Scans")
     public void must_properly_insert_ScanFiles_for_different_Scans()
       {
         final PersistentScan scan1 = scanDao.createScan(LocalDateTime.of(2015, 11, 30, 11, 42, 03));
@@ -159,5 +141,23 @@ public abstract class PersistenceIntegrationTestSupport
         assertThat(fileScans2.get(0), is(fileScan2a));
         assertThat(fileScans2.get(1), is(fileScan2b));
         assertThat(fileScans2.get(2), is(fileScan2c));
+      }
+
+    @Test(dependsOnMethods = "must_properly_insert_ScanFiles_for_different_Scans")
+    public void must_properly_import_and_export_scan()
+      throws IOException
+      {
+        final Path expectedFile = Paths.get("target/test-classes/fingerprints-20151112_1449.txt");
+        final Path actualFile = Paths.get("target/fingerprints-exported.txt");
+
+        final PersistentScan scan = scanDao.createScan(LocalDateTime.of(2015, 11, 30, 11, 42, 03));
+        Files.lines(expectedFile, UTF_8)
+             .forEach(scan::importFileScanFromString);
+
+        final Stream<String> s = scan.findAllFileScans().stream()
+                                                        .map(PersistentFileScan::toExportString);
+        Files.write(actualFile, (Iterable<String>)s::iterator, UTF_8);
+
+        assertSameContents(expectedFile.toFile(), actualFile.toFile());
       }
   }
