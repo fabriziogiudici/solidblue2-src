@@ -27,7 +27,6 @@
  */
 package it.tidalwave.integritychecker2.persistence.impl.springjdbc;
 
-import it.tidalwave.integritychecker2.persistence.PersistentFileScan;
 import it.tidalwave.integritychecker2.persistence.PersistentScan;
 import it.tidalwave.integritychecker2.persistence.ScanDao;
 import it.tidalwave.role.IdFactory;
@@ -56,14 +55,14 @@ public class SJScanDao implements ScanDao
     @Override
     public PersistentScan createScan (final LocalDateTime dateTime)
       {
-        final SJPersistentScan scan = new SJPersistentScan(jdbcOps, this, idFactory, idFactory.createId(PersistentScan.class), dateTime);
-        jdbcOps.update(SJPersistentScan.INSERT, scan.toSqlParameterSource());
+        final SJPersistentScan scan = new SJPersistentScan(jdbcOps, idFactory, idFactory.createId(PersistentScan.class), dateTime);
+        scan.insert();
         return scan;
       }
 
     @Override
     public List<PersistentScan> findAllScans()
       {
-        return jdbcOps.query(SJPersistentScan.SELECT, (rs, rowNum) -> SJPersistentScan.fromResultSet(jdbcOps, this, idFactory, rs));
+        return SJPersistentScan.selectAll(jdbcOps, idFactory);
       }
   }
