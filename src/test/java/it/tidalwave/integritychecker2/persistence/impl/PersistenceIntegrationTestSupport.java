@@ -30,6 +30,8 @@ package it.tidalwave.integritychecker2.persistence.impl;
 import it.tidalwave.integritychecker2.persistence.PersistentFileScan;
 import it.tidalwave.integritychecker2.persistence.PersistentScan;
 import it.tidalwave.integritychecker2.persistence.ScanDao;
+import it.tidalwave.integritychecker2.persistence.impl.springjdbc.SJPersistentFileScan;
+import it.tidalwave.integritychecker2.persistence.impl.springjdbc.SJPersistentScan;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -61,7 +63,7 @@ public abstract class PersistenceIntegrationTestSupport
 
     protected ScanDao scanDao;
 
-    private JdbcDataSource dataSource;
+    protected JdbcDataSource dataSource;
 
     @AfterMethod
     public void cleanup()
@@ -79,6 +81,18 @@ public abstract class PersistenceIntegrationTestSupport
         dataSource = new JdbcDataSource();
         dataSource.setURL("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1");
         return dataSource;
+      }
+
+    protected void createTables()
+      throws SQLException
+      {
+        try (final Connection connection = dataSource.getConnection();
+             final Statement statement = connection.createStatement())
+          {
+            PersistentScan.createTable(statement);
+            PersistentFileScan.createTable(statement);
+            connection.commit();
+          }
       }
 
     @Test

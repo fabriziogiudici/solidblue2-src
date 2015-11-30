@@ -45,7 +45,6 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 public class SJPersistentFileScan implements PersistentFileScan
   {
     private static final String INSERT = "INSERT INTO FILE_SCAN(ID, SCAN_ID, FILE_NAME, FINGERPRINT) VALUES (:id, :scanId, :fileName, :fingerprint)";
-    private static final String CREATE_TABLE = "CREATE TABLE FILE_SCAN(ID VARCHAR(36), SCAN_ID VARCHAR(36), FILE_NAME VARCHAR(200), FINGERPRINT VARCHAR(32))";
 
     private final NamedParameterJdbcOperations jdbcOps;
 
@@ -68,11 +67,6 @@ public class SJPersistentFileScan implements PersistentFileScan
         this.id = id;
         this.fileName = fileName;
         this.fingerprint = fingerprint;
-      }
-
-    public static void createTable (final NamedParameterJdbcOperations jdbcOps)
-      {
-        jdbcOps.getJdbcOperations().execute(CREATE_TABLE);
       }
 
     static List<PersistentFileScan> selectByScan (final NamedParameterJdbcOperations jdbcOps,

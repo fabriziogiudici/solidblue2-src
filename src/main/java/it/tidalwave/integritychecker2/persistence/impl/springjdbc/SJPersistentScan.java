@@ -33,6 +33,7 @@ import it.tidalwave.role.IdFactory;
 import it.tidalwave.util.Id;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -51,8 +52,6 @@ public class SJPersistentScan implements PersistentScan
     private static final String SELECT = "SELECT * FROM SCAN";
     private static final String INSERT = "INSERT INTO SCAN(ID, CREATION_TIME) VALUES(:id, :creationTime)";
 
-    private static final String CREATE_TABLE = "CREATE TABLE SCAN(ID VARCHAR(36), CREATION_TIME TIMESTAMP)";
-
     private final IdFactory idFactory;
 
     private final NamedParameterJdbcOperations jdbcOps;
@@ -61,9 +60,10 @@ public class SJPersistentScan implements PersistentScan
 
     private final LocalDateTime creationDateTime;
 
-    public static void createTable (final NamedParameterJdbcOperations jdbcOps)
+    public static void createTable (final Statement statement)
+      throws SQLException
       {
-        jdbcOps.getJdbcOperations().execute(CREATE_TABLE);
+        statement.execute(CREATE_TABLE);
       }
 
     SJPersistentScan (final NamedParameterJdbcOperations jdbcOps,

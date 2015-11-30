@@ -27,6 +27,9 @@
  */
 package it.tidalwave.integritychecker2.persistence;
 
+import java.sql.SQLException;
+import java.sql.Statement;
+
 /***********************************************************************************************************************
  *
  * @author  Fabrizio Giudici <Fabrizio dot Giudici at tidalwave dot it>
@@ -35,5 +38,13 @@ package it.tidalwave.integritychecker2.persistence;
  **********************************************************************************************************************/
 public interface PersistentFileScan
   {
+    static final String CREATE_TABLE = "CREATE TABLE FILE_SCAN(ID VARCHAR(36), SCAN_ID VARCHAR(36), FILE_NAME VARCHAR(200), FINGERPRINT VARCHAR(32))";
+
     public String toExportString();
+
+    public static void createTable (final Statement statement)
+      throws SQLException
+      {
+        statement.execute(CREATE_TABLE);
+      }
   }

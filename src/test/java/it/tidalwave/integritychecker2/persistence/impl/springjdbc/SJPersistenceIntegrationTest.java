@@ -29,6 +29,7 @@ package it.tidalwave.integritychecker2.persistence.impl.springjdbc;
 
 import it.tidalwave.integritychecker2.persistence.impl.PersistenceIntegrationTestSupport;
 import it.tidalwave.role.IdFactory;
+import java.sql.SQLException;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.testng.annotations.BeforeMethod;
@@ -43,13 +44,12 @@ public class SJPersistenceIntegrationTest extends PersistenceIntegrationTestSupp
   {
     @BeforeMethod
     public void prepare()
+      throws SQLException
       {
         final NamedParameterJdbcOperations jdbcOps = new NamedParameterJdbcTemplate(createDataSource());
 //        final IdFactory idFactory = new MockIdFactory();
         final IdFactory idFactory = new SJIdFactory();
         scanDao = new SJScanDao(jdbcOps, idFactory);
-
-        SJPersistentScan.createTable(jdbcOps);
-        SJPersistentFileScan.createTable(jdbcOps);
+        createTables();
       }
   }

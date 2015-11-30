@@ -27,6 +27,8 @@
  */
 package it.tidalwave.integritychecker2.persistence;
 
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -39,6 +41,8 @@ import java.util.regex.Pattern;
  **********************************************************************************************************************/
 public interface PersistentScan
   {
+    static final String CREATE_TABLE = "CREATE TABLE SCAN(ID VARCHAR(36), CREATION_TIME TIMESTAMP)";
+
     public PersistentFileScan createFileScan (String fileName, String fingerprint);
 
     default public PersistentFileScan importFileScanFromString (final String string)
@@ -55,4 +59,10 @@ public interface PersistentScan
       }
 
     public List<PersistentFileScan> findAllFileScans();
+
+    public static void createTable (final Statement statement)
+      throws SQLException
+      {
+        statement.execute(CREATE_TABLE);
+      }
   }
