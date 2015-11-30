@@ -29,11 +29,8 @@ package it.tidalwave.integritychecker2.persistence.impl.springjdbc;
 
 import it.tidalwave.integritychecker2.persistence.impl.PersistenceIntegrationTestSupport;
 import it.tidalwave.role.IdFactory;
-import javax.sql.DataSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
-import static org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType.H2;
 import org.testng.annotations.BeforeMethod;
 
 /***********************************************************************************************************************
@@ -47,21 +44,12 @@ public class SJPersistenceIntegrationTest extends PersistenceIntegrationTestSupp
     @BeforeMethod
     public void prepare()
       {
-        final DataSource dataSource = createDataSource();
-        final NamedParameterJdbcOperations jdbcOps = new NamedParameterJdbcTemplate(dataSource);
+        final NamedParameterJdbcOperations jdbcOps = new NamedParameterJdbcTemplate(createDataSource());
 //        final IdFactory idFactory = new MockIdFactory();
         final IdFactory idFactory = new SJIdFactory();
         scanDao = new SJScanDao(jdbcOps, idFactory);
 
         SJPersistentScan.createTable(jdbcOps);
         SJPersistentFileScan.createTable(jdbcOps);
-      }
-
-    private DataSource createDataSource()
-      {
-        return new EmbeddedDatabaseBuilder().generateUniqueName(true)
-                                            .setType(H2)
-                                            .setScriptEncoding("UTF-8")
-                                            .build();
       }
   }

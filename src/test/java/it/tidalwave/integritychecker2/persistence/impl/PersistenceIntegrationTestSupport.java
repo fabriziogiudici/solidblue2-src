@@ -35,10 +35,16 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Stream;
+import javax.sql.DataSource;
 import org.testng.annotations.Test;
+import org.h2.jdbcx.JdbcDataSource;
+import org.testng.annotations.AfterMethod;
 import static it.tidalwave.util.test.FileComparisonUtils.assertSameContents;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -54,6 +60,26 @@ public abstract class PersistenceIntegrationTestSupport
     private static final Charset UTF_8 = Charset.forName("UTF-8");
 
     protected ScanDao scanDao;
+
+    private JdbcDataSource dataSource;
+
+    @AfterMethod
+    public void cleanup()
+      throws SQLException
+      {
+        try (final Connection connection = dataSource.getConnection();
+             final Statement statement = connection.createStatement())
+          {
+            statement.executeUpdate("SHUTDOWN");
+          }
+      }
+
+    protected DataSource createDataSource()
+      {
+        dataSource = new JdbcDataSource();
+        dataSource.setURL("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1");
+        return dataSource;
+      }
 
     @Test
     public void must_properly_insert_a_single_Scan()
