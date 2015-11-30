@@ -40,9 +40,5 @@ public interface ScanDao
   {
     public PersistentScan createScan (LocalDateTime dateTime);
 
-    public PersistentFileScan createFileScan (PersistentScan scan, String fileName, String fingerprint);
-
     public List<PersistentScan> findAllScans();
-
-    public List<PersistentFileScan> findFileScansIn (PersistentScan scan);
   }

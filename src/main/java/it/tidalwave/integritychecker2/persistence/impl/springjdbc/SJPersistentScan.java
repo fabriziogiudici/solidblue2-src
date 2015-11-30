@@ -30,6 +30,7 @@ package it.tidalwave.integritychecker2.persistence.impl.springjdbc;
 import it.tidalwave.integritychecker2.persistence.PersistentFileScan;
 import it.tidalwave.integritychecker2.persistence.PersistentScan;
 import it.tidalwave.integritychecker2.persistence.ScanDao;
+import it.tidalwave.role.IdFactory;
 import it.tidalwave.util.Id;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -55,6 +56,10 @@ public class SJPersistentScan implements PersistentScan
 
     private final ScanDao dao;
 
+    private final IdFactory idFactory;
+
+    private final NamedParameterJdbcOperations jdbcOps;
+
     private final Id id;
 
     private final LocalDateTime creationDateTime;
@@ -64,11 +69,15 @@ public class SJPersistentScan implements PersistentScan
         jdbcOps.getJdbcOperations().execute(CREATE_TABLE);
       }
 
-    public SJPersistentScan (final ScanDao dao,
-                           final Id id,
-                           final LocalDateTime dateTime)
+    public SJPersistentScan (final NamedParameterJdbcOperations jdbcOps,
+                             final ScanDao dao,
+                             final IdFactory idFactory,
+                             final Id id,
+                             final LocalDateTime dateTime)
       {
+        this.jdbcOps = jdbcOps;
         this.dao = dao;
+        this.idFactory = idFactory;
         this.id = id;
         this.creationDateTime = dateTime;
       }
@@ -76,20 +85,34 @@ public class SJPersistentScan implements PersistentScan
     @Override
     public PersistentFileScan createFileScan (final String fileName, final String fingerprint)
       {
-        return dao.createFileScan(this, fileName, fingerprint);
+        final SJPersistentFileScan fileScan = new SJPersistentFileScan(dao,
+                                                                       this,
+                                                                       idFactory.createId(PersistentFileScan.class),
+                                                                       fileName,
+                                                                       fingerprint);
+        jdbcOps.update(SJPersistentFileScan.INSERT, fileScan.toSqlParameterSource());
+        return fileScan;
       }
 
     @Override
     public List<PersistentFileScan> findAllFileScans()
       {
-        return dao.findFileScansIn(this);
+        return jdbcOps.query("SELECT * FROM FILE_SCAN WHERE SCAN_ID=:scanId",
+                             this.toSqlParameterSourceForId(),
+                             (rs, rowNum) -> SJPersistentFileScan.fromResultSet((SJScanDao)dao, this, rs));
       }
 
-    public static PersistentScan fromResultSet (final ScanDao dao, final ResultSet rs)
+    public static PersistentScan fromResultSet (final NamedParameterJdbcOperations jdbcOps,
+                                                final ScanDao dao,
+                                                final IdFactory idFactory,
+                                                final ResultSet rs)
       throws SQLException
       {
-        return new SJPersistentScan(dao, new Id(rs.getString("ID")),
-                                       rs.getTimestamp("CREATION_TIME").toLocalDateTime());
+        return new SJPersistentScan(jdbcOps,
+                                    dao,
+                                    idFactory,
+                                    new Id(rs.getString("ID")),
+                                    rs.getTimestamp("CREATION_TIME").toLocalDateTime());
       }
 
     public MapSqlParameterSource toSqlParameterSource()

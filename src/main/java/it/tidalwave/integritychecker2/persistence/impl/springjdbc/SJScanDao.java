@@ -56,30 +56,14 @@ public class SJScanDao implements ScanDao
     @Override
     public PersistentScan createScan (final LocalDateTime dateTime)
       {
-        final SJPersistentScan scan = new SJPersistentScan(this, idFactory.createId(PersistentScan.class), dateTime);
+        final SJPersistentScan scan = new SJPersistentScan(jdbcOps, this, idFactory, idFactory.createId(PersistentScan.class), dateTime);
         jdbcOps.update(SJPersistentScan.INSERT, scan.toSqlParameterSource());
         return scan;
       }
 
     @Override
-    public PersistentFileScan createFileScan (final PersistentScan scan, final String fileName, final String fingerprint)
-      {
-        final SJPersistentFileScan fileScan = new SJPersistentFileScan(this, ((SJPersistentScan)scan), idFactory.createId(PersistentFileScan.class), fileName, fingerprint);
-        jdbcOps.update(SJPersistentFileScan.INSERT, fileScan.toSqlParameterSource());
-        return fileScan;
-      }
-
-    @Override
     public List<PersistentScan> findAllScans()
       {
-        return jdbcOps.query(SJPersistentScan.SELECT, (rs, rowNum) -> SJPersistentScan.fromResultSet(this, rs));
-      }
-
-    @Override
-    public List<PersistentFileScan> findFileScansIn (final PersistentScan scan)
-      {
-        return jdbcOps.query("SELECT * FROM FILE_SCAN WHERE SCAN_ID=:scanId",
-                             ((SJPersistentScan)scan).toSqlParameterSourceForId(),
-                             (rs, rowNum) -> SJPersistentFileScan.fromResultSet(this, ((SJPersistentScan)scan), rs));
+        return jdbcOps.query(SJPersistentScan.SELECT, (rs, rowNum) -> SJPersistentScan.fromResultSet(jdbcOps, this, idFactory, rs));
       }
   }
