@@ -39,5 +39,7 @@ public interface PersistentScan
   {
     public PersistentFileScan createFileScan (String fileName, String fingerprint);
 
+    public PersistentFileScan importFileScanFromString (String string);
+    
     public List<PersistentFileScan> findAllFileScans();
   }

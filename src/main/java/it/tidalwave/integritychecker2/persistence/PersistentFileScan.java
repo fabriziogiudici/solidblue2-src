@@ -35,4 +35,5 @@ package it.tidalwave.integritychecker2.persistence;
  **********************************************************************************************************************/
 public interface PersistentFileScan
   {
+    public String toExportString();
   }

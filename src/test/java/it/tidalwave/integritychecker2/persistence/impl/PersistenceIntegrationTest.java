@@ -33,15 +33,23 @@ import it.tidalwave.integritychecker2.persistence.impl.springjdbc.SJScanDao;
 import it.tidalwave.integritychecker2.persistence.PersistentFileScan;
 import it.tidalwave.integritychecker2.persistence.PersistentScan;
 import it.tidalwave.integritychecker2.persistence.ScanDao;
+import it.tidalwave.integritychecker2.persistence.impl.springjdbc.SJIdFactory;
 import it.tidalwave.role.IdFactory;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Stream;
 import javax.sql.DataSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.testng.annotations.Test;
 import org.testng.annotations.BeforeMethod;
+import static it.tidalwave.util.test.FileComparisonUtils.assertSameContents;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType.*;
@@ -54,6 +62,8 @@ import static org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType.
  **********************************************************************************************************************/
 public class PersistenceIntegrationTest
   {
+    private static final Charset UTF_8 = Charset.forName("UTF-8");
+
     private ScanDao scanDao;
 
     @BeforeMethod
@@ -61,7 +71,8 @@ public class PersistenceIntegrationTest
       {
         final DataSource dataSource = createDataSource();
         final NamedParameterJdbcOperations jdbcOps = new NamedParameterJdbcTemplate(dataSource);
-        final IdFactory idFactory = new MockIdFactory();
+//        final IdFactory idFactory = new MockIdFactory();
+        final IdFactory idFactory = new SJIdFactory();
         scanDao = new SJScanDao(jdbcOps, idFactory);
 
         SJPersistentScan.createTable(jdbcOps);
@@ -88,6 +99,24 @@ public class PersistenceIntegrationTest
         assertThat(allScans.size(), is(2));
         assertThat(allScans.get(0), is(scan1));
         assertThat(allScans.get(1), is(scan2));
+      }
+
+    @Test
+    public void must_properly_import_and_export_scan()
+      throws IOException
+      {
+        final Path expectedFile = Paths.get("target/test-classes/fingerprints-20151112_1449.txt");
+        final Path actualFile = Paths.get("target/fingerprints-exported.txt");
+
+        final PersistentScan scan = scanDao.createScan(LocalDateTime.of(2015, 11, 30, 11, 42, 03));
+        Files.lines(expectedFile, UTF_8)
+             .forEach(scan::importFileScanFromString);
+
+        final Stream<String> s = scan.findAllFileScans().stream()
+                                                        .map(PersistentFileScan::toExportString);
+        Files.write(actualFile, (Iterable<String>)s::iterator, UTF_8);
+
+        assertSameContents(expectedFile.toFile(), actualFile.toFile());
       }
 
     @Test

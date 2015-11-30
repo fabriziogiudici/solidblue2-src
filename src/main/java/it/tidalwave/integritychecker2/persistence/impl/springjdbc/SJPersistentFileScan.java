@@ -130,4 +130,10 @@ public class SJPersistentFileScan implements PersistentFileScan
                                         rs.getString("FILE_NAME"),
                                         rs.getString("FINGERPRINT"));
       }
+
+    @Override
+    public String toExportString()
+      {
+        return String.format("MD5(%s)=%s", fileName, fingerprint);
+      }
   }
