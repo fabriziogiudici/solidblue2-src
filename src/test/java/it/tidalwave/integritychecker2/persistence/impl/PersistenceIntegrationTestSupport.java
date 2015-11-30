@@ -30,8 +30,6 @@ package it.tidalwave.integritychecker2.persistence.impl;
 import it.tidalwave.integritychecker2.persistence.PersistentFileScan;
 import it.tidalwave.integritychecker2.persistence.PersistentScan;
 import it.tidalwave.integritychecker2.persistence.ScanDao;
-import it.tidalwave.integritychecker2.persistence.impl.springjdbc.SJPersistentFileScan;
-import it.tidalwave.integritychecker2.persistence.impl.springjdbc.SJPersistentScan;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
