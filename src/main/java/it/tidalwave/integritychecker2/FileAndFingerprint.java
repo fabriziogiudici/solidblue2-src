@@ -20,7 +20,7 @@
  *
  * *********************************************************************************************************************
  *
- * $Id: Main.java,v b4f706516290 2015/11/07 08:47:17 fabrizio $
+ * $Id: FileCollector.java,v bfe8bea5b104 2015/11/07 08:41:06 fabrizio $
  *
  * *********************************************************************************************************************
  * #L%
@@ -28,74 +28,100 @@
 package it.tidalwave.integritychecker2;
 
 import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.nio.MappedByteBuffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Stream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import static java.nio.file.FileVisitOption.*;
+import static java.nio.channels.FileChannel.MapMode.READ_ONLY;
 
 /***********************************************************************************************************************
  *
  * @author  Fabrizio Giudici <Fabrizio dot Giudici at tidalwave dot it>
- * @version $Id: Main.java,v b4f706516290 2015/11/07 08:47:17 fabrizio $
+ * @version $Id: Class.java,v 631568052e17 2013/02/19 15:45:02 fabrizio $
  *
  **********************************************************************************************************************/
-public class Main
+public class FileAndFingerprint
   {
-    private static final List<String> FILE_EXTENSIONS = Arrays.asList("nef", "arw", "dng", "tif", "jpg");
+    private static final Logger log = LoggerFactory.getLogger(FileAndFingerprint.class);
 
-    private static final Logger log = LoggerFactory.getLogger(Main.class);
+    private final Path file;
 
-    /*******************************************************************************************************************
-     *
-     *
-     *
-     ******************************************************************************************************************/
-    public static void main (final String ... args)
-      throws IOException
+    private final String fingerPrint;
+
+    public FileAndFingerprint (final Path file)
       {
-        new Main().scan(Paths.get(args[0]));
+        this.file = file;
+        this.fingerPrint = computeFingerprint("MD5");
+      }
+
+    public Path getFile()
+      {
+        return file;
+      }
+
+    public String getFingerPrint()
+      {
+        return fingerPrint;
+      }
+
+    @Override
+    public String toString()
+      {
+        return String.format("FileAndFingerprint(path=%s, fingerPrint=%s)", file.getFileName().toString(), fingerPrint);
       }
 
     /*******************************************************************************************************************
      *
+     * Computes the fingerprint of a file.
      *
+     * @param   file            the file
+     * @param   algorithm       the algorithm to use
+     * @return                  the fingerprint
      *
      ******************************************************************************************************************/
-    private void scan (final Path targetPath)
-      throws IOException
+    private String computeFingerprint (final String algorithm)
       {
-        log.info("Scanning {}...", targetPath);
-        final ProgressTracker progressTracker = new ProgressTracker();
-
-        try (final Stream<Path> stream = Files.walk(targetPath, FOLLOW_LINKS);
-             final Storage storage = new Storage(targetPath))
+        try
           {
-            stream.filter(Main::matchesExtension)
-                  .peek(progressTracker::notifyDiscoveredFile)
-                  .collect(storage.getIntermediateCollector())
-                  .stream()
-                  .map(FileAndFingerprint::new)
-                  .peek(progressTracker::notifyScannedFile)
-                  .collect(storage.getFinalCollector());
+            log.info("computeFingerprint({}, {})", file, algorithm);
+            final MessageDigest digestComputer = MessageDigest.getInstance(algorithm);
+
+            try (final RandomAccessFile raf = new RandomAccessFile(file.toFile(), "r"))
+              {
+                final MappedByteBuffer byteBuffer = raf.getChannel().map(READ_ONLY, 0, Files.size(file));
+                digestComputer.update(byteBuffer);
+              }
+
+            return toString(digestComputer.digest());
+          }
+        catch (NoSuchAlgorithmException | IOException e)
+          {
+            return e.getMessage();
           }
       }
 
     /*******************************************************************************************************************
      *
-     * Filters files with the supported extensions.
+     * Returns a hex representation of an array of bytes.
      *
-     * @param   file            the file
-     * @return                  {@code true} if the file matches
+     * @param   bytes           the bytes
+     * @return                  the string
      *
      ******************************************************************************************************************/
-    private static boolean matchesExtension (final Path file)
+    private static String toString (final byte[] bytes)
       {
-        final String extension = file.getFileName().toString().replaceAll("^.*\\.", "").toLowerCase();
-        return Files.isRegularFile(file) && FILE_EXTENSIONS.contains(extension);
+        final StringBuilder builder = new StringBuilder();
+
+        for (final byte b : bytes)
+          {
+            final int value = b & 0xff;
+            builder.append(Integer.toHexString(value >>> 4)).append(Integer.toHexString(value & 0x0f));
+          }
+
+        return builder.toString();
       }
   }

@@ -79,12 +79,12 @@ public class ProgressTracker
      * @param   file            the file
      *
      ******************************************************************************************************************/
-    public void notifyScannedFile (final Path file)
+    public void notifyScannedFile (final FileAndFingerprint faf)
       {
         try
           {
             scanCount.incrementAndGet();
-            scanSize.accumulateAndGet(Files.size(file), Long::sum);
+            scanSize.accumulateAndGet(Files.size(faf.getFile()), Long::sum);
             logProgress();
           }
         catch (IOException e)
