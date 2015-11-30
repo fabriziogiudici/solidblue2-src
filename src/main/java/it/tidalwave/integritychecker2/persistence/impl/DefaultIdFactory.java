@@ -25,7 +25,7 @@
  * *********************************************************************************************************************
  * #L%
  */
-package it.tidalwave.integritychecker2.persistence.impl.springjdbc;
+package it.tidalwave.integritychecker2.persistence.impl;
 
 import it.tidalwave.role.IdFactory;
 import it.tidalwave.util.Id;
@@ -37,7 +37,7 @@ import java.util.UUID;
  * @version $Id: Class.java,v 631568052e17 2013/02/19 15:45:02 fabrizio $
  *
  **********************************************************************************************************************/
-public class SJIdFactory implements IdFactory
+public class DefaultIdFactory implements IdFactory
   {
     @Override
     public Id createId()

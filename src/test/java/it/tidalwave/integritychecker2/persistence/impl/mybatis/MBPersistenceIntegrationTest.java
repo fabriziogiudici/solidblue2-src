@@ -28,7 +28,7 @@
 package it.tidalwave.integritychecker2.persistence.impl.mybatis;
 
 import it.tidalwave.integritychecker2.persistence.impl.PersistenceIntegrationTestSupport;
-import it.tidalwave.integritychecker2.persistence.impl.springjdbc.SJIdFactory;
+import it.tidalwave.integritychecker2.persistence.impl.DefaultIdFactory;
 import it.tidalwave.role.IdFactory;
 import java.sql.SQLException;
 import org.testng.annotations.BeforeMethod;
@@ -46,7 +46,7 @@ public class MBPersistenceIntegrationTest extends PersistenceIntegrationTestSupp
       throws SQLException
       {
         persistence = new MBPersistence();
-        final IdFactory idFactory = new SJIdFactory();
+        final IdFactory idFactory = new DefaultIdFactory();
         scanDao = new MBScanDao(((MBPersistence)persistence).getSqlSessionFactory(), idFactory); // FIXME
         createTables();
       }
