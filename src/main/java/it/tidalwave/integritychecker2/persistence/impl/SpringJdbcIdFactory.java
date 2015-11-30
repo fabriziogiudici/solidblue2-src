@@ -29,6 +29,7 @@ package it.tidalwave.integritychecker2.persistence.impl;
 
 import it.tidalwave.role.IdFactory;
 import it.tidalwave.util.Id;
+import java.util.UUID;
 
 /***********************************************************************************************************************
  *
@@ -41,17 +42,17 @@ public class SpringJdbcIdFactory implements IdFactory
     @Override
     public Id createId()
       {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new Id(UUID.randomUUID().toString());
       }
 
     @Override
-    public Id createId(Class<?> objectClass)
+    public Id createId (final Class<?> objectClass)
       {
         return createId();
       }
 
     @Override
-    public Id createId(Class<?> objectClass, Object object)
+    public Id createId (final Class<?> objectClass, final Object object)
       {
         return createId();
       }
