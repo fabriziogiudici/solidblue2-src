@@ -25,7 +25,7 @@
  * *********************************************************************************************************************
  * #L%
  */
-package it.tidalwave.integritychecker2.persistence.impl;
+package it.tidalwave.integritychecker2.persistence.impl.springjdbc;
 
 import it.tidalwave.integritychecker2.persistence.FileScan;
 import it.tidalwave.integritychecker2.persistence.ScanDao;

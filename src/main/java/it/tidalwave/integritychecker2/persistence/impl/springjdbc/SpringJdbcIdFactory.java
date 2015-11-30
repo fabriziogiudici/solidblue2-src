@@ -25,15 +25,11 @@
  * *********************************************************************************************************************
  * #L%
  */
-package it.tidalwave.integritychecker2.persistence.impl;
+package it.tidalwave.integritychecker2.persistence.impl.springjdbc;
 
-import it.tidalwave.integritychecker2.persistence.FileScan;
-import it.tidalwave.integritychecker2.persistence.Scan;
-import it.tidalwave.integritychecker2.persistence.ScanDao;
 import it.tidalwave.role.IdFactory;
-import java.time.LocalDateTime;
-import java.util.List;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
+import it.tidalwave.util.Id;
+import java.util.UUID;
 
 /***********************************************************************************************************************
  *
@@ -41,45 +37,23 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
  * @version $Id: Class.java,v 631568052e17 2013/02/19 15:45:02 fabrizio $
  *
  **********************************************************************************************************************/
-public class SpringJdbcScanDao implements ScanDao
+public class SpringJdbcIdFactory implements IdFactory
   {
-    private final NamedParameterJdbcOperations jdbcOps;
-
-    private final IdFactory idFactory;
-
-    public SpringJdbcScanDao (final NamedParameterJdbcOperations jdbcOps, IdFactory idFactory)
+    @Override
+    public Id createId()
       {
-        this.jdbcOps = jdbcOps;
-        this.idFactory = idFactory;
+        return new Id(UUID.randomUUID().toString());
       }
 
     @Override
-    public Scan createScan (final LocalDateTime dateTime)
+    public Id createId (final Class<?> objectClass)
       {
-        final SpringJdbcScan scan = new SpringJdbcScan(this, idFactory.createId(Scan.class), dateTime);
-        jdbcOps.update(SpringJdbcScan.INSERT, scan.toSqlParameterSource());
-        return scan;
+        return createId();
       }
 
     @Override
-    public FileScan createFileScan (final Scan scan, final String fileName, final String fingerprint)
+    public Id createId (final Class<?> objectClass, final Object object)
       {
-        final SpringJdbcFileScan fileScan = new SpringJdbcFileScan(this, ((SpringJdbcScan)scan), idFactory.createId(FileScan.class), fileName, fingerprint);
-        jdbcOps.update(SpringJdbcFileScan.INSERT, fileScan.toSqlParameterSource());
-        return fileScan;
-      }
-
-    @Override
-    public List<Scan> findAllScans()
-      {
-        return jdbcOps.query(SpringJdbcScan.SELECT, (rs, rowNum) -> SpringJdbcScan.fromResultSet(this, rs));
-      }
-
-    @Override
-    public List<FileScan> findFileScansIn (final Scan scan)
-      {
-        return jdbcOps.query("SELECT * FROM FILE_SCAN WHERE SCAN_ID=:scanId",
-                             ((SpringJdbcScan)scan).toSqlParameterSourceForId(),
-                             (rs, rowNum) -> SpringJdbcFileScan.fromResultSet(this, ((SpringJdbcScan)scan), rs));
+        return createId();
       }
   }

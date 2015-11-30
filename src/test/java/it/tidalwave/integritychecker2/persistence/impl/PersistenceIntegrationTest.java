@@ -27,6 +27,9 @@
  */
 package it.tidalwave.integritychecker2.persistence.impl;
 
+import it.tidalwave.integritychecker2.persistence.impl.springjdbc.SpringJdbcFileScan;
+import it.tidalwave.integritychecker2.persistence.impl.springjdbc.SpringJdbcScan;
+import it.tidalwave.integritychecker2.persistence.impl.springjdbc.SpringJdbcScanDao;
 import it.tidalwave.integritychecker2.persistence.FileScan;
 import it.tidalwave.integritychecker2.persistence.Scan;
 import it.tidalwave.integritychecker2.persistence.ScanDao;
