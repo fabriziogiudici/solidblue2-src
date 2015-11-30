@@ -39,7 +39,6 @@ import java.util.List;
 import java.util.Objects;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 
 /***********************************************************************************************************************
  *
@@ -111,7 +110,7 @@ public class SpringJdbcScan implements Scan
       }
 
     @Override
-    public boolean equals(Object obj)
+    public boolean equals (final Object obj)
       {
         if ((obj == null) || (getClass() != obj.getClass()))
           {
