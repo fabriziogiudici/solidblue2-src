@@ -37,8 +37,6 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 
@@ -101,20 +99,6 @@ public class SJPersistentScan implements PersistentScan
     public List<PersistentFileScan> findAllFileScans()
       {
         return SJPersistentFileScan.selectByScan(jdbcOps, idFactory, this);
-      }
-
-    @Override
-    public PersistentFileScan importFileScanFromString (final String string)
-      {
-        final Pattern pattern = Pattern.compile("^MD5\\((.*)\\)=(.*)$");
-        final Matcher matcher = pattern.matcher(string);
-
-        if (!matcher.matches())
-          {
-            throw new IllegalArgumentException("No matches for " + string);
-          }
-
-        return createFileScan(matcher.group(1), matcher.group(2));
       }
 
     void insert()
