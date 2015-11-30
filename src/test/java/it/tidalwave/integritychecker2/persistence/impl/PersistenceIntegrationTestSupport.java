@@ -27,6 +27,7 @@
  */
 package it.tidalwave.integritychecker2.persistence.impl;
 
+import it.tidalwave.integritychecker2.persistence.Persistence;
 import it.tidalwave.integritychecker2.persistence.PersistentFileScan;
 import it.tidalwave.integritychecker2.persistence.PersistentScan;
 import it.tidalwave.integritychecker2.persistence.ScanDao;
@@ -41,9 +42,7 @@ import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Stream;
-import javax.sql.DataSource;
 import org.testng.annotations.Test;
-import org.h2.jdbcx.JdbcDataSource;
 import org.testng.annotations.AfterMethod;
 import static it.tidalwave.util.test.FileComparisonUtils.assertSameContents;
 import static org.hamcrest.CoreMatchers.is;
@@ -61,36 +60,19 @@ public abstract class PersistenceIntegrationTestSupport
 
     protected ScanDao scanDao;
 
-    protected JdbcDataSource dataSource;
+    protected Persistence persistence;
 
     @AfterMethod
     public void cleanup()
       throws SQLException
       {
-        try (final Connection connection = dataSource.getConnection();
-             final Statement statement = connection.createStatement())
-          {
-            statement.executeUpdate("SHUTDOWN");
-          }
-      }
-
-    protected DataSource createDataSource()
-      {
-        dataSource = new JdbcDataSource();
-        dataSource.setURL("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1");
-        return dataSource;
+        persistence.scratch();
       }
 
     protected void createTables()
       throws SQLException
       {
-        try (final Connection connection = dataSource.getConnection();
-             final Statement statement = connection.createStatement())
-          {
-            PersistentScan.createTable(statement);
-            PersistentFileScan.createTable(statement);
-            connection.commit();
-          }
+        persistence.createTables();
       }
 
     @Test

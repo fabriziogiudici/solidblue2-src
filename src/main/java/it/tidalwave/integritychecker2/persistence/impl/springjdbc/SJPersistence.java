@@ -27,10 +27,9 @@
  */
 package it.tidalwave.integritychecker2.persistence.impl.springjdbc;
 
-import it.tidalwave.integritychecker2.persistence.impl.PersistenceIntegrationTestSupport;
-import it.tidalwave.role.IdFactory;
-import java.sql.SQLException;
-import org.testng.annotations.BeforeMethod;
+import it.tidalwave.integritychecker2.persistence.impl.PersistenceSupport;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 /***********************************************************************************************************************
  *
@@ -38,16 +37,12 @@ import org.testng.annotations.BeforeMethod;
  * @version $Id: Class.java,v 631568052e17 2013/02/19 15:45:02 fabrizio $
  *
  **********************************************************************************************************************/
-public class SJPersistenceIntegrationTest extends PersistenceIntegrationTestSupport
+public class SJPersistence extends PersistenceSupport
   {
-    @BeforeMethod
-    public void prepare()
-      throws SQLException
+    final NamedParameterJdbcOperations jdbcOps = new NamedParameterJdbcTemplate(createDataSource());
+
+    public NamedParameterJdbcOperations getJdbcOps()
       {
-        persistence = new SJPersistence();
-//        final IdFactory idFactory = new MockIdFactory();
-        final IdFactory idFactory = new SJIdFactory();
-        scanDao = new SJScanDao(((SJPersistence)persistence).getJdbcOps(), idFactory); // FIXME
-        createTables();
+        return jdbcOps;
       }
   }

@@ -25,29 +25,21 @@
  * *********************************************************************************************************************
  * #L%
  */
-package it.tidalwave.integritychecker2.persistence.impl.springjdbc;
+package it.tidalwave.integritychecker2.persistence;
 
-import it.tidalwave.integritychecker2.persistence.impl.PersistenceIntegrationTestSupport;
-import it.tidalwave.role.IdFactory;
 import java.sql.SQLException;
-import org.testng.annotations.BeforeMethod;
 
 /***********************************************************************************************************************
  *
  * @author  Fabrizio Giudici <Fabrizio dot Giudici at tidalwave dot it>
- * @version $Id: Class.java,v 631568052e17 2013/02/19 15:45:02 fabrizio $
+ * @version $Id: Interface.java,v 631568052e17 2013/02/19 15:45:02 fabrizio $
  *
  **********************************************************************************************************************/
-public class SJPersistenceIntegrationTest extends PersistenceIntegrationTestSupport
+public interface Persistence
   {
-    @BeforeMethod
-    public void prepare()
-      throws SQLException
-      {
-        persistence = new SJPersistence();
-//        final IdFactory idFactory = new MockIdFactory();
-        final IdFactory idFactory = new SJIdFactory();
-        scanDao = new SJScanDao(((SJPersistence)persistence).getJdbcOps(), idFactory); // FIXME
-        createTables();
-      }
+    public void scratch()
+      throws SQLException;
+
+    public void createTables()
+      throws SQLException;
   }

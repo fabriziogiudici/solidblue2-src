@@ -25,12 +25,16 @@
  * *********************************************************************************************************************
  * #L%
  */
-package it.tidalwave.integritychecker2.persistence.impl.springjdbc;
+package it.tidalwave.integritychecker2.persistence.impl;
 
-import it.tidalwave.integritychecker2.persistence.impl.PersistenceIntegrationTestSupport;
-import it.tidalwave.role.IdFactory;
+import it.tidalwave.integritychecker2.persistence.Persistence;
+import it.tidalwave.integritychecker2.persistence.PersistentFileScan;
+import it.tidalwave.integritychecker2.persistence.PersistentScan;
+import java.sql.Connection;
 import java.sql.SQLException;
-import org.testng.annotations.BeforeMethod;
+import java.sql.Statement;
+import javax.sql.DataSource;
+import org.h2.jdbcx.JdbcDataSource;
 
 /***********************************************************************************************************************
  *
@@ -38,16 +42,38 @@ import org.testng.annotations.BeforeMethod;
  * @version $Id: Class.java,v 631568052e17 2013/02/19 15:45:02 fabrizio $
  *
  **********************************************************************************************************************/
-public class SJPersistenceIntegrationTest extends PersistenceIntegrationTestSupport
+public abstract class PersistenceSupport implements Persistence
   {
-    @BeforeMethod
-    public void prepare()
+    protected JdbcDataSource dataSource;
+
+    @Override
+    public void scratch()
       throws SQLException
       {
-        persistence = new SJPersistence();
-//        final IdFactory idFactory = new MockIdFactory();
-        final IdFactory idFactory = new SJIdFactory();
-        scanDao = new SJScanDao(((SJPersistence)persistence).getJdbcOps(), idFactory); // FIXME
-        createTables();
+        try (final Connection connection = dataSource.getConnection();
+             final Statement statement = connection.createStatement())
+          {
+            statement.executeUpdate("SHUTDOWN");
+          }
+      }
+
+    @Override
+    public void createTables()
+      throws SQLException
+      {
+        try (final Connection connection = dataSource.getConnection();
+             final Statement statement = connection.createStatement())
+          {
+            PersistentScan.createTable(statement);
+            PersistentFileScan.createTable(statement);
+            connection.commit();
+          }
+      }
+
+    protected DataSource createDataSource()
+      {
+        dataSource = new JdbcDataSource();
+        dataSource.setURL("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1");
+        return dataSource;
       }
   }

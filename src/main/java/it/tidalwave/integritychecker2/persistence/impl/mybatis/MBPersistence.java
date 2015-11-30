@@ -25,12 +25,15 @@
  * *********************************************************************************************************************
  * #L%
  */
-package it.tidalwave.integritychecker2.persistence.impl.springjdbc;
+package it.tidalwave.integritychecker2.persistence.impl.mybatis;
 
-import it.tidalwave.integritychecker2.persistence.impl.PersistenceIntegrationTestSupport;
-import it.tidalwave.role.IdFactory;
-import java.sql.SQLException;
-import org.testng.annotations.BeforeMethod;
+import it.tidalwave.integritychecker2.persistence.impl.PersistenceSupport;
+import org.apache.ibatis.mapping.Environment;
+import org.apache.ibatis.session.Configuration;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import org.apache.ibatis.transaction.TransactionFactory;
+import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 
 /***********************************************************************************************************************
  *
@@ -38,16 +41,23 @@ import org.testng.annotations.BeforeMethod;
  * @version $Id: Class.java,v 631568052e17 2013/02/19 15:45:02 fabrizio $
  *
  **********************************************************************************************************************/
-public class SJPersistenceIntegrationTest extends PersistenceIntegrationTestSupport
+public class MBPersistence extends PersistenceSupport
   {
-    @BeforeMethod
-    public void prepare()
-      throws SQLException
+    private final SqlSessionFactory sqlSessionFactory;
+
+    public MBPersistence()
       {
-        persistence = new SJPersistence();
-//        final IdFactory idFactory = new MockIdFactory();
-        final IdFactory idFactory = new SJIdFactory();
-        scanDao = new SJScanDao(((SJPersistence)persistence).getJdbcOps(), idFactory); // FIXME
-        createTables();
+        createDataSource();
+        final TransactionFactory transactionFactory = new JdbcTransactionFactory();
+        final Environment environment = new Environment("development", transactionFactory, dataSource);
+        final Configuration configuration = new Configuration(environment);
+        configuration.addMapper(MBPersistentScanMapper.class);
+        configuration.addMapper(MBPersistentFileScanMapper.class);
+        sqlSessionFactory = new SqlSessionFactoryBuilder().build(configuration);
+      }
+
+    public SqlSessionFactory getSqlSessionFactory()
+      {
+        return sqlSessionFactory;
       }
   }

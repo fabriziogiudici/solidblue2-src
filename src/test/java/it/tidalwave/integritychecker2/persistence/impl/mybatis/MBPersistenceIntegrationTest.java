@@ -31,13 +31,6 @@ import it.tidalwave.integritychecker2.persistence.impl.PersistenceIntegrationTes
 import it.tidalwave.integritychecker2.persistence.impl.springjdbc.SJIdFactory;
 import it.tidalwave.role.IdFactory;
 import java.sql.SQLException;
-import javax.sql.DataSource;
-import org.apache.ibatis.mapping.Environment;
-import org.apache.ibatis.session.Configuration;
-import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.ibatis.session.SqlSessionFactoryBuilder;
-import org.apache.ibatis.transaction.TransactionFactory;
-import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.testng.annotations.BeforeMethod;
 
 /***********************************************************************************************************************
@@ -52,16 +45,9 @@ public class MBPersistenceIntegrationTest extends PersistenceIntegrationTestSupp
     public void prepare()
       throws SQLException
       {
-        final DataSource dataSource = createDataSource();
-        final TransactionFactory transactionFactory = new JdbcTransactionFactory();
-        final Environment environment = new Environment("development", transactionFactory, dataSource);
-        final Configuration configuration = new Configuration(environment);
-        configuration.addMapper(MBPersistentScanMapper.class);
-        configuration.addMapper(MBPersistentFileScanMapper.class);
-        final SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(configuration);
-////        final IdFactory idFactory = new MockIdFactory();
+        persistence = new MBPersistence();
         final IdFactory idFactory = new SJIdFactory();
-        scanDao = new MBScanDao(sqlSessionFactory, idFactory);
+        scanDao = new MBScanDao(((MBPersistence)persistence).getSqlSessionFactory(), idFactory); // FIXME
         createTables();
       }
   }
