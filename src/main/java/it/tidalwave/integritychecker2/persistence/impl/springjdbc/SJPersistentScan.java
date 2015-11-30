@@ -27,8 +27,8 @@
  */
 package it.tidalwave.integritychecker2.persistence.impl.springjdbc;
 
-import it.tidalwave.integritychecker2.persistence.FileScan;
-import it.tidalwave.integritychecker2.persistence.Scan;
+import it.tidalwave.integritychecker2.persistence.PersistentFileScan;
+import it.tidalwave.integritychecker2.persistence.PersistentScan;
 import it.tidalwave.integritychecker2.persistence.ScanDao;
 import it.tidalwave.util.Id;
 import java.sql.ResultSet;
@@ -46,7 +46,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
  * @version $Id: Class.java,v 631568052e17 2013/02/19 15:45:02 fabrizio $
  *
  **********************************************************************************************************************/
-public class SpringJdbcScan implements Scan
+public class SJPersistentScan implements PersistentScan
   {
     static final String SELECT = "SELECT * FROM SCAN";
     static final String INSERT = "INSERT INTO SCAN(ID, CREATION_TIME) VALUES(:id, :creationTime)";
@@ -64,7 +64,7 @@ public class SpringJdbcScan implements Scan
         jdbcOps.getJdbcOperations().execute(CREATE_TABLE);
       }
 
-    public SpringJdbcScan (final ScanDao dao,
+    public SJPersistentScan (final ScanDao dao,
                            final Id id,
                            final LocalDateTime dateTime)
       {
@@ -74,21 +74,21 @@ public class SpringJdbcScan implements Scan
       }
 
     @Override
-    public FileScan createFileScan (final String fileName, final String fingerprint)
+    public PersistentFileScan createFileScan (final String fileName, final String fingerprint)
       {
         return dao.createFileScan(this, fileName, fingerprint);
       }
 
     @Override
-    public List<FileScan> findAllFileScans()
+    public List<PersistentFileScan> findAllFileScans()
       {
         return dao.findFileScansIn(this);
       }
 
-    public static Scan fromResultSet (final ScanDao dao, final ResultSet rs)
+    public static PersistentScan fromResultSet (final ScanDao dao, final ResultSet rs)
       throws SQLException
       {
-        return new SpringJdbcScan(dao, new Id(rs.getString("ID")),
+        return new SJPersistentScan(dao, new Id(rs.getString("ID")),
                                        rs.getTimestamp("CREATION_TIME").toLocalDateTime());
       }
 
@@ -117,7 +117,7 @@ public class SpringJdbcScan implements Scan
             return false;
           }
 
-        final SpringJdbcScan other = (SpringJdbcScan)obj;
+        final SJPersistentScan other = (SJPersistentScan)obj;
 
         return Objects.equals(this.id, other.id)
             && Objects.equals(this.creationDateTime, other.creationDateTime);

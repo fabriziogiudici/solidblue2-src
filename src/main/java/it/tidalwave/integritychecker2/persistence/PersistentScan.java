@@ -25,35 +25,19 @@
  * *********************************************************************************************************************
  * #L%
  */
-package it.tidalwave.integritychecker2.persistence.impl.springjdbc;
+package it.tidalwave.integritychecker2.persistence;
 
-import it.tidalwave.role.IdFactory;
-import it.tidalwave.util.Id;
-import java.util.UUID;
+import java.util.List;
 
 /***********************************************************************************************************************
  *
  * @author  Fabrizio Giudici <Fabrizio dot Giudici at tidalwave dot it>
- * @version $Id: Class.java,v 631568052e17 2013/02/19 15:45:02 fabrizio $
+ * @version $Id: Interface.java,v 631568052e17 2013/02/19 15:45:02 fabrizio $
  *
  **********************************************************************************************************************/
-public class SpringJdbcIdFactory implements IdFactory
+public interface PersistentScan
   {
-    @Override
-    public Id createId()
-      {
-        return new Id(UUID.randomUUID().toString());
-      }
+    public PersistentFileScan createFileScan (String fileName, String fingerprint);
 
-    @Override
-    public Id createId (final Class<?> objectClass)
-      {
-        return createId();
-      }
-
-    @Override
-    public Id createId (final Class<?> objectClass, final Object object)
-      {
-        return createId();
-      }
+    public List<PersistentFileScan> findAllFileScans();
   }

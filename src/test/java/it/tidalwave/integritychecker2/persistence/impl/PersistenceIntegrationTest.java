@@ -27,11 +27,11 @@
  */
 package it.tidalwave.integritychecker2.persistence.impl;
 
-import it.tidalwave.integritychecker2.persistence.impl.springjdbc.SpringJdbcFileScan;
-import it.tidalwave.integritychecker2.persistence.impl.springjdbc.SpringJdbcScan;
-import it.tidalwave.integritychecker2.persistence.impl.springjdbc.SpringJdbcScanDao;
-import it.tidalwave.integritychecker2.persistence.FileScan;
-import it.tidalwave.integritychecker2.persistence.Scan;
+import it.tidalwave.integritychecker2.persistence.impl.springjdbc.SJPersistentFileScan;
+import it.tidalwave.integritychecker2.persistence.impl.springjdbc.SJPersistentScan;
+import it.tidalwave.integritychecker2.persistence.impl.springjdbc.SJScanDao;
+import it.tidalwave.integritychecker2.persistence.PersistentFileScan;
+import it.tidalwave.integritychecker2.persistence.PersistentScan;
 import it.tidalwave.integritychecker2.persistence.ScanDao;
 import it.tidalwave.role.IdFactory;
 import java.time.LocalDateTime;
@@ -62,17 +62,17 @@ public class PersistenceIntegrationTest
         final DataSource dataSource = createDataSource();
         final NamedParameterJdbcOperations jdbcOps = new NamedParameterJdbcTemplate(dataSource);
         final IdFactory idFactory = new MockIdFactory();
-        scanDao = new SpringJdbcScanDao(jdbcOps, idFactory);
+        scanDao = new SJScanDao(jdbcOps, idFactory);
 
-        SpringJdbcScan.createTable(jdbcOps);
-        SpringJdbcFileScan.createTable(jdbcOps);
+        SJPersistentScan.createTable(jdbcOps);
+        SJPersistentFileScan.createTable(jdbcOps);
       }
 
     @Test
     public void must_properly_insert_a_single_Scan()
       {
-        final Scan scan = scanDao.createScan(LocalDateTime.of(2015, 11, 30, 11, 42, 03));
-        final List<Scan> allScans = scanDao.findAllScans();
+        final PersistentScan scan = scanDao.createScan(LocalDateTime.of(2015, 11, 30, 11, 42, 03));
+        final List<PersistentScan> allScans = scanDao.findAllScans();
 
         assertThat(allScans.size(), is(1));
         assertThat(allScans.get(0), is(scan));
@@ -81,9 +81,9 @@ public class PersistenceIntegrationTest
     @Test
     public void must_properly_insert_two_Scans()
       {
-        final Scan scan1 = scanDao.createScan(LocalDateTime.of(2015, 11, 30, 11, 42, 03));
-        final Scan scan2 = scanDao.createScan(LocalDateTime.of(2014, 10, 29, 10, 41, 02));
-        final List<Scan> allScans = scanDao.findAllScans();
+        final PersistentScan scan1 = scanDao.createScan(LocalDateTime.of(2015, 11, 30, 11, 42, 03));
+        final PersistentScan scan2 = scanDao.createScan(LocalDateTime.of(2014, 10, 29, 10, 41, 02));
+        final List<PersistentScan> allScans = scanDao.findAllScans();
 
         assertThat(allScans.size(), is(2));
         assertThat(allScans.get(0), is(scan1));
@@ -93,18 +93,18 @@ public class PersistenceIntegrationTest
     @Test
     public void must_properly_insert_ScanFiles_for_different_Scans()
       {
-        final Scan scan1 = scanDao.createScan(LocalDateTime.of(2015, 11, 30, 11, 42, 03));
-        final Scan scan2 = scanDao.createScan(LocalDateTime.of(2014, 10, 29, 10, 41, 02));
+        final PersistentScan scan1 = scanDao.createScan(LocalDateTime.of(2015, 11, 30, 11, 42, 03));
+        final PersistentScan scan2 = scanDao.createScan(LocalDateTime.of(2014, 10, 29, 10, 41, 02));
 
-        final FileScan fileScan1a = scan1.createFileScan("file1a", "fp1a");
-        final FileScan fileScan1b = scan1.createFileScan("file1b", "fp1b");
+        final PersistentFileScan fileScan1a = scan1.createFileScan("file1a", "fp1a");
+        final PersistentFileScan fileScan1b = scan1.createFileScan("file1b", "fp1b");
 
-        final FileScan fileScan2a = scan2.createFileScan("file2a", "fp2a");
-        final FileScan fileScan2b = scan2.createFileScan("file2b", "fp2b");
-        final FileScan fileScan2c = scan2.createFileScan("file2c", "fp2c");
+        final PersistentFileScan fileScan2a = scan2.createFileScan("file2a", "fp2a");
+        final PersistentFileScan fileScan2b = scan2.createFileScan("file2b", "fp2b");
+        final PersistentFileScan fileScan2c = scan2.createFileScan("file2c", "fp2c");
 
-        final List<FileScan> fileScans1 = scan1.findAllFileScans();
-        final List<FileScan> fileScans2 = scan2.findAllFileScans();
+        final List<PersistentFileScan> fileScans1 = scan1.findAllFileScans();
+        final List<PersistentFileScan> fileScans2 = scan2.findAllFileScans();
 
         assertThat(fileScans1.size(), is(2));
         assertThat(fileScans1.get(0), is(fileScan1a));

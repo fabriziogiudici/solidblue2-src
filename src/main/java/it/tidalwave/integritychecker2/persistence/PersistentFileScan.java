@@ -27,17 +27,12 @@
  */
 package it.tidalwave.integritychecker2.persistence;
 
-import java.util.List;
-
 /***********************************************************************************************************************
  *
  * @author  Fabrizio Giudici <Fabrizio dot Giudici at tidalwave dot it>
  * @version $Id: Interface.java,v 631568052e17 2013/02/19 15:45:02 fabrizio $
  *
  **********************************************************************************************************************/
-public interface Scan
+public interface PersistentFileScan
   {
-    public FileScan createFileScan (String fileName, String fingerprint);
-
-    public List<FileScan> findAllFileScans();
   }

@@ -27,7 +27,7 @@
  */
 package it.tidalwave.integritychecker2.persistence.impl.springjdbc;
 
-import it.tidalwave.integritychecker2.persistence.FileScan;
+import it.tidalwave.integritychecker2.persistence.PersistentFileScan;
 import it.tidalwave.integritychecker2.persistence.ScanDao;
 import it.tidalwave.util.Id;
 import java.sql.ResultSet;
@@ -42,14 +42,14 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
  * @version $Id: Class.java,v 631568052e17 2013/02/19 15:45:02 fabrizio $
  *
  **********************************************************************************************************************/
-public class SpringJdbcFileScan implements FileScan
+public class SJPersistentFileScan implements PersistentFileScan
   {
     static final String INSERT = "INSERT INTO FILE_SCAN(ID, SCAN_ID, FILE_NAME, FINGERPRINT) VALUES (:id, :scanId, :fileName, :fingerprint)";
     private static final String CREATE_TABLE = "CREATE TABLE FILE_SCAN(ID VARCHAR(36), SCAN_ID VARCHAR(36), FILE_NAME VARCHAR(200), FINGERPRINT VARCHAR(32))";
 
     private final ScanDao dao;
 
-    private final SpringJdbcScan scan;
+    private final SJPersistentScan scan;
 
     private final Id id;
 
@@ -57,7 +57,7 @@ public class SpringJdbcFileScan implements FileScan
 
     private final String fingerprint;
 
-    public SpringJdbcFileScan (final ScanDao dao, final SpringJdbcScan scan, final Id id, final String fileName, final String fingerprint)
+    public SJPersistentFileScan (final ScanDao dao, final SJPersistentScan scan, final Id id, final String fileName, final String fingerprint)
       {
         this.dao = dao;
         this.scan = scan;
@@ -71,12 +71,12 @@ public class SpringJdbcFileScan implements FileScan
         jdbcOps.getJdbcOperations().execute(CREATE_TABLE);
       }
 
-    public static FileScan fromResultSet (final SpringJdbcScanDao dao,
-                                          final SpringJdbcScan scan,
+    public static PersistentFileScan fromResultSet (final SJScanDao dao,
+                                          final SJPersistentScan scan,
                                           final ResultSet rs)
       throws SQLException
       {
-        return new SpringJdbcFileScan(dao,
+        return new SJPersistentFileScan(dao,
                                       scan,
                                       new Id(rs.getString("ID")),
                                       rs.getString("FILE_NAME"),
@@ -104,7 +104,7 @@ public class SpringJdbcFileScan implements FileScan
             return false;
           }
 
-        final SpringJdbcFileScan other = (SpringJdbcFileScan) obj;
+        final SJPersistentFileScan other = (SJPersistentFileScan) obj;
 
         return Objects.equals(this.scan, other.scan)
             && Objects.equals(this.id, other.id)

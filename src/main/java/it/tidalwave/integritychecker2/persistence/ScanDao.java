@@ -38,11 +38,11 @@ import java.util.List;
  **********************************************************************************************************************/
 public interface ScanDao
   {
-    public Scan createScan (LocalDateTime dateTime);
+    public PersistentScan createScan (LocalDateTime dateTime);
 
-    public FileScan createFileScan (Scan scan, String fileName, String fingerprint);
+    public PersistentFileScan createFileScan (PersistentScan scan, String fileName, String fingerprint);
 
-    public List<Scan> findAllScans();
+    public List<PersistentScan> findAllScans();
 
-    public List<FileScan> findFileScansIn (Scan scan);
+    public List<PersistentFileScan> findFileScansIn (PersistentScan scan);
   }
