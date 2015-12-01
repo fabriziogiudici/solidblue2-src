@@ -36,10 +36,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import javax.persistence.Access;
-import static javax.persistence.AccessType.FIELD;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import org.hibernate.annotations.Type;
+import static javax.persistence.AccessType.FIELD;
+import javax.persistence.CascadeType;
+import static javax.persistence.FetchType.EAGER;
 
 /***********************************************************************************************************************
  *
@@ -58,10 +60,10 @@ public class HPersistentScan implements PersistentScan
     @Type(type="it.tidalwave.integritychecker2.persistence.impl.hibernate.LocalDateTimeUserType")
     private LocalDateTime creationDateTime;
 
-    @OneToMany
+    @OneToMany(fetch = EAGER, cascade = CascadeType.PERSIST)
     private List<HPersistentFileScan> fileScans;
 
-    public HPersistentScan()
+    HPersistentScan()
       {
       }
 
@@ -95,16 +97,6 @@ public class HPersistentScan implements PersistentScan
         return String.format("Scan(id: %s, creationDateTime: %s", id, creationDateTime);
       }
 
-    public List<HPersistentFileScan> getFileScans()
-      {
-        return fileScans;
-      }
-
-    public void setFileScans (List<HPersistentFileScan> fileScans)
-      {
-        this.fileScans = fileScans;
-      }
-
     @Override
     public PersistentFileScan createFileScan (String fileName, String fingerprint)
       {
@@ -124,6 +116,6 @@ public class HPersistentScan implements PersistentScan
     @Override
     public List<PersistentFileScan> findAllFileScans()
       {
-        return (List)getFileScans();
+        return (List)fileScans;
       }
   }

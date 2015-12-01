@@ -54,11 +54,11 @@ public class HPersistentFileScan implements PersistentFileScan
     @ManyToOne
     private HPersistentScan scan;
 
-    public HPersistentFileScan()
+    HPersistentFileScan()
       {
       }
 
-    public HPersistentFileScan (final Id id, final HPersistentScan scan, final String fileName, final String fingerprint)
+    HPersistentFileScan (final Id id, final HPersistentScan scan, final String fileName, final String fingerprint)
       {
         this.id = id;
         this.scan = scan;
