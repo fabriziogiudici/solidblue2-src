@@ -59,20 +59,25 @@ public class LocalDateTimeTypeHandler extends BaseTypeHandler<LocalDateTime>
     public LocalDateTime getNullableResult (ResultSet rs, String columnName)
       throws SQLException
       {
-        return rs.getTimestamp(columnName).toLocalDateTime();
+        return toLocalDateTime(rs.getTimestamp(columnName));
       }
 
     @Override
     public LocalDateTime getNullableResult (ResultSet rs, int columnIndex)
       throws SQLException
       {
-        return rs.getTimestamp(columnIndex).toLocalDateTime();
+        return toLocalDateTime(rs.getTimestamp(columnIndex));
       }
 
     @Override
     public LocalDateTime getNullableResult (CallableStatement cs, int columnIndex)
       throws SQLException
       {
-        return cs.getTimestamp(columnIndex).toLocalDateTime();
+        return toLocalDateTime(cs.getTimestamp(columnIndex));
+      }
+
+    private static LocalDateTime toLocalDateTime (Timestamp ts)
+      {
+        return (ts == null) ? null : ts.toLocalDateTime();
       }
   }

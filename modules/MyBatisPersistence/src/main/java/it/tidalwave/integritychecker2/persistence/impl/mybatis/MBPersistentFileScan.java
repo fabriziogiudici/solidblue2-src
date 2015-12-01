@@ -60,7 +60,7 @@ public class MBPersistentFileScan implements PersistentFileScan
                           final String fingerprint)
       {
         this.sqlSessionFactory = sqlSessionFactory;
-        this.scanId = scan.id(); // FIXME
+        this.scanId = scan.getId(); // FIXME
         this.id = id;
         this.fileName = fileName;
         this.fingerprint = fingerprint;

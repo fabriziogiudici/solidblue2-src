@@ -31,7 +31,6 @@ import it.tidalwave.integritychecker2.persistence.PersistentFileScan;
 import it.tidalwave.integritychecker2.persistence.PersistentScan;
 import it.tidalwave.role.IdFactory;
 import it.tidalwave.util.Id;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -135,7 +134,7 @@ public class MBPersistentScan implements PersistentScan
           }
       }
 
-    Id id()
+    Id getId()
       {
         return id;
       }

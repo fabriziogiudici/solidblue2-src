@@ -58,20 +58,25 @@ public class IdTypeHandler extends BaseTypeHandler<Id>
     public Id getNullableResult (ResultSet rs, String columnName)
       throws SQLException
       {
-        return new Id(rs.getString(columnName));
+        return toId(rs.getString(columnName));
       }
 
     @Override
     public Id getNullableResult (ResultSet rs, int columnIndex)
       throws SQLException
       {
-        return new Id(rs.getString(columnIndex));
+        return toId(rs.getString(columnIndex));
       }
 
     @Override
     public Id getNullableResult (CallableStatement cs, int columnIndex)
       throws SQLException
       {
-        return new Id(cs.getString(columnIndex));
+        return toId(cs.getString(columnIndex));
+      }
+
+    private static Id toId (String s)
+      {
+        return (s == null) ? null : new Id(s);
       }
   }
