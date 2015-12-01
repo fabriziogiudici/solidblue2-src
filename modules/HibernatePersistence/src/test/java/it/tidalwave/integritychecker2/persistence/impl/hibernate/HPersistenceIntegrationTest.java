@@ -51,8 +51,5 @@ public class HPersistenceIntegrationTest extends PersistenceIntegrationTestSuppo
         context = new ClassPathXmlApplicationContext("META-INF/PersistenceBeans.xml");
         persistence = context.getBean(Persistence.class);
         scanDao = context.getBean(ScanDao.class);
-//        final IdFactory idFactory = new DefaultIdFactory();
-//        scanDao = new HScanDao(((HPersistence)persistence).getJdbcOps(), idFactory); // FIXME
-//        createTables();
       }
   }
