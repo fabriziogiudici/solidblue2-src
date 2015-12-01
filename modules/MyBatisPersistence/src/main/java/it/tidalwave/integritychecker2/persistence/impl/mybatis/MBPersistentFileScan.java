@@ -60,7 +60,7 @@ public class MBPersistentFileScan implements PersistentFileScan
                           final String fingerprint)
       {
         this.sqlSessionFactory = sqlSessionFactory;
-        this.scanId = new Id(scan.getId()); // FIXME
+        this.scanId = scan.id(); // FIXME
         this.id = id;
         this.fileName = fileName;
         this.fingerprint = fingerprint;
@@ -74,46 +74,6 @@ public class MBPersistentFileScan implements PersistentFileScan
     public String toExportString()
       {
         return String.format("MD5(%s)=%s", fileName, fingerprint);
-      }
-
-    public String getId()
-      {
-        return id.stringValue();
-      }
-
-    public void setId (final String id)
-      {
-        this.id = new Id(id);
-      }
-
-    public String getScanId()
-      {
-        return scanId.stringValue();
-      }
-
-    public void setScanId (final String scanId)
-      {
-        this.scanId = new Id(scanId);
-      }
-
-    public String getFileName()
-      {
-        return fileName;
-      }
-
-    public void setFileName (final String fileName)
-      {
-        this.fileName = fileName;
-      }
-
-    public String getFingerprint()
-      {
-        return fingerprint;
-      }
-
-    public void setFingerprint (final String fingerprint)
-      {
-        this.fingerprint = fingerprint;
       }
 
     @Override

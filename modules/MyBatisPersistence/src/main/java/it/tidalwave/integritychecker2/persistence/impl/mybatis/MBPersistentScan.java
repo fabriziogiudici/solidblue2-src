@@ -93,26 +93,6 @@ public class MBPersistentScan implements PersistentScan
           }
       }
 
-    public String getId()
-      {
-        return id.stringValue();
-      }
-
-    public void setId (final String id)
-      {
-        this.id = new Id(id);
-      }
-
-    public Timestamp getCreationDateTime()
-      {
-        return Timestamp.valueOf(creationDateTime);
-      }
-
-    public void setCreationDateTime (final Timestamp creationDateTime)
-      {
-        this.creationDateTime = creationDateTime.toLocalDateTime();
-      }
-
     @Override
     public int hashCode()
       {
@@ -138,7 +118,7 @@ public class MBPersistentScan implements PersistentScan
       {
         return String.format("Scan(id: %s, creationDateTime: %s", id, creationDateTime);
       }
-    
+
     void bind (final SqlSessionFactory sqlSessionFactory,  final IdFactory idFactory)
       {
         this.sqlSessionFactory = sqlSessionFactory;
@@ -153,5 +133,10 @@ public class MBPersistentScan implements PersistentScan
             mapper.insert(this);
             session.commit(); // FIXME
           }
+      }
+
+    Id id()
+      {
+        return id;
       }
   }

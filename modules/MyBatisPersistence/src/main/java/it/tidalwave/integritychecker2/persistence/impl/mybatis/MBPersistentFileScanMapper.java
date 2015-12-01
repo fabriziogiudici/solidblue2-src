@@ -43,8 +43,8 @@ public interface MBPersistentFileScanMapper
   {
     @Results
       ({
-        @Result(property = "id", column = "ID"),
-        @Result(property = "scanId", column = "SCAN_ID"),
+        @Result(property = "id", column = "ID", typeHandler = IdTypeHandler.class),
+        @Result(property = "scanId", column = "SCAN_ID", typeHandler = IdTypeHandler.class),
         @Result(property = "fileName", column = "FILE_NAME"),
         @Result(property = "fingerprint", column = "FINGERPRINT"),
       })
@@ -52,6 +52,9 @@ public interface MBPersistentFileScanMapper
     @Select("SELECT * FROM FILE_SCAN WHERE SCAN_ID=#{scanId}")
     public List<MBPersistentFileScan> selectByScan (String scanId);
 
-    @Insert("INSERT INTO FILE_SCAN(ID, SCAN_ID, FILE_NAME, FINGERPRINT) VALUES (#{id}, #{scanId}, #{fileName}, #{fingerprint})")
+    @Insert("INSERT INTO FILE_SCAN(ID, SCAN_ID, FILE_NAME, FINGERPRINT) VALUES ("
+            + "#{id, typeHandler=it.tidalwave.integritychecker2.persistence.impl.mybatis.IdTypeHandler}, "
+            + "#{scanId, typeHandler=it.tidalwave.integritychecker2.persistence.impl.mybatis.IdTypeHandler}, "
+            + "#{fileName}, #{fingerprint})")
     void insert (MBPersistentFileScan fileScan);
   }

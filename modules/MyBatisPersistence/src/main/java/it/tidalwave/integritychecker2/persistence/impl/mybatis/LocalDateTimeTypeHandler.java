@@ -27,11 +27,16 @@
  */
 package it.tidalwave.integritychecker2.persistence.impl.mybatis;
 
-import java.util.List;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.Select;
+import java.sql.CallableStatement;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import org.apache.ibatis.type.BaseTypeHandler;
+import org.apache.ibatis.type.JdbcType;
+import org.apache.ibatis.type.MappedJdbcTypes;
+import org.apache.ibatis.type.MappedTypes;
 
 /***********************************************************************************************************************
  *
@@ -39,19 +44,35 @@ import org.apache.ibatis.annotations.Select;
  * @version $Id: Class.java,v 631568052e17 2013/02/19 15:45:02 fabrizio $
  *
  **********************************************************************************************************************/
-public interface MBPersistentScanMapper
+@MappedTypes(LocalDateTime.class)
+@MappedJdbcTypes(JdbcType.TIMESTAMP)
+public class LocalDateTimeTypeHandler extends BaseTypeHandler<LocalDateTime>
   {
-    @Results
-      ({
-        @Result(property = "id", column = "ID", typeHandler = IdTypeHandler.class),
-        @Result(property = "creationDateTime", column = "CREATION_TIME", typeHandler = LocalDateTimeTypeHandler.class),
-      })
+    @Override
+    public void setNonNullParameter (PreparedStatement ps, int index, LocalDateTime ldt, JdbcType jdbcType)
+      throws SQLException
+      {
+        ps.setTimestamp(index, Timestamp.valueOf(ldt));
+      }
 
-    @Select("SELECT * FROM SCAN")
-    public List<MBPersistentScan> selectAll();
+    @Override
+    public LocalDateTime getNullableResult (ResultSet rs, String columnName)
+      throws SQLException
+      {
+        return rs.getTimestamp(columnName).toLocalDateTime();
+      }
 
-    @Insert("INSERT INTO SCAN(ID, CREATION_TIME) VALUES("
-            + "#{id, typeHandler=it.tidalwave.integritychecker2.persistence.impl.mybatis.IdTypeHandler}, "
-            + "#{creationDateTime, typeHandler=it.tidalwave.integritychecker2.persistence.impl.mybatis.LocalDateTimeTypeHandler})")
-    void insert (MBPersistentScan scan);
+    @Override
+    public LocalDateTime getNullableResult (ResultSet rs, int columnIndex)
+      throws SQLException
+      {
+        return rs.getTimestamp(columnIndex).toLocalDateTime();
+      }
+
+    @Override
+    public LocalDateTime getNullableResult (CallableStatement cs, int columnIndex)
+      throws SQLException
+      {
+        return cs.getTimestamp(columnIndex).toLocalDateTime();
+      }
   }
