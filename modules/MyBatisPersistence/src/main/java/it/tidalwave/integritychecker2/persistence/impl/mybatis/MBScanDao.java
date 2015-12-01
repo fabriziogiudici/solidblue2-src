@@ -27,12 +27,12 @@
  */
 package it.tidalwave.integritychecker2.persistence.impl.mybatis;
 
-import com.google.inject.Inject;
 import it.tidalwave.integritychecker2.persistence.PersistentScan;
 import it.tidalwave.integritychecker2.persistence.ScanDao;
 import it.tidalwave.role.IdFactory;
 import java.time.LocalDateTime;
 import java.util.List;
+import javax.inject.Inject;
 
 /***********************************************************************************************************************
  *

@@ -27,8 +27,8 @@
  */
 package it.tidalwave.integritychecker2.persistence.impl.mybatis;
 
-import com.google.inject.Inject;
 import it.tidalwave.integritychecker2.persistence.impl.PersistenceSupport;
+import javax.inject.Inject;
 import javax.sql.DataSource;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
