@@ -13,8 +13,7 @@
     <groupId>it.tidalwave.solidblue2</groupId>
     <artifactId>solidblue2</artifactId>
     <version>1.0-ALPHA-5-SNAPSHOT</version>
-    <packaging>pom</packaging>
-    <name>SolidBlue2 (master)</name>
+    <packaging>jar</packaging>
 
     <properties>
         <tft.project.url>http://solidblue.tidalwave.it</tft.project.url>
@@ -48,6 +47,8 @@
 
         <!-- disables javancss since it's broken with JDK 1.7 -->
         <tft.profile.metrics.defaultGoal>install findbugs:findbugs pmd:cpd pmd:pmd checkstyle:checkstyle clirr:clirr dependency:analyze</tft.profile.metrics.defaultGoal>
+
+        <tft.mainClass>it.tidalwave.integritychecker2.Main</tft.mainClass>
     </properties>
 
     <!-- Repeated because of http://jira.codehaus.org/browse/SCM-442 -->
@@ -55,11 +56,27 @@
         <connection>scm:git:${scm.repo.readonly.url}</connection>
         <developerConnection>scm:git:${scm.repo.effective.url}</developerConnection>
         <url>${scm.repo.browse.url}</url>
-        <tag>HEAD</tag>
-    </scm>
+      <tag>HEAD</tag>
+  </scm>
 
-    <modules>
-        <module>modules</module>
-    </modules>
+    <dependencies>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.7</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.1.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>it.tidalwave.thesefoolishthings</groupId>
+            <artifactId>it-tidalwave-util-test</artifactId>
+            <version>2.2</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
 </project>
