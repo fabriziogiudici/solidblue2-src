@@ -27,11 +27,16 @@
  */
 package it.tidalwave.integritychecker2.persistence.impl.mybatis;
 
-import com.google.inject.AbstractModule;
+import com.google.inject.name.Names;
 import it.tidalwave.integritychecker2.persistence.Persistence;
 import it.tidalwave.integritychecker2.persistence.ScanDao;
 import it.tidalwave.integritychecker2.persistence.impl.DefaultIdFactory;
 import it.tidalwave.role.IdFactory;
+import java.util.Properties;
+import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
+import org.mybatis.guice.MyBatisModule;
+import org.mybatis.guice.datasource.builtin.PooledDataSourceProvider;
+import org.mybatis.guice.datasource.helper.JdbcHelper;
 
 /***********************************************************************************************************************
  *
@@ -39,11 +44,22 @@ import it.tidalwave.role.IdFactory;
  * @version $Id: Class.java,v 631568052e17 2013/02/19 15:45:02 fabrizio $
  *
  **********************************************************************************************************************/
-public class MBModule extends AbstractModule
+public class MBModule extends MyBatisModule
   {
     @Override
-    protected void configure()
+    protected void initialize()
       {
+        install(JdbcHelper.H2_IN_MEMORY_NAMED);
+        final Properties properties = new Properties();
+        properties.setProperty("mybatis.environment.id", "test");
+        properties.setProperty("JDBC.schema", "test;DB_CLOSE_DELAY=-1");
+
+        bindDataSourceProviderType(PooledDataSourceProvider.class);
+        bindTransactionFactoryType(JdbcTransactionFactory.class);
+        Names.bindProperties(binder(), properties);
+        addMapperClass(MBPersistentScanMapper.class);
+        addMapperClass(MBPersistentFileScanMapper.class);
+
         bind(Persistence.class).to(MBPersistence.class);
         bind(TransactionManager.class).to(MBPersistence.class);
         bind(IdFactory.class).to(DefaultIdFactory.class);

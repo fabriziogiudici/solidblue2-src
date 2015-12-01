@@ -46,11 +46,16 @@ public class MBScanDao implements ScanDao
 
     private final IdFactory idFactory;
 
+    private final MBPersistentScanMapper persistentScanMapper;
+
     @Inject
-    MBScanDao (final TransactionManager transactionManager, final IdFactory idFactory)
+    MBScanDao (final TransactionManager transactionManager,
+               final IdFactory idFactory,
+               final MBPersistentScanMapper persistentScanMapper)
       {
         this.transactionManager = transactionManager;
         this.idFactory = idFactory;
+        this.persistentScanMapper = persistentScanMapper;
       }
 
     @Override
@@ -69,8 +74,7 @@ public class MBScanDao implements ScanDao
       {
         return (List)transactionManager.runTransationally(session ->
           {
-            final MBPersistentScanMapper mapper = session.getMapper(MBPersistentScanMapper.class);
-            final List<MBPersistentScan> result = mapper.selectAll();
+            final List<MBPersistentScan> result = persistentScanMapper.selectAll();
             result.stream().forEach(scan -> scan.bind(transactionManager, idFactory));
 
             return result;

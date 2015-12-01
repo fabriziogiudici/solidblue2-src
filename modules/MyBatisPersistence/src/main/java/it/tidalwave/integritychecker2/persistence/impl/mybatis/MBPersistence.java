@@ -27,14 +27,11 @@
  */
 package it.tidalwave.integritychecker2.persistence.impl.mybatis;
 
+import com.google.inject.Inject;
 import it.tidalwave.integritychecker2.persistence.impl.PersistenceSupport;
-import org.apache.ibatis.mapping.Environment;
-import org.apache.ibatis.session.Configuration;
+import javax.sql.DataSource;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.ibatis.session.SqlSessionFactoryBuilder;
-import org.apache.ibatis.transaction.TransactionFactory;
-import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 
 /***********************************************************************************************************************
  *
@@ -46,15 +43,11 @@ public class MBPersistence extends PersistenceSupport implements TransactionMana
   {
     private final SqlSessionFactory sqlSessionFactory;
 
-    MBPersistence()
+    @Inject
+    MBPersistence (final SqlSessionFactory sqlSessionFactory, final DataSource dataSource)
       {
-        createDataSource();
-        final TransactionFactory transactionFactory = new JdbcTransactionFactory();
-        final Environment environment = new Environment("development", transactionFactory, dataSource);
-        final Configuration configuration = new Configuration(environment);
-        configuration.addMapper(MBPersistentScanMapper.class);
-        configuration.addMapper(MBPersistentFileScanMapper.class);
-        sqlSessionFactory = new SqlSessionFactoryBuilder().build(configuration);
+        super.dataSource = dataSource;
+        this.sqlSessionFactory = sqlSessionFactory;
       }
 
     @Override
