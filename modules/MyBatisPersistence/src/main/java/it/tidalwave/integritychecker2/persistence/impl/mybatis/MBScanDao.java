@@ -70,12 +70,8 @@ public class MBScanDao implements ScanDao
         return (List)transactionManager.runTransationally(session ->
           {
             final MBPersistentScanMapper mapper = session.getMapper(MBPersistentScanMapper.class);
-            final List<MBPersistentScan> result = mapper.selectAll(); // FIXME
-
-            for (final MBPersistentScan scan : result)
-              {
-                scan.bind(transactionManager, idFactory);
-              }
+            final List<MBPersistentScan> result = mapper.selectAll();
+            result.stream().forEach(scan -> scan.bind(transactionManager, idFactory));
 
             return result;
           });
