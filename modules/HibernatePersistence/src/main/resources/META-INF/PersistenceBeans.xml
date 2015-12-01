@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context.xsd
+                           http://www.springframework.org/schema/tx
+                           http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <!-- abilita le annotazioni -->
+    <context:annotation-config/>
+
+    <!--<context:spring-configured/>-->
+
+    <!-- Abilita la @Transactional -->
+    <tx:annotation-driven transaction-manager="txManager" mode="proxy" />
+
+    <bean id="txManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactory" />
+    </bean>
+
+    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="persistenceUnitName" value="SLBPU"/>
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <bean name="dataSource" class="org.apache.commons.dbcp2.BasicDataSource">
+        <property name="driverClassName" value="org.h2.Driver" />
+        <property name="url" value="jdbc:h2:mem:test;DB_CLOSE_DELAY=-1" />
+        <!--<property name="username" value="${db.username}" />-->
+        <!--<property name="password" value="${db.password}" />-->
+        <!--<property name="poolPreparedStatements" value="${db.poolPreparedStatements}" />-->
+        <!--<property name="maxTotal" value="${db.maxTotalConnections}" />-->
+        <!--<property name="maxIdle" value="${db.maxIdleConnections}" />-->
+    </bean>
+
+    <!-- FIXME FG needed? -->
+    <bean id="jpaAdapter" class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+        <!--<property name="databasePlatform" value="org.eclipse.persistence.platform.database.OraclePlatform"/>-->
+        <property name="showSql" value="true"/>
+    </bean>
+
+    <bean class="it.tidalwave.integritychecker2.persistence.impl.DefaultIdFactory" />
+
+    <bean class="it.tidalwave.integritychecker2.persistence.impl.hibernate.HPersistence" />
+
+    <bean class="it.tidalwave.integritychecker2.persistence.impl.hibernate.HScanDao" />
+
+</beans>
