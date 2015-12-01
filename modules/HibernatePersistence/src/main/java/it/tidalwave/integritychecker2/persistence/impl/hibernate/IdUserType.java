@@ -53,23 +53,16 @@ public class IdUserType extends UserTypeSupport
     public Object nullSafeGet (ResultSet resultSet, String[] names, SessionImplementor session, Object owner)
       throws HibernateException, SQLException
       {
-        Object id = StandardBasicTypes.STRING.nullSafeGet(resultSet, names, session, owner);
-
-        return (id == null) ? null : new Id((String)id);
+        final Object string = StandardBasicTypes.STRING.nullSafeGet(resultSet, names, session, owner);
+        return (string == null) ? null : new Id((String)string);
       }
 
     @Override
     public void nullSafeSet (PreparedStatement preparedStatement, Object value, int index, SessionImplementor session)
       throws HibernateException, SQLException
       {
-        if (value == null)
-          {
-            StandardBasicTypes.STRING.nullSafeSet(preparedStatement, null, index, session);
-          }
-        else
-          {
-            StandardBasicTypes.STRING.nullSafeSet(preparedStatement, ((Id)value).stringValue(), index, session);
-          }
+        final String string = (value == null) ? null : ((Id)value).stringValue();
+        StandardBasicTypes.STRING.nullSafeSet(preparedStatement, string, index, session);
       }
 
     @Override
