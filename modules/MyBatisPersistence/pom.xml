@@ -18,9 +18,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>it.tidalwave.solidblue2</groupId>
             <artifactId>solidblue2-main</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
         <dependency>
@@ -29,24 +28,10 @@
         </dependency>
 
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>it.tidalwave.solidblue2</groupId>
             <artifactId>solidblue2-main</artifactId>
-            <version>${project.version}</version>
             <classifier>tests</classifier>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>it.tidalwave.thesefoolishthings</groupId>
-            <artifactId>it-tidalwave-util-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- SuperPOM issue workaround -->
-        <dependency>
-            <groupId>org.netbeans.api</groupId>
-            <artifactId>org-openide-util-lookup</artifactId>
-            <version>RELEASE712</version>
-            <scope>provided</scope>
         </dependency>
     </dependencies>
 
