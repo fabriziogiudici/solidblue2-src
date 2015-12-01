@@ -21,10 +21,14 @@
             <groupId>it.tidalwave.solidblue2</groupId>
             <artifactId>solidblue2-main</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.mybatis</groupId>
             <artifactId>mybatis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.inject</groupId>
+            <artifactId>guice</artifactId>
+            <version>4.0</version>
         </dependency>
 
         <dependency>

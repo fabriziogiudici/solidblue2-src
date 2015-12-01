@@ -27,13 +27,11 @@
  */
 package it.tidalwave.integritychecker2.persistence.impl.mybatis;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
+import com.google.inject.AbstractModule;
 import it.tidalwave.integritychecker2.persistence.Persistence;
 import it.tidalwave.integritychecker2.persistence.ScanDao;
-import it.tidalwave.integritychecker2.persistence.impl.PersistenceIntegrationTestSupport;
-import java.sql.SQLException;
-import org.testng.annotations.BeforeMethod;
+import it.tidalwave.integritychecker2.persistence.impl.DefaultIdFactory;
+import it.tidalwave.role.IdFactory;
 
 /***********************************************************************************************************************
  *
@@ -41,15 +39,14 @@ import org.testng.annotations.BeforeMethod;
  * @version $Id: Class.java,v 631568052e17 2013/02/19 15:45:02 fabrizio $
  *
  **********************************************************************************************************************/
-public class MBPersistenceIntegrationTest extends PersistenceIntegrationTestSupport
+public class MBModule extends AbstractModule
   {
-    @BeforeMethod
-    public void prepare()
-      throws SQLException
+    @Override
+    protected void configure()
       {
-        final Injector injector = Guice.createInjector(new MBModule());
-        persistence = injector.getInstance(Persistence.class);
-        scanDao = injector.getInstance(ScanDao.class);
-        createTables();
+        bind(Persistence.class).to(MBPersistence.class);
+        bind(TransactionManager.class).to(MBPersistence.class);
+        bind(IdFactory.class).to(DefaultIdFactory.class);
+        bind(ScanDao.class).to(MBScanDao.class);
       }
   }

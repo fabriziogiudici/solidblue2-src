@@ -27,6 +27,7 @@
  */
 package it.tidalwave.integritychecker2.persistence.impl.mybatis;
 
+import com.google.inject.Inject;
 import it.tidalwave.integritychecker2.persistence.PersistentScan;
 import it.tidalwave.integritychecker2.persistence.ScanDao;
 import it.tidalwave.role.IdFactory;
@@ -45,6 +46,7 @@ public class MBScanDao implements ScanDao
 
     private final IdFactory idFactory;
 
+    @Inject
     MBScanDao (final TransactionManager transactionManager, final IdFactory idFactory)
       {
         this.transactionManager = transactionManager;
