@@ -127,7 +127,7 @@ public abstract class PersistenceIntegrationTestSupport
     public void must_properly_import_and_export_scan()
       throws IOException
       {
-        final Path expectedFile = Paths.get("target/test-classes/fingerprints-20151112_1449.txt");
+        final Path expectedFile = Paths.get("../Main/target/test-classes/fingerprints-20151112_1449.txt");
         final Path actualFile = Paths.get("target/fingerprints-exported.txt");
 
         final PersistentScan scan = scanDao.createScan(LocalDateTime.of(2015, 11, 30, 11, 42, 03));

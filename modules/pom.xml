@@ -73,6 +73,8 @@
 
     <modules>
         <module>Main</module>
+        <module>SpringJdbcPersistence</module>
+        <module>MyBatisPersistence</module>
     </modules>
 
 </project>
