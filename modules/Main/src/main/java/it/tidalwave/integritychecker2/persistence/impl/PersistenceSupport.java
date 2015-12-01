@@ -44,7 +44,7 @@ import org.h2.jdbcx.JdbcDataSource;
  **********************************************************************************************************************/
 public abstract class PersistenceSupport implements Persistence
   {
-    protected JdbcDataSource dataSource;
+    protected DataSource dataSource;
 
     @Override
     public void scratch()
@@ -72,8 +72,8 @@ public abstract class PersistenceSupport implements Persistence
 
     protected DataSource createDataSource()
       {
-        dataSource = new JdbcDataSource();
+        final JdbcDataSource dataSource = new JdbcDataSource();
         dataSource.setURL("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1");
-        return dataSource;
+        return this.dataSource = dataSource;
       }
   }
