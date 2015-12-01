@@ -62,7 +62,7 @@ public class MBPersistentScan implements PersistentScan
         this.creationDateTime = creationDateTime;
       }
 
-    public MBPersistentScan()
+    MBPersistentScan()
       {
       }
 

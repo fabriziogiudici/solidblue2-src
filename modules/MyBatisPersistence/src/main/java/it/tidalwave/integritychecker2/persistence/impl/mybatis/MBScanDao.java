@@ -33,6 +33,7 @@ import it.tidalwave.role.IdFactory;
 import java.time.LocalDateTime;
 import java.util.List;
 import javax.inject.Inject;
+import org.mybatis.guice.transactional.Transactional;
 
 /***********************************************************************************************************************
  *
@@ -59,6 +60,7 @@ public class MBScanDao implements ScanDao
       }
 
     @Override
+    @Transactional
     public PersistentScan createScan (final LocalDateTime dateTime)
       {
         final MBPersistentScan scan = new MBPersistentScan(transactionManager,
@@ -70,14 +72,11 @@ public class MBScanDao implements ScanDao
       }
 
     @Override
+    @Transactional
     public List<PersistentScan> findAllScans()
       {
-        return (List)transactionManager.runTransationally(session ->
-          {
-            final List<MBPersistentScan> result = persistentScanMapper.selectAll();
-            result.stream().forEach(scan -> scan.bind(transactionManager, idFactory));
-
-            return result;
-          });
+        final List<MBPersistentScan> result = persistentScanMapper.selectAll();
+        result.stream().forEach(scan -> scan.bind(transactionManager, idFactory));
+        return (List)result;
       }
   }
