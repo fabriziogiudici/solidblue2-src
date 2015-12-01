@@ -28,9 +28,11 @@
 package it.tidalwave.integritychecker2.persistence.impl.mybatis;
 
 import com.google.inject.name.Names;
+import it.tidalwave.integritychecker2.persistence.ImportController;
 import it.tidalwave.integritychecker2.persistence.Persistence;
 import it.tidalwave.integritychecker2.persistence.ScanDao;
 import it.tidalwave.integritychecker2.persistence.impl.DefaultIdFactory;
+import it.tidalwave.integritychecker2.persistence.impl.DefaultImportController;
 import it.tidalwave.role.IdFactory;
 import java.util.Properties;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
@@ -64,5 +66,6 @@ public class MBModule extends MyBatisModule
         bind(TransactionManager.class).to(MBPersistence.class);
         bind(IdFactory.class).to(DefaultIdFactory.class);
         bind(ScanDao.class).to(MBScanDao.class);
+        bind(ImportController.class).to(MBImportController.class);
       }
   }

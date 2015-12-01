@@ -28,6 +28,7 @@
 package it.tidalwave.integritychecker2.persistence.impl.springjdbc;
 
 import it.tidalwave.integritychecker2.persistence.impl.DefaultIdFactory;
+import it.tidalwave.integritychecker2.persistence.impl.DefaultImportController;
 import it.tidalwave.integritychecker2.persistence.impl.PersistenceIntegrationTestSupport;
 import it.tidalwave.role.IdFactory;
 import java.sql.SQLException;
@@ -46,9 +47,9 @@ public class SJPersistenceIntegrationTest extends PersistenceIntegrationTestSupp
       throws SQLException
       {
         persistence = new SJPersistence();
-//        final IdFactory idFactory = new MockIdFactory();
         final IdFactory idFactory = new DefaultIdFactory();
         scanDao = new SJScanDao(((SJPersistence)persistence).getJdbcOps(), idFactory); // FIXME
+        importController = new DefaultImportController(scanDao);
         createTables();
       }
   }

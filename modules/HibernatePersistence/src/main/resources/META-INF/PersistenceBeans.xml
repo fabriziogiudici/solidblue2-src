@@ -49,4 +49,6 @@
 
     <bean class="it.tidalwave.integritychecker2.persistence.impl.hibernate.HScanDao" />
 
+    <bean class="it.tidalwave.integritychecker2.persistence.impl.hibernate.HImportController" />
+
 </beans>

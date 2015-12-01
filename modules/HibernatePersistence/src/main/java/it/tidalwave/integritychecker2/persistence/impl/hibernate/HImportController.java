@@ -27,13 +27,14 @@
  */
 package it.tidalwave.integritychecker2.persistence.impl.hibernate;
 
-import it.tidalwave.integritychecker2.persistence.ImportController;
-import it.tidalwave.integritychecker2.persistence.Persistence;
+import it.tidalwave.integritychecker2.persistence.PersistentScan;
 import it.tidalwave.integritychecker2.persistence.ScanDao;
-import it.tidalwave.integritychecker2.persistence.impl.PersistenceIntegrationTestSupport;
-import java.sql.SQLException;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.testng.annotations.BeforeMethod;
+import it.tidalwave.integritychecker2.persistence.impl.DefaultImportController;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.time.LocalDateTime;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 /***********************************************************************************************************************
  *
@@ -41,17 +42,19 @@ import org.testng.annotations.BeforeMethod;
  * @version $Id: Class.java,v 631568052e17 2013/02/19 15:45:02 fabrizio $
  *
  **********************************************************************************************************************/
-public class HPersistenceIntegrationTest extends PersistenceIntegrationTestSupport
+public class HImportController extends DefaultImportController
   {
-    private ClassPathXmlApplicationContext context;
-
-    @BeforeMethod
-    public void prepare()
-      throws SQLException
+    @Inject
+    public HImportController (final ScanDao scanDao)
       {
-        context = new ClassPathXmlApplicationContext("META-INF/PersistenceBeans.xml");
-        persistence = context.getBean(Persistence.class);
-        scanDao = context.getBean(ScanDao.class);
-        importController = context.getBean(ImportController.class);
+        super(scanDao);
+      }
+
+    @Override
+    @Transactional
+    public PersistentScan importFile(LocalDateTime creationDateTime, Path file)
+      throws IOException
+      {
+        return super.importFile(creationDateTime, file);
       }
   }

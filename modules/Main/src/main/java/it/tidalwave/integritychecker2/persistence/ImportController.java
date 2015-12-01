@@ -25,15 +25,11 @@
  * *********************************************************************************************************************
  * #L%
  */
-package it.tidalwave.integritychecker2.persistence.impl.hibernate;
+package it.tidalwave.integritychecker2.persistence;
 
-import it.tidalwave.integritychecker2.persistence.ImportController;
-import it.tidalwave.integritychecker2.persistence.Persistence;
-import it.tidalwave.integritychecker2.persistence.ScanDao;
-import it.tidalwave.integritychecker2.persistence.impl.PersistenceIntegrationTestSupport;
-import java.sql.SQLException;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.testng.annotations.BeforeMethod;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.time.LocalDateTime;
 
 /***********************************************************************************************************************
  *
@@ -41,17 +37,8 @@ import org.testng.annotations.BeforeMethod;
  * @version $Id: Class.java,v 631568052e17 2013/02/19 15:45:02 fabrizio $
  *
  **********************************************************************************************************************/
-public class HPersistenceIntegrationTest extends PersistenceIntegrationTestSupport
+public interface ImportController
   {
-    private ClassPathXmlApplicationContext context;
-
-    @BeforeMethod
-    public void prepare()
-      throws SQLException
-      {
-        context = new ClassPathXmlApplicationContext("META-INF/PersistenceBeans.xml");
-        persistence = context.getBean(Persistence.class);
-        scanDao = context.getBean(ScanDao.class);
-        importController = context.getBean(ImportController.class);
-      }
+    public PersistentScan importFile (LocalDateTime creationDateTime, Path file)
+      throws IOException;
   }

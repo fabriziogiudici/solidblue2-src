@@ -27,6 +27,7 @@
  */
 package it.tidalwave.integritychecker2.persistence.impl;
 
+import it.tidalwave.integritychecker2.persistence.ImportController;
 import it.tidalwave.integritychecker2.persistence.Persistence;
 import it.tidalwave.integritychecker2.persistence.PersistentFileScan;
 import it.tidalwave.integritychecker2.persistence.PersistentScan;
@@ -59,6 +60,8 @@ public abstract class PersistenceIntegrationTestSupport
     protected ScanDao scanDao;
 
     protected Persistence persistence;
+
+    protected ImportController importController;
 
     @AfterMethod
     public void cleanup()
@@ -127,8 +130,7 @@ public abstract class PersistenceIntegrationTestSupport
         final Path expectedFile = Paths.get("../Main/target/test-classes/fingerprints-20151112_1449.txt");
         final Path actualFile = Paths.get("target/fingerprints-exported.txt");
 
-        final PersistentScan scan = scanDao.createScan(LocalDateTime.of(2015, 11, 30, 11, 42, 03));
-        Files.lines(expectedFile, UTF_8).forEach(scan::importFileScanFromString);
+        importController.importFile(LocalDateTime.of(2015, 11, 30, 11, 42, 03), expectedFile);
 
         final PersistentScan scan2 = scanDao.findAllScans().get(0);
         final Stream<String> s = scan2.findAllFileScans().stream().map(PersistentFileScan::toExportString);

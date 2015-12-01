@@ -25,15 +25,17 @@
  * *********************************************************************************************************************
  * #L%
  */
-package it.tidalwave.integritychecker2.persistence.impl.hibernate;
+package it.tidalwave.integritychecker2.persistence.impl;
 
 import it.tidalwave.integritychecker2.persistence.ImportController;
-import it.tidalwave.integritychecker2.persistence.Persistence;
+import it.tidalwave.integritychecker2.persistence.PersistentScan;
 import it.tidalwave.integritychecker2.persistence.ScanDao;
-import it.tidalwave.integritychecker2.persistence.impl.PersistenceIntegrationTestSupport;
-import java.sql.SQLException;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.testng.annotations.BeforeMethod;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.time.LocalDateTime;
+import javax.inject.Inject;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 /***********************************************************************************************************************
  *
@@ -41,17 +43,22 @@ import org.testng.annotations.BeforeMethod;
  * @version $Id: Class.java,v 631568052e17 2013/02/19 15:45:02 fabrizio $
  *
  **********************************************************************************************************************/
-public class HPersistenceIntegrationTest extends PersistenceIntegrationTestSupport
+public class DefaultImportController implements ImportController
   {
-    private ClassPathXmlApplicationContext context;
+    private final ScanDao scanDao;
 
-    @BeforeMethod
-    public void prepare()
-      throws SQLException
+    @Inject
+    public DefaultImportController (final ScanDao scanDao)
       {
-        context = new ClassPathXmlApplicationContext("META-INF/PersistenceBeans.xml");
-        persistence = context.getBean(Persistence.class);
-        scanDao = context.getBean(ScanDao.class);
-        importController = context.getBean(ImportController.class);
+        this.scanDao = scanDao;
+      }
+
+    @Override
+    public PersistentScan importFile (final LocalDateTime creationDateTime, final Path file)
+      throws IOException
+      {
+        final PersistentScan scan = scanDao.createScan(creationDateTime);
+        Files.lines(file, UTF_8).forEach(scan::importFileScanFromString);
+        return scan;
       }
   }
