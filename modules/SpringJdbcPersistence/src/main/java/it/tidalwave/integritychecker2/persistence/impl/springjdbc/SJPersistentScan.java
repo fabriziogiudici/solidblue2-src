@@ -31,9 +31,6 @@ import it.tidalwave.integritychecker2.persistence.PersistentFileScan;
 import it.tidalwave.integritychecker2.persistence.PersistentScan;
 import it.tidalwave.role.IdFactory;
 import it.tidalwave.util.Id;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -47,7 +44,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
  * @version $Id: Class.java,v 631568052e17 2013/02/19 15:45:02 fabrizio $
  *
  **********************************************************************************************************************/
-public class SJPersistentScan implements PersistentScan
+class SJPersistentScan implements PersistentScan
   {
     private static final String SELECT = "SELECT * FROM SCAN";
     private static final String INSERT = "INSERT INTO SCAN(ID, CREATION_TIME) VALUES(:id, :creationTime)";
@@ -60,12 +57,6 @@ public class SJPersistentScan implements PersistentScan
 
     private final LocalDateTime creationDateTime;
 
-    public static void createTable (final Statement statement)
-      throws SQLException
-      {
-        statement.execute(CREATE_TABLE);
-      }
-
     SJPersistentScan (final NamedParameterJdbcOperations jdbcOps,
                       final IdFactory idFactory,
                       final Id id,
@@ -75,12 +66,6 @@ public class SJPersistentScan implements PersistentScan
         this.idFactory = idFactory;
         this.id = id;
         this.creationDateTime = dateTime;
-      }
-
-    static List<PersistentScan> selectAll (final NamedParameterJdbcOperations jdbcOps,
-                                           final IdFactory idFactory)
-      {
-        return jdbcOps.query(SELECT, (rs, rowNum) -> fromResultSet(jdbcOps, idFactory, rs));
       }
 
     @Override
@@ -98,14 +83,7 @@ public class SJPersistentScan implements PersistentScan
     @Override
     public List<PersistentFileScan> findAllFileScans()
       {
-        return SJPersistentFileScan.selectByScan(jdbcOps, idFactory, this);
-      }
-
-    void insert()
-      {
-        jdbcOps.update(INSERT,
-                       new MapSqlParameterSource().addValue("id", id.stringValue())
-                                                  .addValue("creationTime", Timestamp.valueOf(creationDateTime)));
+        return SJPersistentFileScan.selectByScan(jdbcOps, this);
       }
 
     @Override
@@ -134,19 +112,24 @@ public class SJPersistentScan implements PersistentScan
         return String.format("Scan(id: %s, creationDateTime: %s", id, creationDateTime);
       }
 
+    void insert()
+      {
+        jdbcOps.update(INSERT,
+                       new MapSqlParameterSource().addValue("id", id.stringValue())
+                                                  .addValue("creationTime", Timestamp.valueOf(creationDateTime)));
+      }
+
     MapSqlParameterSource toSqlParameterSourceForId()
       {
         return new MapSqlParameterSource().addValue("scanId", id.stringValue());
       }
 
-    private static PersistentScan fromResultSet (final NamedParameterJdbcOperations jdbcOps,
-                                                 final IdFactory idFactory,
-                                                 final ResultSet rs)
-      throws SQLException
+    static List<PersistentScan> selectAll (final NamedParameterJdbcOperations jdbcOps,
+                                           final IdFactory idFactory)
       {
-        return new SJPersistentScan(jdbcOps,
-                                    idFactory,
-                                    new Id(rs.getString("ID")),
-                                    rs.getTimestamp("CREATION_TIME").toLocalDateTime());
+        return jdbcOps.query(SELECT, (rs, rowNum) ->  new SJPersistentScan(jdbcOps,
+                                                      idFactory,
+                                                      new Id(rs.getString("ID")),
+                                                      rs.getTimestamp("CREATION_TIME").toLocalDateTime()));
       }
   }

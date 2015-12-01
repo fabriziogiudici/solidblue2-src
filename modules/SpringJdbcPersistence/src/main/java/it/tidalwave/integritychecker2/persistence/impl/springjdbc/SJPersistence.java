@@ -37,11 +37,11 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
  * @version $Id: Class.java,v 631568052e17 2013/02/19 15:45:02 fabrizio $
  *
  **********************************************************************************************************************/
-public class SJPersistence extends PersistenceSupport
+class SJPersistence extends PersistenceSupport
   {
-    final NamedParameterJdbcOperations jdbcOps = new NamedParameterJdbcTemplate(createDataSource());
+    private final NamedParameterJdbcOperations jdbcOps = new NamedParameterJdbcTemplate(createDataSource());
 
-    public NamedParameterJdbcOperations getJdbcOps()
+    NamedParameterJdbcOperations getJdbcOps()
       {
         return jdbcOps;
       }

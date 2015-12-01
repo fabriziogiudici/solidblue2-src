@@ -40,13 +40,13 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
  * @version $Id: Class.java,v 631568052e17 2013/02/19 15:45:02 fabrizio $
  *
  **********************************************************************************************************************/
-public class SJScanDao implements ScanDao
+class SJScanDao implements ScanDao
   {
     private final NamedParameterJdbcOperations jdbcOps;
 
     private final IdFactory idFactory;
 
-    public SJScanDao (final NamedParameterJdbcOperations jdbcOps, final IdFactory idFactory)
+    SJScanDao (final NamedParameterJdbcOperations jdbcOps, final IdFactory idFactory)
       {
         this.jdbcOps = jdbcOps;
         this.idFactory = idFactory;
