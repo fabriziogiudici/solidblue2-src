@@ -98,7 +98,7 @@ public class HPersistentScan implements PersistentScan
       }
 
     @Override
-    public PersistentFileScan createFileScan (String fileName, String fingerprint)
+    public PersistentFileScan createFileScan (final String fileName, final String fingerprint)
       {
         final Id i = new Id(UUID.randomUUID().toString()); // FIXME: use IdFactory
         final HPersistentFileScan fileScan = new HPersistentFileScan(i, this, fileName, fingerprint);
