@@ -47,23 +47,24 @@ public class MBPersistentScan implements PersistentScan
 
     private IdFactory idFactory;
 
-    private Id id;
+    private final Id id;
 
-    private LocalDateTime creationDateTime;
+    private final LocalDateTime creationDateTime;
 
     MBPersistentScan (final TransactionManager transactionManager,
                       final IdFactory idFactory,
                       final Id id,
                       final LocalDateTime creationDateTime)
       {
+        this(id, creationDateTime);
         this.transactionManager = transactionManager;
         this.idFactory = idFactory;
-        this.id = id;
-        this.creationDateTime = creationDateTime;
       }
 
-    MBPersistentScan()
+    MBPersistentScan (final Id id, final LocalDateTime creationDateTime)
       {
+        this.id = id;
+        this.creationDateTime = creationDateTime;
       }
 
     @Override

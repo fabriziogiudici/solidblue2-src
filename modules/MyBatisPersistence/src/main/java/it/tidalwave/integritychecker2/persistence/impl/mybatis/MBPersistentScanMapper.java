@@ -27,10 +27,12 @@
  */
 package it.tidalwave.integritychecker2.persistence.impl.mybatis;
 
+import it.tidalwave.util.Id;
+import java.time.LocalDateTime;
 import java.util.List;
+import org.apache.ibatis.annotations.Arg;
+import org.apache.ibatis.annotations.ConstructorArgs;
 import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 
 /***********************************************************************************************************************
@@ -41,12 +43,11 @@ import org.apache.ibatis.annotations.Select;
  **********************************************************************************************************************/
 public interface MBPersistentScanMapper
   {
-    @Results
+    @ConstructorArgs
       ({
-        @Result(property = "id", column = "ID", typeHandler = IdTypeHandler.class),
-        @Result(property = "creationDateTime", column = "CREATION_TIME", typeHandler = LocalDateTimeTypeHandler.class),
+        @Arg(column = "ID",            javaType = Id.class,            typeHandler = IdTypeHandler.class),
+        @Arg(column = "CREATION_TIME", javaType = LocalDateTime.class, typeHandler = LocalDateTimeTypeHandler.class),
       })
-
     @Select("SELECT * FROM SCAN")
     public List<MBPersistentScan> selectAll();
 

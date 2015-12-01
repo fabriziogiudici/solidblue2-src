@@ -27,10 +27,12 @@
  */
 package it.tidalwave.integritychecker2.persistence.impl.mybatis;
 
+import it.tidalwave.util.Id;
 import java.util.List;
+import org.apache.ibatis.annotations.Arg;
+import org.apache.ibatis.annotations.ConstructorArgs;
 import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 /***********************************************************************************************************************
@@ -41,16 +43,15 @@ import org.apache.ibatis.annotations.Select;
  **********************************************************************************************************************/
 public interface MBPersistentFileScanMapper
   {
-    @Results
+    @ConstructorArgs
       ({
-        @Result(property = "id", column = "ID", typeHandler = IdTypeHandler.class),
-        @Result(property = "scanId", column = "SCAN_ID", typeHandler = IdTypeHandler.class),
-        @Result(property = "fileName", column = "FILE_NAME"),
-        @Result(property = "fingerprint", column = "FINGERPRINT"),
+        @Arg(column = "ID",          javaType = Id.class,     typeHandler = IdTypeHandler.class),
+        @Arg(column = "SCAN_ID",     javaType = Id.class,     typeHandler = IdTypeHandler.class),
+        @Arg(column = "FILE_NAME",   javaType = String.class),
+        @Arg(column = "FINGERPRINT", javaType = String.class),
       })
-
     @Select("SELECT * FROM FILE_SCAN WHERE SCAN_ID=#{scanId}")
-    public List<MBPersistentFileScan> selectByScan (String scanId);
+    public List<MBPersistentFileScan> selectByScan (@Param("scanId") String scanId);
 
     @Insert("INSERT INTO FILE_SCAN(ID, SCAN_ID, FILE_NAME, FINGERPRINT) VALUES ("
             + "#{id, typeHandler=it.tidalwave.integritychecker2.persistence.impl.mybatis.IdTypeHandler}, "

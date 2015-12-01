@@ -43,13 +43,13 @@ public class MBPersistentFileScan implements PersistentFileScan
 
 //    private final MBPersistentScan scan; FIXME
 
-    private Id scanId;
+    private final Id scanId;
 
-    private Id id;
+    private final Id id;
 
-    private String fileName;
+    private final String fileName;
 
-    private String fingerprint;
+    private final String fingerprint;
 
     MBPersistentFileScan (final TransactionManager transactionManager,
                           final MBPersistentScan scan,
@@ -57,15 +57,16 @@ public class MBPersistentFileScan implements PersistentFileScan
                           final String fileName,
                           final String fingerprint)
       {
+        this(id, scan.getId() /* FIXME */, fileName, fingerprint);
         this.transactionManager = transactionManager;
-        this.scanId = scan.getId(); // FIXME
-        this.id = id;
-        this.fileName = fileName;
-        this.fingerprint = fingerprint;
       }
 
-    public MBPersistentFileScan()
+    MBPersistentFileScan (final Id id, final Id scanId, final String fileName, final String fingerprint)
       {
+        this.id = id;
+        this.scanId = scanId;
+        this.fileName = fileName;
+        this.fingerprint = fingerprint;
       }
 
     @Override
