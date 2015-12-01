@@ -27,45 +27,13 @@
  */
 package it.tidalwave.integritychecker2.persistence.impl.mybatis;
 
-import it.tidalwave.integritychecker2.persistence.impl.PersistenceSupport;
-import org.apache.ibatis.mapping.Environment;
-import org.apache.ibatis.session.Configuration;
-import org.apache.ibatis.session.SqlSession;
-import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.ibatis.session.SqlSessionFactoryBuilder;
-import org.apache.ibatis.transaction.TransactionFactory;
-import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
-
 /***********************************************************************************************************************
  *
  * @author  Fabrizio Giudici <Fabrizio dot Giudici at tidalwave dot it>
- * @version $Id: Class.java,v 631568052e17 2013/02/19 15:45:02 fabrizio $
+ * @version $Id: Interface.java,v 631568052e17 2013/02/19 15:45:02 fabrizio $
  *
  **********************************************************************************************************************/
-public class MBPersistence extends PersistenceSupport implements TransactionManager
+public interface TransactionManager
   {
-    private final SqlSessionFactory sqlSessionFactory;
-
-    MBPersistence()
-      {
-        createDataSource();
-        final TransactionFactory transactionFactory = new JdbcTransactionFactory();
-        final Environment environment = new Environment("development", transactionFactory, dataSource);
-        final Configuration configuration = new Configuration(environment);
-        configuration.addMapper(MBPersistentScanMapper.class);
-        configuration.addMapper(MBPersistentFileScanMapper.class);
-        sqlSessionFactory = new SqlSessionFactoryBuilder().build(configuration);
-      }
-
-    @Override
-    public <T> T runTransationally (final TransactionalTask<T> task)
-      {
-        try (final SqlSession session = sqlSessionFactory.openSession())
-          {
-            final T result = task.runInTransaction(session);
-            session.commit(); // FIXME: bind transactional context to thread, reuse
-            return result;
-          }
-        // FIXME: handle exceptions, perform rollback
-      }
+    public <T> T runTransationally (TransactionalTask<T> task);
   }

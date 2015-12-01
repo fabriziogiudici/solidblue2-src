@@ -47,7 +47,7 @@ public class MBPersistenceIntegrationTest extends PersistenceIntegrationTestSupp
       {
         persistence = new MBPersistence();
         final IdFactory idFactory = new DefaultIdFactory();
-        scanDao = new MBScanDao(((MBPersistence)persistence).getSqlSessionFactory(), idFactory); // FIXME
+        scanDao = new MBScanDao(((TransactionManager)persistence), idFactory); // FIXME
         createTables();
       }
   }

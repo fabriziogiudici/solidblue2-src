@@ -32,8 +32,6 @@ import it.tidalwave.integritychecker2.persistence.ScanDao;
 import it.tidalwave.role.IdFactory;
 import java.time.LocalDateTime;
 import java.util.List;
-import org.apache.ibatis.session.SqlSession;
-import org.apache.ibatis.session.SqlSessionFactory;
 
 /***********************************************************************************************************************
  *
@@ -43,20 +41,20 @@ import org.apache.ibatis.session.SqlSessionFactory;
  **********************************************************************************************************************/
 public class MBScanDao implements ScanDao
   {
-    private final SqlSessionFactory sqlSessionFactory;
+    private final TransactionManager transactionManager;
 
     private final IdFactory idFactory;
 
-    MBScanDao (final SqlSessionFactory sqlSessionFactory, final IdFactory idFactory)
+    MBScanDao (final TransactionManager transactionManager, final IdFactory idFactory)
       {
-        this.sqlSessionFactory = sqlSessionFactory;
+        this.transactionManager = transactionManager;
         this.idFactory = idFactory;
       }
 
     @Override
     public PersistentScan createScan (final LocalDateTime dateTime)
       {
-        final MBPersistentScan scan = new MBPersistentScan(sqlSessionFactory,
+        final MBPersistentScan scan = new MBPersistentScan(transactionManager,
                                                            idFactory,
                                                            idFactory.createId(PersistentScan.class),
                                                            dateTime);
@@ -67,18 +65,17 @@ public class MBScanDao implements ScanDao
     @Override
     public List<PersistentScan> findAllScans()
       {
-        try (final SqlSession session = sqlSessionFactory.openSession())
+        return (List)transactionManager.runTransationally(session ->
           {
             final MBPersistentScanMapper mapper = session.getMapper(MBPersistentScanMapper.class);
             final List<MBPersistentScan> result = mapper.selectAll(); // FIXME
 
             for (final MBPersistentScan scan : result)
               {
-                scan.bind(sqlSessionFactory, idFactory);
+                scan.bind(transactionManager, idFactory);
               }
 
-            session.commit();
-            return (List)result;
-          }
+            return result;
+          });
       }
   }

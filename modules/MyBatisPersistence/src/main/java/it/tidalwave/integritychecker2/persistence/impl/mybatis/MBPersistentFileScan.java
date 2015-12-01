@@ -30,8 +30,6 @@ package it.tidalwave.integritychecker2.persistence.impl.mybatis;
 import it.tidalwave.integritychecker2.persistence.PersistentFileScan;
 import it.tidalwave.util.Id;
 import java.util.Objects;
-import org.apache.ibatis.session.SqlSession;
-import org.apache.ibatis.session.SqlSessionFactory;
 
 /***********************************************************************************************************************
  *
@@ -41,7 +39,7 @@ import org.apache.ibatis.session.SqlSessionFactory;
  **********************************************************************************************************************/
 public class MBPersistentFileScan implements PersistentFileScan
   {
-    private SqlSessionFactory sqlSessionFactory;
+    private TransactionManager transactionManager;
 
 //    private final MBPersistentScan scan; FIXME
 
@@ -53,13 +51,13 @@ public class MBPersistentFileScan implements PersistentFileScan
 
     private String fingerprint;
 
-    MBPersistentFileScan (final SqlSessionFactory sqlSessionFactory,
+    MBPersistentFileScan (final TransactionManager transactionManager,
                           final MBPersistentScan scan,
                           final Id id,
                           final String fileName,
                           final String fingerprint)
       {
-        this.sqlSessionFactory = sqlSessionFactory;
+        this.transactionManager = transactionManager;
         this.scanId = scan.getId(); // FIXME
         this.id = id;
         this.fileName = fileName;
@@ -106,11 +104,10 @@ public class MBPersistentFileScan implements PersistentFileScan
 
     void insert()
       {
-        try (final SqlSession session = sqlSessionFactory.openSession())
+        transactionManager.runTransationally(session ->
           {
-            final MBPersistentFileScanMapper mapper = session.getMapper(MBPersistentFileScanMapper.class);
-            mapper.insert(this);
-            session.commit(); // FIXME
-          }
+            session.getMapper(MBPersistentFileScanMapper.class).insert(this);
+            return null;
+          });
       }
   }

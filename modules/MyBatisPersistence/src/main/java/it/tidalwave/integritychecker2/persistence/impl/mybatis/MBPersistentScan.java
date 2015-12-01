@@ -34,8 +34,6 @@ import it.tidalwave.util.Id;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
-import org.apache.ibatis.session.SqlSession;
-import org.apache.ibatis.session.SqlSessionFactory;
 
 /***********************************************************************************************************************
  *
@@ -45,7 +43,7 @@ import org.apache.ibatis.session.SqlSessionFactory;
  **********************************************************************************************************************/
 public class MBPersistentScan implements PersistentScan
   {
-    private SqlSessionFactory sqlSessionFactory;
+    private TransactionManager transactionManager;
 
     private IdFactory idFactory;
 
@@ -53,12 +51,12 @@ public class MBPersistentScan implements PersistentScan
 
     private LocalDateTime creationDateTime;
 
-    MBPersistentScan (final SqlSessionFactory sqlSessionFactory,
+    MBPersistentScan (final TransactionManager transactionManager,
                       final IdFactory idFactory,
                       final Id id,
                       final LocalDateTime creationDateTime)
       {
-        this.sqlSessionFactory = sqlSessionFactory;
+        this.transactionManager = transactionManager;
         this.idFactory = idFactory;
         this.id = id;
         this.creationDateTime = creationDateTime;
@@ -71,7 +69,7 @@ public class MBPersistentScan implements PersistentScan
     @Override
     public PersistentFileScan createFileScan (final String fileName, final String fingerprint)
       {
-        final MBPersistentFileScan fileScan = new MBPersistentFileScan(sqlSessionFactory,
+        final MBPersistentFileScan fileScan = new MBPersistentFileScan(transactionManager,
                                                                        this,
                                                                        idFactory.createId(PersistentFileScan.class),
                                                                        fileName,
@@ -83,13 +81,10 @@ public class MBPersistentScan implements PersistentScan
     @Override
     public List<PersistentFileScan> findAllFileScans()
       {
-        try (final SqlSession session = sqlSessionFactory.openSession())
+        return (List)transactionManager.runTransationally(session ->
           {
-            final MBPersistentFileScanMapper mapper = session.getMapper(MBPersistentFileScanMapper.class);
-            List<MBPersistentFileScan> result = mapper.selectByScan(id.stringValue());
-            session.commit(); // FIXME
-            return (List)result; // FIXME
-          }
+            return session.getMapper(MBPersistentFileScanMapper.class).selectByScan(id.stringValue());
+          });
       }
 
     @Override
@@ -118,20 +113,19 @@ public class MBPersistentScan implements PersistentScan
         return String.format("Scan(id: %s, creationDateTime: %s", id, creationDateTime);
       }
 
-    void bind (final SqlSessionFactory sqlSessionFactory,  final IdFactory idFactory)
+    void bind (final TransactionManager transactionManager, final IdFactory idFactory)
       {
-        this.sqlSessionFactory = sqlSessionFactory;
+        this.transactionManager = transactionManager;
         this.idFactory = idFactory;
       }
 
     void insert()
       {
-        try (final SqlSession session = sqlSessionFactory.openSession())
+        transactionManager.runTransationally(session ->
           {
-            final MBPersistentScanMapper mapper = session.getMapper(MBPersistentScanMapper.class);
-            mapper.insert(this);
-            session.commit(); // FIXME
-          }
+            session.getMapper(MBPersistentScanMapper.class).insert(this);
+            return null;
+          });
       }
 
     Id getId()
