@@ -28,16 +28,13 @@
 package it.tidalwave.integritychecker2.persistence.impl.hibernate;
 
 import it.tidalwave.util.Id;
-import java.io.Serializable;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.util.Objects;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.type.StandardBasicTypes;
-import org.hibernate.usertype.EnhancedUserType;
 
 /***********************************************************************************************************************
  *
@@ -45,34 +42,11 @@ import org.hibernate.usertype.EnhancedUserType;
  * @version $Id: Class.java,v 631568052e17 2013/02/19 15:45:02 fabrizio $
  *
  **********************************************************************************************************************/
-public class IdUserType implements EnhancedUserType, Serializable
+public class IdUserType extends UserTypeSupport
   {
-    private static final int[] SQL_TYPES = new int[]{ Types.VARCHAR };
-
-    @Override
-    public int[] sqlTypes()
+    public IdUserType()
       {
-        return SQL_TYPES;
-      }
-
-    @Override
-    public Class returnedClass()
-      {
-        return Id.class;
-      }
-
-    @Override
-    public boolean equals (final Object o1, final Object o2)
-      throws HibernateException
-      {
-        return Objects.equals(o1, o2);
-      }
-
-    @Override
-    public int hashCode (final Object object)
-      throws HibernateException
-      {
-        return object.hashCode();
+        super(Id.class, Types.VARCHAR);
       }
 
     @Override
@@ -96,44 +70,6 @@ public class IdUserType implements EnhancedUserType, Serializable
           {
             StandardBasicTypes.STRING.nullSafeSet(preparedStatement, ((Id)value).stringValue(), index, session);
           }
-      }
-
-    @Override
-    public Object deepCopy (Object value)
-      {
-        return value;
-      }
-
-    @Override
-    public boolean isMutable()
-      {
-        return false;
-      }
-
-    @Override
-    public Serializable disassemble (Object value)
-      {
-        return (Serializable)value;
-      }
-
-    @Override
-    public Object assemble (Serializable cached, Object value)
-      throws HibernateException
-      {
-        return cached;
-      }
-
-    @Override
-    public Object replace (Object original, Object target, Object owner)
-      throws HibernateException
-      {
-        return original;
-      }
-
-    @Override
-    public String objectToSQLString(Object object)
-      {
-        throw new UnsupportedOperationException();
       }
 
     @Override

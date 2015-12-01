@@ -27,74 +27,90 @@
  */
 package it.tidalwave.integritychecker2.persistence.impl.hibernate;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Types;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
+import java.io.Serializable;
+import java.util.Objects;
 import org.hibernate.HibernateException;
-import org.hibernate.engine.spi.SessionImplementor;
-import org.hibernate.type.StandardBasicTypes;
-
+import org.hibernate.usertype.EnhancedUserType;
 
 /***********************************************************************************************************************
  *
- * @author Fabrizio Giudici <Fabrizio dot Giudici at tidalwave dot it>
+ * @author  Fabrizio Giudici <Fabrizio dot Giudici at tidalwave dot it>
  * @version $Id: Class.java,v 631568052e17 2013/02/19 15:45:02 fabrizio $
  *
  **********************************************************************************************************************/
-public class LocalDateTimeUserType extends UserTypeSupport
+public abstract class UserTypeSupport implements EnhancedUserType, Serializable
   {
-    public LocalDateTimeUserType()
+    private final Class<?> typeClass;
+
+    private final int[] sqlTypes;
+
+    public UserTypeSupport (final Class<?> typeClass, final int type)
       {
-        super(LocalDateTime.class, Types.TIMESTAMP);
+        this.typeClass = typeClass;
+        this.sqlTypes = new int[]{ type };
       }
 
     @Override
-    public Object nullSafeGet (ResultSet resultSet, String[] names, SessionImplementor session, Object owner)
-      throws HibernateException, SQLException
+    public int[] sqlTypes()
       {
-        Object timestamp = StandardBasicTypes.TIMESTAMP.nullSafeGet(resultSet, names, session, owner);
-
-        if (timestamp == null)
-          {
-            return null;
-          }
-
-        final Date ts = (Date) timestamp;
-        final Instant instant = Instant.ofEpochMilli(ts.getTime());
-        return LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
+        return sqlTypes;
       }
 
     @Override
-    public void nullSafeSet (PreparedStatement preparedStatement, Object value, int index, SessionImplementor session)
-      throws HibernateException, SQLException
+    public Class<?> returnedClass()
       {
-        if (value == null)
-          {
-            StandardBasicTypes.TIMESTAMP.nullSafeSet(preparedStatement, null, index, session);
-          }
-        else
-          {
-            final LocalDateTime ldt = ((LocalDateTime) value);
-            final Instant instant = ldt.atZone(ZoneId.systemDefault()).toInstant();
-            final Date timestamp = Date.from(instant);
-            StandardBasicTypes.TIMESTAMP.nullSafeSet(preparedStatement, timestamp, index, session);
-          }
+        return typeClass;
       }
 
     @Override
-    public String toXMLString (Object object)
+    public boolean equals (final Object o1, final Object o2)
+      throws HibernateException
       {
-        return object.toString();
+        return Objects.equals(o1, o2);
       }
 
     @Override
-    public Object fromXMLString (String string)
+    public int hashCode (final Object object)
+      throws HibernateException
       {
-        return LocalDateTime.parse(string);
+        return object.hashCode();
+      }
+
+    @Override
+    public Object deepCopy (Object value)
+      {
+        return value;
+      }
+
+    @Override
+    public boolean isMutable()
+      {
+        return false;
+      }
+
+    @Override
+    public Serializable disassemble (Object value)
+      {
+        return (Serializable)value;
+      }
+
+    @Override
+    public Object assemble (Serializable cached, Object value)
+      throws HibernateException
+      {
+        return cached;
+      }
+
+    @Override
+    public Object replace (Object original, Object target, Object owner)
+      throws HibernateException
+      {
+        return original;
+      }
+
+    @Override
+    public String objectToSQLString(Object object)
+      {
+        throw new UnsupportedOperationException();
       }
   }
