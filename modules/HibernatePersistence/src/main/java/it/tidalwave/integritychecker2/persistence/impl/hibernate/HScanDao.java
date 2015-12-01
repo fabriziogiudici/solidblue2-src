@@ -48,8 +48,13 @@ public class HScanDao implements ScanDao
     @PersistenceContext
     private EntityManager em;
 
+    private final IdFactory idFactory;
+
     @Inject
-    private IdFactory idFactory;
+    public HScanDao (final IdFactory idFactory)
+      {
+        this.idFactory = idFactory;
+      }
 
     @Override
     @Transactional
