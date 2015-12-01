@@ -53,5 +53,5 @@ public interface MBPersistentScanMapper
     @Insert("INSERT INTO SCAN(ID, CREATION_TIME) VALUES("
             + "#{id, typeHandler=it.tidalwave.integritychecker2.persistence.impl.mybatis.IdTypeHandler}, "
             + "#{creationDateTime, typeHandler=it.tidalwave.integritychecker2.persistence.impl.mybatis.LocalDateTimeTypeHandler})")
-    void insert (MBPersistentScan scan);
+    public void insert (MBPersistentScan scan);
   }
