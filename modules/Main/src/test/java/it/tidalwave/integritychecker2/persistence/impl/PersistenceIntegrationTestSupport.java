@@ -128,12 +128,10 @@ public abstract class PersistenceIntegrationTestSupport
         final Path actualFile = Paths.get("target/fingerprints-exported.txt");
 
         final PersistentScan scan = scanDao.createScan(LocalDateTime.of(2015, 11, 30, 11, 42, 03));
-        Files.lines(expectedFile, UTF_8)
-             .forEach(scan::importFileScanFromString);
+        Files.lines(expectedFile, UTF_8).forEach(scan::importFileScanFromString);
 
         final PersistentScan scan2 = scanDao.findAllScans().get(0);
-        final Stream<String> s = scan2.findAllFileScans().stream()
-                                                         .map(PersistentFileScan::toExportString);
+        final Stream<String> s = scan2.findAllFileScans().stream().map(PersistentFileScan::toExportString);
         Files.write(actualFile, (Iterable<String>)s::iterator, UTF_8);
 
         assertSameContents(expectedFile.toFile(), actualFile.toFile());
