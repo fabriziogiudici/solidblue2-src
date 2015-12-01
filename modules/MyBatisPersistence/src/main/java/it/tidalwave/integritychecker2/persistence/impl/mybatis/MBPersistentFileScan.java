@@ -76,16 +76,6 @@ public class MBPersistentFileScan implements PersistentFileScan
         return String.format("MD5(%s)=%s", fileName, fingerprint);
       }
 
-    void insert()
-      {
-        try (final SqlSession session = sqlSessionFactory.openSession())
-          {
-            final MBPersistentFileScanMapper mapper = session.getMapper(MBPersistentFileScanMapper.class);
-            mapper.insert(this);
-            session.commit(); // FIXME
-          }
-      }
-
     public String getId()
       {
         return id.stringValue();
@@ -154,4 +144,13 @@ public class MBPersistentFileScan implements PersistentFileScan
         return String.format("FileScan(id: %s, fileName: %s, fingerPrint: %s", id, fileName, fingerprint);
       }
 
+    void insert()
+      {
+        try (final SqlSession session = sqlSessionFactory.openSession())
+          {
+            final MBPersistentFileScanMapper mapper = session.getMapper(MBPersistentFileScanMapper.class);
+            mapper.insert(this);
+            session.commit(); // FIXME
+          }
+      }
   }

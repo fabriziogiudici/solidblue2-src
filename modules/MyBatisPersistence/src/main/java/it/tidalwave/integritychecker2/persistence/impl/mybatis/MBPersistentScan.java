@@ -69,12 +69,6 @@ public class MBPersistentScan implements PersistentScan
       {
       }
 
-    void bind (final SqlSessionFactory sqlSessionFactory,  final IdFactory idFactory)
-      {
-        this.sqlSessionFactory = sqlSessionFactory;
-        this.idFactory = idFactory;
-      }
-
     @Override
     public PersistentFileScan createFileScan (final String fileName, final String fingerprint)
       {
@@ -96,16 +90,6 @@ public class MBPersistentScan implements PersistentScan
             List<MBPersistentFileScan> result = mapper.selectByScan(id.stringValue());
             session.commit(); // FIXME
             return (List)result; // FIXME
-          }
-      }
-
-    void insert()
-      {
-        try (final SqlSession session = sqlSessionFactory.openSession())
-          {
-            final MBPersistentScanMapper mapper = session.getMapper(MBPersistentScanMapper.class);
-            mapper.insert(this);
-            session.commit(); // FIXME
           }
       }
 
@@ -153,5 +137,21 @@ public class MBPersistentScan implements PersistentScan
     public String toString()
       {
         return String.format("Scan(id: %s, creationDateTime: %s", id, creationDateTime);
+      }
+    
+    void bind (final SqlSessionFactory sqlSessionFactory,  final IdFactory idFactory)
+      {
+        this.sqlSessionFactory = sqlSessionFactory;
+        this.idFactory = idFactory;
+      }
+
+    void insert()
+      {
+        try (final SqlSession session = sqlSessionFactory.openSession())
+          {
+            final MBPersistentScanMapper mapper = session.getMapper(MBPersistentScanMapper.class);
+            mapper.insert(this);
+            session.commit(); // FIXME
+          }
       }
   }

@@ -47,7 +47,7 @@ public class MBScanDao implements ScanDao
 
     private final IdFactory idFactory;
 
-    public MBScanDao (final SqlSessionFactory sqlSessionFactory, final IdFactory idFactory)
+    MBScanDao (final SqlSessionFactory sqlSessionFactory, final IdFactory idFactory)
       {
         this.sqlSessionFactory = sqlSessionFactory;
         this.idFactory = idFactory;
@@ -76,7 +76,7 @@ public class MBScanDao implements ScanDao
               {
                 scan.bind(sqlSessionFactory, idFactory);
               }
-            
+
             session.commit();
             return (List)result;
           }

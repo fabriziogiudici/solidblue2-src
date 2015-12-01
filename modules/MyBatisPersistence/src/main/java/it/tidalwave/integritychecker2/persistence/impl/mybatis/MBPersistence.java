@@ -45,7 +45,7 @@ public class MBPersistence extends PersistenceSupport
   {
     private final SqlSessionFactory sqlSessionFactory;
 
-    public MBPersistence()
+    MBPersistence()
       {
         createDataSource();
         final TransactionFactory transactionFactory = new JdbcTransactionFactory();
@@ -56,7 +56,7 @@ public class MBPersistence extends PersistenceSupport
         sqlSessionFactory = new SqlSessionFactoryBuilder().build(configuration);
       }
 
-    public SqlSessionFactory getSqlSessionFactory()
+    SqlSessionFactory getSqlSessionFactory()
       {
         return sqlSessionFactory;
       }
