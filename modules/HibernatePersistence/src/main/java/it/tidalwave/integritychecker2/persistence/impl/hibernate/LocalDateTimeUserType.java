@@ -30,11 +30,9 @@ package it.tidalwave.integritychecker2.persistence.impl.hibernate;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.sql.Types;
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.type.StandardBasicTypes;
@@ -57,33 +55,16 @@ public class LocalDateTimeUserType extends UserTypeSupport
     public Object nullSafeGet (ResultSet resultSet, String[] names, SessionImplementor session, Object owner)
       throws HibernateException, SQLException
       {
-        Object timestamp = StandardBasicTypes.TIMESTAMP.nullSafeGet(resultSet, names, session, owner);
-
-        if (timestamp == null)
-          {
-            return null;
-          }
-
-        final Date ts = (Date) timestamp;
-        final Instant instant = Instant.ofEpochMilli(ts.getTime());
-        return LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
+        final Object timestamp = StandardBasicTypes.TIMESTAMP.nullSafeGet(resultSet, names, session, owner);
+        return (timestamp == null) ? null : ((Timestamp)timestamp).toLocalDateTime();
       }
 
     @Override
     public void nullSafeSet (PreparedStatement preparedStatement, Object value, int index, SessionImplementor session)
       throws HibernateException, SQLException
       {
-        if (value == null)
-          {
-            StandardBasicTypes.TIMESTAMP.nullSafeSet(preparedStatement, null, index, session);
-          }
-        else
-          {
-            final LocalDateTime ldt = ((LocalDateTime) value);
-            final Instant instant = ldt.atZone(ZoneId.systemDefault()).toInstant();
-            final Date timestamp = Date.from(instant);
-            StandardBasicTypes.TIMESTAMP.nullSafeSet(preparedStatement, timestamp, index, session);
-          }
+        final Timestamp timestamp = (value == null) ? null : Timestamp.valueOf((LocalDateTime)value);
+        StandardBasicTypes.TIMESTAMP.nullSafeSet(preparedStatement, timestamp, index, session);
       }
 
     @Override
