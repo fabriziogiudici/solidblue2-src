@@ -36,9 +36,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Stream;
@@ -105,7 +103,6 @@ public abstract class PersistenceIntegrationTestSupport
 
         final PersistentFileScan fileScan1a = scan1.createFileScan("file1a", "fp1a");
         final PersistentFileScan fileScan1b = scan1.createFileScan("file1b", "fp1b");
-
         final PersistentFileScan fileScan2a = scan2.createFileScan("file2a", "fp2a");
         final PersistentFileScan fileScan2b = scan2.createFileScan("file2b", "fp2b");
         final PersistentFileScan fileScan2c = scan2.createFileScan("file2c", "fp2c");
@@ -134,8 +131,9 @@ public abstract class PersistenceIntegrationTestSupport
         Files.lines(expectedFile, UTF_8)
              .forEach(scan::importFileScanFromString);
 
-        final Stream<String> s = scan.findAllFileScans().stream()
-                                                        .map(PersistentFileScan::toExportString);
+        final PersistentScan scan2 = scanDao.findAllScans().get(0);
+        final Stream<String> s = scan2.findAllFileScans().stream()
+                                                         .map(PersistentFileScan::toExportString);
         Files.write(actualFile, (Iterable<String>)s::iterator, UTF_8);
 
         assertSameContents(expectedFile.toFile(), actualFile.toFile());
