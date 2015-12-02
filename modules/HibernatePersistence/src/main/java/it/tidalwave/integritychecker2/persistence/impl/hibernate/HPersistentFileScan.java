@@ -106,24 +106,4 @@ public class HPersistentFileScan implements PersistentFileScan, Serializable
       {
         return String.format("MD5(%s)=%s", fileName, fingerprint);
       }
-
-    public String getFileName()
-      {
-        return fileName;
-      }
-
-    public void setFileName (String fileName)
-      {
-        this.fileName = fileName;
-      }
-
-    public String getFingerprint()
-      {
-        return fingerprint;
-      }
-
-    public void setFingerprint (String fingerprint)
-      {
-        this.fingerprint = fingerprint;
-      }
   }
