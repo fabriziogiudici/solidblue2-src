@@ -38,15 +38,15 @@ import org.hibernate.usertype.EnhancedUserType;
  * @version $Id: Class.java,v 631568052e17 2013/02/19 15:45:02 fabrizio $
  *
  **********************************************************************************************************************/
-public abstract class UserTypeSupport implements EnhancedUserType, Serializable
+public abstract class ImmutableUserTypeSupport implements EnhancedUserType, Serializable
   {
     private static final long serialVersionUID = -4692619064637793846L;
-    
+
     private final Class<?> typeClass;
 
     private final int[] sqlTypes;
 
-    public UserTypeSupport (final Class<?> typeClass, final int type)
+    public ImmutableUserTypeSupport (final Class<?> typeClass, final int type)
       {
         this.typeClass = typeClass;
         this.sqlTypes = new int[]{ type };
@@ -111,7 +111,7 @@ public abstract class UserTypeSupport implements EnhancedUserType, Serializable
       }
 
     @Override
-    public String objectToSQLString(Object object)
+    public String objectToSQLString (Object object)
       {
         throw new UnsupportedOperationException();
       }

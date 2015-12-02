@@ -44,7 +44,7 @@ import org.hibernate.type.StandardBasicTypes;
  * @version $Id: Class.java,v 631568052e17 2013/02/19 15:45:02 fabrizio $
  *
  **********************************************************************************************************************/
-public class LocalDateTimeUserType extends UserTypeSupport
+public class LocalDateTimeUserType extends ImmutableUserTypeSupport
   {
     private static final long serialVersionUID = -910771091722534570L;
     

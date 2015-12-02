@@ -42,7 +42,7 @@ import org.hibernate.type.StandardBasicTypes;
  * @version $Id: Class.java,v 631568052e17 2013/02/19 15:45:02 fabrizio $
  *
  **********************************************************************************************************************/
-public class IdUserType extends UserTypeSupport
+public class IdUserType extends ImmutableUserTypeSupport
   {
     private static final long serialVersionUID = 264084390946523518L;
     
