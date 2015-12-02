@@ -30,8 +30,11 @@ package it.tidalwave.integritychecker2.persistence.impl.hibernate;
 import it.tidalwave.integritychecker2.persistence.PersistentFileScan;
 import it.tidalwave.util.Id;
 import java.util.Objects;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import org.hibernate.annotations.Type;
 
 /***********************************************************************************************************************
@@ -41,16 +44,21 @@ import org.hibernate.annotations.Type;
  *
  **********************************************************************************************************************/
 @Entity
+@Table(name = "FILE_SCAN")
 public class HPersistentFileScan implements PersistentFileScan
   {
     @javax.persistence.Id
+    @Column(name = "ID", length = 36)
     @Type(type="it.tidalwave.integritychecker2.persistence.impl.hibernate.IdUserType")
     private Id id;
 
+    @Column(name = "FILE_NAME", length = 200)
     private String fileName;
 
+    @Column(name = "FINGERPRINT", length = 32)
     private String fingerprint;
 
+    @JoinColumn(name = "SCAN_ID")
     @ManyToOne
     private HPersistentScan scan;
 

@@ -41,7 +41,9 @@ import javax.persistence.OneToMany;
 import org.hibernate.annotations.Type;
 import static javax.persistence.AccessType.FIELD;
 import static javax.persistence.CascadeType.PERSIST;
+import javax.persistence.Column;
 import static javax.persistence.FetchType.EAGER;
+import javax.persistence.Table;
 
 /***********************************************************************************************************************
  *
@@ -51,16 +53,19 @@ import static javax.persistence.FetchType.EAGER;
  **********************************************************************************************************************/
 @Entity
 @Access(FIELD)
+@Table(name = "SCAN")
 public class HPersistentScan implements PersistentScan
   {
     @javax.persistence.Id
+    @Column(name = "ID", length = 36)
     @Type(type="it.tidalwave.integritychecker2.persistence.impl.hibernate.IdUserType")
     private Id id;
 
+    @Column(name = "CREATION_TIME")
     @Type(type="it.tidalwave.integritychecker2.persistence.impl.hibernate.LocalDateTimeUserType")
     private LocalDateTime creationDateTime;
 
-    @OneToMany(fetch = EAGER, cascade = PERSIST)
+    @OneToMany(fetch = EAGER, cascade = PERSIST, mappedBy = "scan")
     private List<HPersistentFileScan> fileScans;
 
     HPersistentScan()
