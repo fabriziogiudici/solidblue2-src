@@ -44,6 +44,8 @@ import org.hibernate.type.StandardBasicTypes;
  **********************************************************************************************************************/
 public class IdUserType extends UserTypeSupport
   {
+    private static final long serialVersionUID = 264084390946523518L;
+    
     public IdUserType()
       {
         super(Id.class, Types.VARCHAR);

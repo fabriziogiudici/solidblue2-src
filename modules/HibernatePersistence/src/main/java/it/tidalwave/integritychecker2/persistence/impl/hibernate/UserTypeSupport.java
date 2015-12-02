@@ -40,6 +40,8 @@ import org.hibernate.usertype.EnhancedUserType;
  **********************************************************************************************************************/
 public abstract class UserTypeSupport implements EnhancedUserType, Serializable
   {
+    private static final long serialVersionUID = -4692619064637793846L;
+    
     private final Class<?> typeClass;
 
     private final int[] sqlTypes;

@@ -46,6 +46,8 @@ import org.hibernate.type.StandardBasicTypes;
  **********************************************************************************************************************/
 public class LocalDateTimeUserType extends UserTypeSupport
   {
+    private static final long serialVersionUID = -910771091722534570L;
+    
     public LocalDateTimeUserType()
       {
         super(LocalDateTime.class, Types.TIMESTAMP);
