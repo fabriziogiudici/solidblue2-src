@@ -25,6 +25,7 @@
     <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
         <property name="persistenceUnitName" value="SLBPU"/>
         <property name="dataSource" ref="dataSource"/>
+        <property name="jpaVendorAdapter" ref="hibernateJpaAdapter" />
     </bean>
 
     <bean name="dataSource" class="org.apache.commons.dbcp2.BasicDataSource">
@@ -37,10 +38,8 @@
         <!--<property name="maxIdle" value="${db.maxIdleConnections}" />-->
     </bean>
 
-    <!-- FIXME FG needed? -->
-    <bean id="jpaAdapter" class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
-        <!--<property name="databasePlatform" value="org.eclipse.persistence.platform.database.OraclePlatform"/>-->
-        <property name="showSql" value="true"/>
+    <bean id="hibernateJpaAdapter" class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+        <property name="showSql" value="false"/>
     </bean>
 
     <bean class="it.tidalwave.integritychecker2.persistence.impl.DefaultIdFactory" />
