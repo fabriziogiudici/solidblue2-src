@@ -47,7 +47,7 @@ import org.hibernate.type.StandardBasicTypes;
 public class LocalDateTimeUserType extends ImmutableUserTypeSupport
   {
     private static final long serialVersionUID = -910771091722534570L;
-    
+
     public LocalDateTimeUserType()
       {
         super(LocalDateTime.class, Types.TIMESTAMP);
@@ -67,17 +67,5 @@ public class LocalDateTimeUserType extends ImmutableUserTypeSupport
       {
         final Timestamp timestamp = (value == null) ? null : Timestamp.valueOf((LocalDateTime)value);
         StandardBasicTypes.TIMESTAMP.nullSafeSet(preparedStatement, timestamp, index, session);
-      }
-
-    @Override
-    public String toXMLString (Object object)
-      {
-        return object.toString();
-      }
-
-    @Override
-    public Object fromXMLString (String string)
-      {
-        return LocalDateTime.parse(string);
       }
   }

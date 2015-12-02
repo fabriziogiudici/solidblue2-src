@@ -30,7 +30,7 @@ package it.tidalwave.integritychecker2.persistence.impl.hibernate;
 import java.io.Serializable;
 import java.util.Objects;
 import org.hibernate.HibernateException;
-import org.hibernate.usertype.EnhancedUserType;
+import org.hibernate.usertype.UserType;
 
 /***********************************************************************************************************************
  *
@@ -38,7 +38,7 @@ import org.hibernate.usertype.EnhancedUserType;
  * @version $Id: Class.java,v 631568052e17 2013/02/19 15:45:02 fabrizio $
  *
  **********************************************************************************************************************/
-public abstract class ImmutableUserTypeSupport implements EnhancedUserType, Serializable
+public abstract class ImmutableUserTypeSupport implements UserType, Serializable
   {
     private static final long serialVersionUID = -4692619064637793846L;
 
@@ -108,11 +108,5 @@ public abstract class ImmutableUserTypeSupport implements EnhancedUserType, Seri
       throws HibernateException
       {
         return original;
-      }
-
-    @Override
-    public String objectToSQLString (Object object)
-      {
-        throw new UnsupportedOperationException();
       }
   }

@@ -45,7 +45,7 @@ import org.hibernate.type.StandardBasicTypes;
 public class IdUserType extends ImmutableUserTypeSupport
   {
     private static final long serialVersionUID = 264084390946523518L;
-    
+
     public IdUserType()
       {
         super(Id.class, Types.VARCHAR);
@@ -65,17 +65,5 @@ public class IdUserType extends ImmutableUserTypeSupport
       {
         final String string = (value == null) ? null : ((Id)value).stringValue();
         StandardBasicTypes.STRING.nullSafeSet(preparedStatement, string, index, session);
-      }
-
-    @Override
-    public String toXMLString (Object object)
-      {
-        return ((Id)object).stringValue();
-      }
-
-    @Override
-    public Object fromXMLString (String string)
-      {
-        return new Id(string);
       }
   }
