@@ -29,6 +29,7 @@ package it.tidalwave.integritychecker2.persistence.impl.hibernate;
 
 import it.tidalwave.integritychecker2.persistence.PersistentFileScan;
 import it.tidalwave.util.Id;
+import java.io.Serializable;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -45,8 +46,10 @@ import org.hibernate.annotations.Type;
  **********************************************************************************************************************/
 @Entity
 @Table(name = "FILE_SCAN")
-public class HPersistentFileScan implements PersistentFileScan
+public class HPersistentFileScan implements PersistentFileScan, Serializable
   {
+    private static final long serialVersionUID = -7576194500313591212L;
+
     @javax.persistence.Id
     @Column(name = "ID", length = 36)
     @Type(type="it.tidalwave.integritychecker2.persistence.impl.hibernate.IdUserType")
@@ -62,7 +65,7 @@ public class HPersistentFileScan implements PersistentFileScan
     @ManyToOne
     private HPersistentScan scan;
 
-    HPersistentFileScan()
+    protected HPersistentFileScan()
       {
       }
 

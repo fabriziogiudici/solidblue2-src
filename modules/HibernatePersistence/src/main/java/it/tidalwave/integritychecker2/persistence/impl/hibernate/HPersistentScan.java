@@ -30,20 +30,21 @@ package it.tidalwave.integritychecker2.persistence.impl.hibernate;
 import it.tidalwave.integritychecker2.persistence.PersistentFileScan;
 import it.tidalwave.integritychecker2.persistence.PersistentScan;
 import it.tidalwave.util.Id;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import javax.persistence.Access;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import org.hibernate.annotations.Type;
+import static javax.persistence.FetchType.EAGER;
 import static javax.persistence.AccessType.FIELD;
 import static javax.persistence.CascadeType.PERSIST;
-import javax.persistence.Column;
-import static javax.persistence.FetchType.EAGER;
-import javax.persistence.Table;
 
 /***********************************************************************************************************************
  *
@@ -54,8 +55,10 @@ import javax.persistence.Table;
 @Entity
 @Access(FIELD)
 @Table(name = "SCAN")
-public class HPersistentScan implements PersistentScan
+public class HPersistentScan implements PersistentScan, Serializable
   {
+    private static final long serialVersionUID = 3377846109713145331L;
+
     @javax.persistence.Id
     @Column(name = "ID", length = 36)
     @Type(type="it.tidalwave.integritychecker2.persistence.impl.hibernate.IdUserType")
@@ -68,7 +71,7 @@ public class HPersistentScan implements PersistentScan
     @OneToMany(fetch = EAGER, cascade = PERSIST, mappedBy = "scan")
     private List<HPersistentFileScan> fileScans;
 
-    HPersistentScan()
+    protected HPersistentScan()
       {
       }
 
