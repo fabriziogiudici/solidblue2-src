@@ -66,7 +66,7 @@ public class HScanRepository implements ScanRepository
     @Transactional
     public List<PersistentScan> findAllScans()
       {
-        return (List)em.createQuery("SELECT s FROM HPersistentScan s", HPersistentScan.class).getResultList();
+        return em.createQuery("SELECT s FROM HPersistentScan s", PersistentScan.class).getResultList();
       }
 
     @Override
