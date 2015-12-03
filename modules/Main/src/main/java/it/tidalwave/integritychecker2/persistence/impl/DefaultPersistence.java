@@ -34,6 +34,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import javax.sql.DataSource;
+import lombok.extern.slf4j.Slf4j;
 import org.h2.jdbcx.JdbcDataSource;
 
 /***********************************************************************************************************************
@@ -42,6 +43,7 @@ import org.h2.jdbcx.JdbcDataSource;
  * @version $Id: Class.java,v 631568052e17 2013/02/19 15:45:02 fabrizio $
  *
  **********************************************************************************************************************/
+@Slf4j
 public class DefaultPersistence implements Persistence
   {
     protected DataSource dataSource;
@@ -50,6 +52,7 @@ public class DefaultPersistence implements Persistence
     public void scratch()
       throws SQLException
       {
+        log.info("scratch()");
         try (final Connection connection = dataSource.getConnection();
              final Statement statement = connection.createStatement())
           {
@@ -61,6 +64,7 @@ public class DefaultPersistence implements Persistence
     public void createTables()
       throws SQLException
       {
+        log.info("createTables()");
         try (final Connection connection = dataSource.getConnection();
              final Statement statement = connection.createStatement())
           {
@@ -73,6 +77,7 @@ public class DefaultPersistence implements Persistence
     @Override
     public DataSource createDataSource()
       {
+        log.info("createDataSource()");
         final JdbcDataSource dataSource = new JdbcDataSource();
         dataSource.setURL("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1");
         return this.dataSource = dataSource;
