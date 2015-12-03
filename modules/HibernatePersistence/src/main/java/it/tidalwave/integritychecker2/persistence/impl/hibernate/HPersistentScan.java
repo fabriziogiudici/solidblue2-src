@@ -67,11 +67,11 @@ public class HPersistentScan implements PersistentScan, Serializable
 
     @javax.persistence.Id
     @Column(name = "ID", length = 36)
-    @Type(type="it.tidalwave.integritychecker2.persistence.impl.hibernate.IdUserType")
+    @Type(type="it.tidalwave.integritychecker2.persistence.impl.hibernate.type.IdUserType")
     private Id id;
 
     @Column(name = "CREATION_TIME")
-    @Type(type="it.tidalwave.integritychecker2.persistence.impl.hibernate.LocalDateTimeUserType")
+    @Type(type="it.tidalwave.integritychecker2.persistence.impl.hibernate.type.LocalDateTimeUserType")
     private LocalDateTime creationDateTime;
 
     @OneToMany(fetch = EAGER, cascade = PERSIST, mappedBy = "scan")

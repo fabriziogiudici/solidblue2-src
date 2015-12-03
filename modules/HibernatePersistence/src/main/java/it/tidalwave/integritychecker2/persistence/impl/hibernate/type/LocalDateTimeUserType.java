@@ -25,7 +25,7 @@
  * *********************************************************************************************************************
  * #L%
  */
-package it.tidalwave.integritychecker2.persistence.impl.hibernate;
+package it.tidalwave.integritychecker2.persistence.impl.hibernate.type;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

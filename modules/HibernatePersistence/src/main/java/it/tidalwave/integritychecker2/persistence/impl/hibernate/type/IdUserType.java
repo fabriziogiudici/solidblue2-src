@@ -25,88 +25,45 @@
  * *********************************************************************************************************************
  * #L%
  */
-package it.tidalwave.integritychecker2.persistence.impl.hibernate;
+package it.tidalwave.integritychecker2.persistence.impl.hibernate.type;
 
-import java.io.Serializable;
-import java.util.Objects;
+import it.tidalwave.util.Id;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Types;
 import org.hibernate.HibernateException;
-import org.hibernate.usertype.UserType;
+import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.type.StandardBasicTypes;
 
 /***********************************************************************************************************************
  *
- * @author  Fabrizio Giudici <Fabrizio dot Giudici at tidalwave dot it>
+ * @author Fabrizio Giudici <Fabrizio dot Giudici at tidalwave dot it>
  * @version $Id: Class.java,v 631568052e17 2013/02/19 15:45:02 fabrizio $
  *
  **********************************************************************************************************************/
-public abstract class ImmutableUserTypeSupport implements UserType, Serializable
+public class IdUserType extends ImmutableUserTypeSupport
   {
-    private static final long serialVersionUID = -4692619064637793846L;
+    private static final long serialVersionUID = 264084390946523518L;
 
-    private final Class<?> typeClass;
-
-    private final int[] sqlTypes;
-
-    public ImmutableUserTypeSupport (final Class<?> typeClass, final int type)
+    public IdUserType()
       {
-        this.typeClass = typeClass;
-        this.sqlTypes = new int[]{ type };
+        super(Id.class, Types.VARCHAR);
       }
 
     @Override
-    public int[] sqlTypes()
+    public Object nullSafeGet (ResultSet resultSet, String[] names, SessionImplementor session, Object owner)
+      throws HibernateException, SQLException
       {
-        return sqlTypes;
+        final Object string = StandardBasicTypes.STRING.nullSafeGet(resultSet, names, session, owner);
+        return (string == null) ? null : new Id((String)string);
       }
 
     @Override
-    public Class<?> returnedClass()
+    public void nullSafeSet (PreparedStatement preparedStatement, Object value, int index, SessionImplementor session)
+      throws HibernateException, SQLException
       {
-        return typeClass;
-      }
-
-    @Override
-    public boolean equals (final Object o1, final Object o2)
-      throws HibernateException
-      {
-        return Objects.equals(o1, o2);
-      }
-
-    @Override
-    public int hashCode (final Object object)
-      throws HibernateException
-      {
-        return object.hashCode();
-      }
-
-    @Override
-    public Object deepCopy (Object value)
-      {
-        return value;
-      }
-
-    @Override
-    public boolean isMutable()
-      {
-        return false;
-      }
-
-    @Override
-    public Serializable disassemble (Object value)
-      {
-        return (Serializable)value;
-      }
-
-    @Override
-    public Object assemble (Serializable cached, Object value)
-      throws HibernateException
-      {
-        return cached;
-      }
-
-    @Override
-    public Object replace (Object original, Object target, Object owner)
-      throws HibernateException
-      {
-        return original;
+        final String string = (value == null) ? null : ((Id)value).stringValue();
+        StandardBasicTypes.STRING.nullSafeSet(preparedStatement, string, index, session);
       }
   }
