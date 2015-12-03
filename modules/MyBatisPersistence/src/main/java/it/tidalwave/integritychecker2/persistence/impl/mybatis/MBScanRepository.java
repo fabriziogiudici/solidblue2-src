@@ -28,12 +28,14 @@
 package it.tidalwave.integritychecker2.persistence.impl.mybatis;
 
 import it.tidalwave.integritychecker2.persistence.PersistentScan;
+import it.tidalwave.integritychecker2.persistence.ScanRepository;
 import it.tidalwave.role.IdFactory;
 import java.time.LocalDateTime;
 import java.util.List;
 import javax.inject.Inject;
 import org.mybatis.guice.transactional.Transactional;
-import it.tidalwave.integritychecker2.persistence.ScanRepository;
+import lombok.RequiredArgsConstructor;
+import static lombok.AccessLevel.PACKAGE;
 
 /***********************************************************************************************************************
  *
@@ -41,6 +43,7 @@ import it.tidalwave.integritychecker2.persistence.ScanRepository;
  * @version $Id: Class.java,v 631568052e17 2013/02/19 15:45:02 fabrizio $
  *
  **********************************************************************************************************************/
+@RequiredArgsConstructor(access = PACKAGE, onConstructor = @__({@Inject}))
 public class MBScanRepository implements ScanRepository
   {
     private final TransactionManager transactionManager;
@@ -48,16 +51,6 @@ public class MBScanRepository implements ScanRepository
     private final IdFactory idFactory;
 
     private final MBPersistentScanMapper persistentScanMapper;
-
-    @Inject
-    MBScanRepository (final TransactionManager transactionManager,
-                      final IdFactory idFactory,
-                      final MBPersistentScanMapper persistentScanMapper)
-      {
-        this.transactionManager = transactionManager;
-        this.idFactory = idFactory;
-        this.persistentScanMapper = persistentScanMapper;
-      }
 
     @Override
     @Transactional
