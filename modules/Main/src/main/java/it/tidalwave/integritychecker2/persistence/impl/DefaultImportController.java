@@ -34,8 +34,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import javax.inject.Inject;
-import static java.nio.charset.StandardCharsets.UTF_8;
 import it.tidalwave.integritychecker2.persistence.ScanRepository;
+import lombok.RequiredArgsConstructor;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 /***********************************************************************************************************************
  *
@@ -43,15 +44,10 @@ import it.tidalwave.integritychecker2.persistence.ScanRepository;
  * @version $Id: Class.java,v 631568052e17 2013/02/19 15:45:02 fabrizio $
  *
  **********************************************************************************************************************/
+@RequiredArgsConstructor(onConstructor = @__({@Inject}))
 public class DefaultImportController implements ImportController
   {
     private final ScanRepository scanDao;
-
-    @Inject
-    public DefaultImportController (final ScanRepository scanDao)
-      {
-        this.scanDao = scanDao;
-      }
 
     @Override
     public PersistentScan importFile (final LocalDateTime creationDateTime, final Path file)
