@@ -75,7 +75,7 @@ public class HPersistentScan implements PersistentScan, Serializable
     private LocalDateTime creationDateTime;
 
     @OneToMany(fetch = EAGER, cascade = PERSIST, mappedBy = "scan")
-    private List<HPersistentFileScan> fileScans;
+    private List<HPersistentFileScan> fileScans = new ArrayList<>();
 
     HPersistentScan (final Id id, final LocalDateTime creationDateTime)
       {
@@ -88,12 +88,6 @@ public class HPersistentScan implements PersistentScan, Serializable
       {
         final Id i = new Id(UUID.randomUUID().toString()); // FIXME: use IdFactory
         final HPersistentFileScan fileScan = new HPersistentFileScan(i, this, fileName, fingerprint);
-
-        if (fileScans == null)
-          {
-            fileScans = new ArrayList<>();
-          }
-
         fileScans.add(fileScan);
 
         return fileScan;
