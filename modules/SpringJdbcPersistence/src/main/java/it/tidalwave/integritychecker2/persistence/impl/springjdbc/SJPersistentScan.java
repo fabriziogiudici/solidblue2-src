@@ -27,6 +27,7 @@
  */
 package it.tidalwave.integritychecker2.persistence.impl.springjdbc;
 
+import it.tidalwave.integritychecker2.model.Scan;
 import it.tidalwave.integritychecker2.persistence.PersistentFileScan;
 import it.tidalwave.integritychecker2.persistence.PersistentScan;
 import it.tidalwave.role.IdFactory;
@@ -36,6 +37,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -91,12 +93,6 @@ class SJPersistentScan implements PersistentScan
         return fileScan;
       }
 
-    @Override
-    public List<PersistentFileScan> findAllFileScans()
-      {
-        return SJPersistentFileScan.selectByScan(jdbcOps, this);
-      }
-
     static List<PersistentScan> selectAll (final NamedParameterJdbcOperations jdbcOps,
                                            final IdFactory idFactory)
       {
@@ -123,5 +119,14 @@ class SJPersistentScan implements PersistentScan
       {
         return new MapSqlParameterSource().addValue("id", id.stringValue())
                                           .addValue("creationTime", Timestamp.valueOf(creationDateTime));
+      }
+
+    @Override
+    public Scan toModel()
+      {
+        final AtomicReference<Scan> scanHolder = new AtomicReference<>(new Scan(creationDateTime));
+        SJPersistentFileScan.selectByScan(jdbcOps, this).stream()
+                .forEach(fs -> scanHolder.getAndUpdate(scan -> scan.with(fs.toFileAndFingerprint())));
+        return scanHolder.get();
       }
   }

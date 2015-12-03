@@ -68,4 +68,11 @@ public class HScanRepository implements ScanRepository
       {
         return (List)em.createQuery("SELECT s FROM HPersistentScan s", HPersistentScan.class).getResultList();
       }
+
+    @Override
+    @Transactional
+    public void runInTransaction (final Runnable task)
+      {
+        task.run();
+      }
   }

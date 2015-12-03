@@ -27,20 +27,22 @@
  */
 package it.tidalwave.integritychecker2.persistence.impl.hibernate;
 
+import it.tidalwave.integritychecker2.FileAndFingerprint;
 import it.tidalwave.integritychecker2.persistence.PersistentFileScan;
 import it.tidalwave.util.Id;
 import java.io.Serializable;
+import java.nio.file.Paths;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import org.hibernate.annotations.Type;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.hibernate.annotations.Type;
-import static lombok.AccessLevel.PROTECTED;
+import static lombok.AccessLevel.*;
 
 /***********************************************************************************************************************
  *
@@ -74,8 +76,8 @@ public class HPersistentFileScan implements PersistentFileScan, Serializable
     private String fingerprint;
 
     @Override
-    public String toExportString()
+    public FileAndFingerprint toFileAndFingerprint()
       {
-        return String.format("MD5(%s)=%s", fileName, fingerprint);
+        return new FileAndFingerprint(Paths.get(fileName), fingerprint);
       }
   }

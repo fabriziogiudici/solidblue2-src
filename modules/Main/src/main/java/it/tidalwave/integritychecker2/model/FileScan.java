@@ -20,21 +20,19 @@
  *
  * *********************************************************************************************************************
  *
- * $Id: Main.java,v b4f706516290 2015/11/07 08:47:17 fabrizio $
+ * $Id: FileCollector.java,v bfe8bea5b104 2015/11/07 08:41:06 fabrizio $
  *
  * *********************************************************************************************************************
  * #L%
  */
-package it.tidalwave.integritychecker2.persistence.impl.mybatis;
+package it.tidalwave.integritychecker2.model;
 
-import it.tidalwave.integritychecker2.FileAndFingerprint;
-import it.tidalwave.integritychecker2.persistence.PersistentFileScan;
-import it.tidalwave.util.Id;
-import java.nio.file.Paths;
-import lombok.EqualsAndHashCode;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.ToString;
 import static lombok.AccessLevel.PACKAGE;
+import lombok.EqualsAndHashCode;
 
 /***********************************************************************************************************************
  *
@@ -42,45 +40,70 @@ import static lombok.AccessLevel.PACKAGE;
  * @version $Id: Class.java,v 631568052e17 2013/02/19 15:45:02 fabrizio $
  *
  **********************************************************************************************************************/
-@RequiredArgsConstructor(access = PACKAGE)
-@EqualsAndHashCode(exclude = "transactionManager")
-@ToString(exclude = "transactionManager")
-public class MBPersistentFileScan implements PersistentFileScan
+@RequiredArgsConstructor
+@Getter(PACKAGE)
+@EqualsAndHashCode(exclude = "scan")
+public class FileScan
   {
-    private TransactionManager transactionManager;
-
-//    private final MBPersistentScan scan; FIXME
-
-    private final Id id;
-
-    private final Id scanId;
+    private final Scan scan;
 
     private final String fileName;
 
     private final String fingerprint;
 
-    MBPersistentFileScan (final TransactionManager transactionManager,
-                          final MBPersistentScan scan,
-                          final Id id,
-                          final String fileName,
-                          final String fingerprint)
+    public FileScan reparented (final Scan newScan)
       {
-        this(id, scan.getId() /* FIXME */, fileName, fingerprint);
-        this.transactionManager = transactionManager;
+        return new FileScan(newScan, fileName, fingerprint);
       }
 
-    void insert()
+    public String toExportString()
       {
-        transactionManager.runTransationally(session ->
-          {
-            session.getMapper(MBPersistentFileScanMapper.class).insert(this);
-            return null;
-          });
+        return String.format("MD5(%s)=%s", fileName, fingerprint);
       }
+
+    static FileScan fromImportString (final Scan scan, final String string)
+      {
+        final Pattern pattern = Pattern.compile("^MD5\\((.*)\\)=(.*)$");
+        final Matcher matcher = pattern.matcher(string);
+
+        if (!matcher.matches())
+          {
+            throw new IllegalArgumentException("No matches for " + string);
+          }
+
+        return new FileScan(scan, matcher.group(1), matcher.group(2));
+      }
+//
+//    @Override
+//    public int hashCode()
+//      {
+//        return Objects.hash(System.identityHashCode(scan), fileName, fingerprint);
+//      }
+//
+//    @Override
+//    public boolean equals (final Object object)
+//      {
+//        if (this == object)
+//          {
+//            return true;
+//          }
+//
+//        if ((object == null) || (getClass() != object.getClass()))
+//          {
+//            return false;
+//          }
+//
+//        final FileScan other = (FileScan)object;
+//
+//        return this.scan == other.scan // must have the same owner
+//            && Objects.equals(this.fileName, other.fileName)
+//            && Objects.equals(this.fingerprint, other.fingerprint);
+//      }
 
     @Override
-    public FileAndFingerprint toFileAndFingerprint()
+    public String toString()
       {
-        return new FileAndFingerprint(Paths.get(fileName), fingerprint);
+        return String.format("FileScan(scan=%d, fileName=%s, fingerprint=%s)",
+                             System.identityHashCode(scan), fileName, fingerprint);
       }
   }

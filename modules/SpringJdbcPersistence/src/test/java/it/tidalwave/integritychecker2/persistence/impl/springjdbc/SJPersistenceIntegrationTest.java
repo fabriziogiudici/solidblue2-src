@@ -48,8 +48,8 @@ public class SJPersistenceIntegrationTest extends PersistenceIntegrationTestSupp
       {
         persistence = new SJPersistence();
         final IdFactory idFactory = new DefaultIdFactory();
-        scanDao = new SJScanRepository(((SJPersistence)persistence).getJdbcOps(), idFactory); // FIXME
-        importController = new DefaultImportController(scanDao);
+        scanRepository = new SJScanRepository(((SJPersistence)persistence).getJdbcOps(), idFactory); // FIXME
+        importController = new DefaultImportController();
         createTables();
       }
   }

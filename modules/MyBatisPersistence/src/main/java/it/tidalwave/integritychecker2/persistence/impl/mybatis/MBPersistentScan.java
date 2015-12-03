@@ -27,12 +27,14 @@
  */
 package it.tidalwave.integritychecker2.persistence.impl.mybatis;
 
+import it.tidalwave.integritychecker2.model.Scan;
 import it.tidalwave.integritychecker2.persistence.PersistentFileScan;
 import it.tidalwave.integritychecker2.persistence.PersistentScan;
 import it.tidalwave.role.IdFactory;
 import it.tidalwave.util.Id;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -73,15 +75,6 @@ public class MBPersistentScan implements PersistentScan
         return fileScan;
       }
 
-    @Override
-    public List<PersistentFileScan> findAllFileScans()
-      {
-        return (List)transactionManager.runTransationally(session ->
-          {
-            return session.getMapper(MBPersistentFileScanMapper.class).selectByScan(id.stringValue());
-          });
-      }
-
     void bind (final TransactionManager transactionManager, final IdFactory idFactory)
       {
         this.transactionManager = transactionManager;
@@ -94,6 +87,22 @@ public class MBPersistentScan implements PersistentScan
           {
             session.getMapper(MBPersistentScanMapper.class).insert(this);
             return null;
+          });
+      }
+
+    @Override
+    public Scan toModel()
+      {
+        final AtomicReference<Scan> scanHolder = new AtomicReference<>(new Scan(creationDateTime));
+        findAllFileScans().stream().forEach(fs -> scanHolder.getAndUpdate(scan -> scan.with(fs.toFileAndFingerprint())));
+        return scanHolder.get();
+      }
+
+    private List<MBPersistentFileScan> findAllFileScans()
+      {
+        return transactionManager.runTransationally(session ->
+          {
+            return session.getMapper(MBPersistentFileScanMapper.class).selectByScan(id.stringValue());
           });
       }
   }

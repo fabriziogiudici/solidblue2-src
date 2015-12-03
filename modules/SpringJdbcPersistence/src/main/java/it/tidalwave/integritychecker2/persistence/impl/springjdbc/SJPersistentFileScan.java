@@ -27,9 +27,11 @@
  */
 package it.tidalwave.integritychecker2.persistence.impl.springjdbc;
 
+import it.tidalwave.integritychecker2.FileAndFingerprint;
 import it.tidalwave.integritychecker2.persistence.PersistentFileScan;
 import it.tidalwave.role.IdFactory;
 import it.tidalwave.util.Id;
+import java.nio.file.Paths;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -39,7 +41,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import static lombok.AccessLevel.PRIVATE;
+import static lombok.AccessLevel.*;
 
 /***********************************************************************************************************************
  *
@@ -76,8 +78,8 @@ class SJPersistentFileScan implements PersistentFileScan
         this(jdbcOps, scan, idFactory.createId(PersistentFileScan.class), fileName, fingerprint);
       }
 
-    static List<PersistentFileScan> selectByScan (final NamedParameterJdbcOperations jdbcOps,
-                                                  final SJPersistentScan scan)
+    static List<SJPersistentFileScan> selectByScan (final NamedParameterJdbcOperations jdbcOps,
+                                                    final SJPersistentScan scan)
       {
         return jdbcOps.query(SELECT,
                              new MapSqlParameterSource().addValue("scanId", scan.getId().stringValue()),
@@ -110,8 +112,8 @@ class SJPersistentFileScan implements PersistentFileScan
       }
 
     @Override
-    public String toExportString()
+    public FileAndFingerprint toFileAndFingerprint()
       {
-        return String.format("MD5(%s)=%s", fileName, fingerprint);
+        return new FileAndFingerprint(Paths.get(fileName), fingerprint);
       }
   }

@@ -27,6 +27,7 @@
  */
 package it.tidalwave.integritychecker2.persistence;
 
+import it.tidalwave.integritychecker2.FileAndFingerprint;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -40,7 +41,7 @@ public interface PersistentFileScan
   {
     static final String CREATE_TABLE = "CREATE TABLE FILE_SCAN(ID VARCHAR(36), SCAN_ID VARCHAR(36), FILE_NAME VARCHAR(200), FINGERPRINT VARCHAR(32))";
 
-    public String toExportString();
+    public FileAndFingerprint toFileAndFingerprint();
 
     public static void createTable (final Statement statement)
       throws SQLException

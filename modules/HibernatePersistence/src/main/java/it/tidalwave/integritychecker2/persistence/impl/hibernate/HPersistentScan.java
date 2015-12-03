@@ -27,6 +27,7 @@
  */
 package it.tidalwave.integritychecker2.persistence.impl.hibernate;
 
+import it.tidalwave.integritychecker2.model.Scan;
 import it.tidalwave.integritychecker2.persistence.PersistentFileScan;
 import it.tidalwave.integritychecker2.persistence.PersistentScan;
 import it.tidalwave.util.Id;
@@ -35,6 +36,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
 import javax.persistence.Access;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -94,8 +96,10 @@ public class HPersistentScan implements PersistentScan, Serializable
       }
 
     @Override
-    public List<PersistentFileScan> findAllFileScans()
+    public Scan toModel()
       {
-        return (List)fileScans;
+        final AtomicReference<Scan> scanHolder = new AtomicReference<>(new Scan(creationDateTime));
+        fileScans.stream().forEach(fs -> scanHolder.getAndUpdate(scan -> scan.with(fs.toFileAndFingerprint())));
+        return scanHolder.get();
       }
   }

@@ -62,4 +62,11 @@ class SJScanRepository implements ScanRepository
       {
         return SJPersistentScan.selectAll(jdbcOps, idFactory);
       }
+
+    @Override
+    public void runInTransaction (final Runnable task)
+      {
+        //FIXME
+        task.run();
+      }
   }

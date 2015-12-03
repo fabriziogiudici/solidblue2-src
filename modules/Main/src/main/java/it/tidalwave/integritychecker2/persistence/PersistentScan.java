@@ -27,11 +27,9 @@
  */
 package it.tidalwave.integritychecker2.persistence;
 
+import it.tidalwave.integritychecker2.model.Scan;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /***********************************************************************************************************************
  *
@@ -45,20 +43,7 @@ public interface PersistentScan
 
     public PersistentFileScan createFileScan (String fileName, String fingerprint);
 
-    default public PersistentFileScan importFileScanFromString (final String string)
-      {
-        final Pattern pattern = Pattern.compile("^MD5\\((.*)\\)=(.*)$");
-        final Matcher matcher = pattern.matcher(string);
-
-        if (!matcher.matches())
-          {
-            throw new IllegalArgumentException("No matches for " + string);
-          }
-
-        return createFileScan(matcher.group(1), matcher.group(2));
-      }
-
-    public List<PersistentFileScan> findAllFileScans();
+    public Scan toModel();
 
     public static void createTable (final Statement statement)
       throws SQLException

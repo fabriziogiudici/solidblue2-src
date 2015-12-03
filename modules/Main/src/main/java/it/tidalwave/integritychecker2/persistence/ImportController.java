@@ -27,6 +27,7 @@
  */
 package it.tidalwave.integritychecker2.persistence;
 
+import it.tidalwave.integritychecker2.model.Scan;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
@@ -39,6 +40,6 @@ import java.time.LocalDateTime;
  **********************************************************************************************************************/
 public interface ImportController
   {
-    public PersistentScan importFile (LocalDateTime creationDateTime, Path file)
+    public Scan importFile (LocalDateTime creationDateTime, Path file)
       throws IOException;
   }

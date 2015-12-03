@@ -27,16 +27,13 @@
  */
 package it.tidalwave.integritychecker2.persistence.impl;
 
+import it.tidalwave.integritychecker2.model.Scan;
 import it.tidalwave.integritychecker2.persistence.ImportController;
-import it.tidalwave.integritychecker2.persistence.PersistentScan;
-import it.tidalwave.integritychecker2.persistence.ScanRepository;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
+import java.util.concurrent.atomic.AtomicReference;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 /***********************************************************************************************************************
@@ -45,18 +42,14 @@ import static java.nio.charset.StandardCharsets.UTF_8;
  * @version $Id: Class.java,v 631568052e17 2013/02/19 15:45:02 fabrizio $
  *
  **********************************************************************************************************************/
-@RequiredArgsConstructor(onConstructor = @__({@Inject}))
 public class DefaultImportController implements ImportController
   {
-    private final ScanRepository scanDao;
-
     @Override
-    @Transactional
-    public PersistentScan importFile (final LocalDateTime creationDateTime, final Path file)
+    public Scan importFile (final LocalDateTime creationDateTime, final Path file)
       throws IOException
       {
-        final PersistentScan scan = scanDao.createScan(creationDateTime);
-        Files.lines(file, UTF_8).forEach(scan::importFileScanFromString);
-        return scan;
+        final AtomicReference<Scan> scanHolder = new AtomicReference<>(new Scan(creationDateTime));
+        Files.lines(file, UTF_8).forEach(string -> scanHolder.getAndUpdate(scan -> scan.withImportedFileScan(string)));
+        return scanHolder.get();
       }
   }

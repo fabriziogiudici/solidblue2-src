@@ -41,4 +41,6 @@ public interface ScanRepository
     public PersistentScan createScan (LocalDateTime dateTime);
 
     public List<PersistentScan> findAllScans();
+
+    public void runInTransaction (Runnable task);
   }

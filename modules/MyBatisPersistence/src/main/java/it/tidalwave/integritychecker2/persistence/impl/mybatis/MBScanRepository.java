@@ -36,6 +36,7 @@ import javax.inject.Inject;
 import org.mybatis.guice.transactional.Transactional;
 import lombok.RequiredArgsConstructor;
 import static lombok.AccessLevel.PACKAGE;
+import org.apache.ibatis.session.SqlSession;
 
 /***********************************************************************************************************************
  *
@@ -71,5 +72,15 @@ public class MBScanRepository implements ScanRepository
         final List<MBPersistentScan> result = persistentScanMapper.selectAll();
         result.stream().forEach(scan -> scan.bind(transactionManager, idFactory));
         return (List)result;
+      }
+
+    @Override
+    public void runInTransaction (final Runnable task)
+      {
+        transactionManager.runTransationally(session ->
+          {
+            task.run();
+            return null;
+          });
       }
   }
