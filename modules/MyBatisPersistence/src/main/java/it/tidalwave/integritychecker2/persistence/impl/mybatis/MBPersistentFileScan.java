@@ -29,7 +29,10 @@ package it.tidalwave.integritychecker2.persistence.impl.mybatis;
 
 import it.tidalwave.integritychecker2.persistence.PersistentFileScan;
 import it.tidalwave.util.Id;
-import java.util.Objects;
+import lombok.EqualsAndHashCode;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
+import static lombok.AccessLevel.PACKAGE;
 
 /***********************************************************************************************************************
  *
@@ -37,15 +40,18 @@ import java.util.Objects;
  * @version $Id: Class.java,v 631568052e17 2013/02/19 15:45:02 fabrizio $
  *
  **********************************************************************************************************************/
+@RequiredArgsConstructor(access = PACKAGE)
+@EqualsAndHashCode(exclude = "transactionManager")
+@ToString(exclude = "transactionManager")
 public class MBPersistentFileScan implements PersistentFileScan
   {
     private TransactionManager transactionManager;
 
 //    private final MBPersistentScan scan; FIXME
 
-    private final Id scanId;
-
     private final Id id;
+
+    private final Id scanId;
 
     private final String fileName;
 
@@ -61,46 +67,10 @@ public class MBPersistentFileScan implements PersistentFileScan
         this.transactionManager = transactionManager;
       }
 
-    MBPersistentFileScan (final Id id, final Id scanId, final String fileName, final String fingerprint)
-      {
-        this.id = id;
-        this.scanId = scanId;
-        this.fileName = fileName;
-        this.fingerprint = fingerprint;
-      }
-
     @Override
     public String toExportString()
       {
         return String.format("MD5(%s)=%s", fileName, fingerprint);
-      }
-
-    @Override
-    public int hashCode()
-      {
-        return Objects.hash(id, scanId, fileName, fingerprint);
-      }
-
-    @Override
-    public boolean equals (final Object obj)
-      {
-        if ((obj == null) || (getClass() != obj.getClass()))
-          {
-            return false;
-          }
-
-        final MBPersistentFileScan other = (MBPersistentFileScan)obj;
-
-        return Objects.equals(this.scanId, other.scanId)
-            && Objects.equals(this.id, other.id)
-            && Objects.equals(this.fileName, other.fileName)
-            && Objects.equals(this.fingerprint, other.fingerprint);
-      }
-
-    @Override
-    public String toString()
-      {
-        return String.format("FileScan(id: %s, fileName: %s, fingerPrint: %s", id, fileName, fingerprint);
       }
 
     void insert()

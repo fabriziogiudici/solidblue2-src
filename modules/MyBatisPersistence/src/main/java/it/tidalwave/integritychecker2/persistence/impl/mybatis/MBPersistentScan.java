@@ -33,7 +33,12 @@ import it.tidalwave.role.IdFactory;
 import it.tidalwave.util.Id;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
+import static lombok.AccessLevel.PACKAGE;
 
 /***********************************************************************************************************************
  *
@@ -41,31 +46,20 @@ import java.util.Objects;
  * @version $Id: Class.java,v 631568052e17 2013/02/19 15:45:02 fabrizio $
  *
  **********************************************************************************************************************/
+@AllArgsConstructor(access = PACKAGE)
+@RequiredArgsConstructor(access = PACKAGE)
+@EqualsAndHashCode(exclude = "transactionManager")
+@ToString(exclude = "transactionManager")
 public class MBPersistentScan implements PersistentScan
   {
     private TransactionManager transactionManager;
 
     private IdFactory idFactory;
 
+    @Getter
     private final Id id;
 
     private final LocalDateTime creationDateTime;
-
-    MBPersistentScan (final TransactionManager transactionManager,
-                      final IdFactory idFactory,
-                      final Id id,
-                      final LocalDateTime creationDateTime)
-      {
-        this(id, creationDateTime);
-        this.transactionManager = transactionManager;
-        this.idFactory = idFactory;
-      }
-
-    MBPersistentScan (final Id id, final LocalDateTime creationDateTime)
-      {
-        this.id = id;
-        this.creationDateTime = creationDateTime;
-      }
 
     @Override
     public PersistentFileScan createFileScan (final String fileName, final String fingerprint)
@@ -88,32 +82,6 @@ public class MBPersistentScan implements PersistentScan
           });
       }
 
-    @Override
-    public int hashCode()
-      {
-        return Objects.hash(id, creationDateTime);
-      }
-
-    @Override
-    public boolean equals (final Object obj)
-      {
-        if ((obj == null) || (getClass() != obj.getClass()))
-          {
-            return false;
-          }
-
-        final MBPersistentScan other = (MBPersistentScan)obj;
-
-        return Objects.equals(this.id, other.id)
-            && Objects.equals(this.creationDateTime, other.creationDateTime);
-      }
-
-    @Override
-    public String toString()
-      {
-        return String.format("Scan(id: %s, creationDateTime: %s", id, creationDateTime);
-      }
-
     void bind (final TransactionManager transactionManager, final IdFactory idFactory)
       {
         this.transactionManager = transactionManager;
@@ -127,10 +95,5 @@ public class MBPersistentScan implements PersistentScan
             session.getMapper(MBPersistentScanMapper.class).insert(this);
             return null;
           });
-      }
-
-    Id getId()
-      {
-        return id;
       }
   }
