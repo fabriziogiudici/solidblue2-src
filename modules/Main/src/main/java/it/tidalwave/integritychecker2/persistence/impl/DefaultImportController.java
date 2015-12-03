@@ -29,12 +29,13 @@ package it.tidalwave.integritychecker2.persistence.impl;
 
 import it.tidalwave.integritychecker2.persistence.ImportController;
 import it.tidalwave.integritychecker2.persistence.PersistentScan;
+import it.tidalwave.integritychecker2.persistence.ScanRepository;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import javax.inject.Inject;
-import it.tidalwave.integritychecker2.persistence.ScanRepository;
+import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -50,6 +51,7 @@ public class DefaultImportController implements ImportController
     private final ScanRepository scanDao;
 
     @Override
+    @Transactional
     public PersistentScan importFile (final LocalDateTime creationDateTime, final Path file)
       throws IOException
       {
