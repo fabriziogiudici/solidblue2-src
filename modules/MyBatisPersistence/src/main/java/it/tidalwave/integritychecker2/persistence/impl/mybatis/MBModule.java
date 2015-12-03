@@ -33,6 +33,7 @@ import it.tidalwave.integritychecker2.persistence.Persistence;
 import it.tidalwave.integritychecker2.persistence.ScanRepository;
 import it.tidalwave.integritychecker2.persistence.impl.DefaultIdFactory;
 import it.tidalwave.integritychecker2.persistence.impl.DefaultImportController;
+import it.tidalwave.integritychecker2.persistence.impl.DefaultPersistence;
 import it.tidalwave.role.IdFactory;
 import java.util.Properties;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
@@ -62,8 +63,8 @@ public class MBModule extends MyBatisModule
         addMapperClass(MBPersistentScanMapper.class);
         addMapperClass(MBPersistentFileScanMapper.class);
 
-        bind(Persistence.class).to(MBPersistence.class);
-        bind(TransactionManager.class).to(MBPersistence.class);
+        bind(Persistence.class).to(DefaultPersistence.class);
+        bind(TransactionManager.class).to(MBTransactionManager.class);
         bind(IdFactory.class).to(DefaultIdFactory.class);
         bind(ScanRepository.class).to(MBScanRepository.class);
         bind(ImportController.class).to(DefaultImportController.class);

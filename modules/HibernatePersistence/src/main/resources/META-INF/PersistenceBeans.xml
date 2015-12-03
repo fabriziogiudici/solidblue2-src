@@ -46,7 +46,7 @@
 
     <bean class="it.tidalwave.integritychecker2.persistence.impl.DefaultImportController" />
 
-    <bean class="it.tidalwave.integritychecker2.persistence.impl.hibernate.HPersistence" />
+    <bean class="it.tidalwave.integritychecker2.persistence.impl.DefaultPersistence" />
 
     <bean class="it.tidalwave.integritychecker2.persistence.impl.hibernate.HScanRepository" />
 

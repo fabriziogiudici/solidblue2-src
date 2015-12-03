@@ -66,12 +66,6 @@ public abstract class PersistenceIntegrationTestSupport
         persistence.scratch();
       }
 
-    protected void createTables()
-      throws SQLException
-      {
-        persistence.createTables();
-      }
-
     @Test
     public void must_properly_insert_a_single_Scan()
       {

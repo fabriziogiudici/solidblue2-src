@@ -25,11 +25,16 @@
  * *********************************************************************************************************************
  * #L%
  */
-package it.tidalwave.integritychecker2.persistence.impl.springjdbc;
+package it.tidalwave.integritychecker2.persistence.impl;
 
-import it.tidalwave.integritychecker2.persistence.impl.PersistenceSupport;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import it.tidalwave.integritychecker2.persistence.Persistence;
+import it.tidalwave.integritychecker2.persistence.PersistentFileScan;
+import it.tidalwave.integritychecker2.persistence.PersistentScan;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
+import javax.sql.DataSource;
+import org.h2.jdbcx.JdbcDataSource;
 
 /***********************************************************************************************************************
  *
@@ -37,12 +42,39 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
  * @version $Id: Class.java,v 631568052e17 2013/02/19 15:45:02 fabrizio $
  *
  **********************************************************************************************************************/
-class SJPersistence extends PersistenceSupport
+public class DefaultPersistence implements Persistence
   {
-    private final NamedParameterJdbcOperations jdbcOps = new NamedParameterJdbcTemplate(createDataSource());
+    protected DataSource dataSource;
 
-    NamedParameterJdbcOperations getJdbcOps()
+    @Override
+    public void scratch()
+      throws SQLException
       {
-        return jdbcOps;
+        try (final Connection connection = dataSource.getConnection();
+             final Statement statement = connection.createStatement())
+          {
+            statement.executeUpdate("SHUTDOWN");
+          }
+      }
+
+    @Override
+    public void createTables()
+      throws SQLException
+      {
+        try (final Connection connection = dataSource.getConnection();
+             final Statement statement = connection.createStatement())
+          {
+            PersistentScan.createTable(statement);
+            PersistentFileScan.createTable(statement);
+            connection.commit();
+          }
+      }
+
+    @Override
+    public DataSource createDataSource()
+      {
+        final JdbcDataSource dataSource = new JdbcDataSource();
+        dataSource.setURL("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1");
+        return this.dataSource = dataSource;
       }
   }

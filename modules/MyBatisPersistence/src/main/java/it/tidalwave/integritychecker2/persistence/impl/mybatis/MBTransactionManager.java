@@ -25,16 +25,13 @@
  * *********************************************************************************************************************
  * #L%
  */
-package it.tidalwave.integritychecker2.persistence.impl;
+package it.tidalwave.integritychecker2.persistence.impl.mybatis;
 
-import it.tidalwave.integritychecker2.persistence.Persistence;
-import it.tidalwave.integritychecker2.persistence.PersistentFileScan;
-import it.tidalwave.integritychecker2.persistence.PersistentScan;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
-import javax.sql.DataSource;
-import org.h2.jdbcx.JdbcDataSource;
+import javax.inject.Inject;
+import lombok.RequiredArgsConstructor;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+import static lombok.AccessLevel.PACKAGE;
 
 /***********************************************************************************************************************
  *
@@ -42,38 +39,20 @@ import org.h2.jdbcx.JdbcDataSource;
  * @version $Id: Class.java,v 631568052e17 2013/02/19 15:45:02 fabrizio $
  *
  **********************************************************************************************************************/
-public abstract class PersistenceSupport implements Persistence
+@RequiredArgsConstructor(access = PACKAGE, onConstructor = @__({@Inject}))
+public class MBTransactionManager implements TransactionManager
   {
-    protected DataSource dataSource;
+    private final SqlSessionFactory sqlSessionFactory;
 
     @Override
-    public void scratch()
-      throws SQLException
+    public <T> T runTransationally (final TransactionalTask<T> task)
       {
-        try (final Connection connection = dataSource.getConnection();
-             final Statement statement = connection.createStatement())
+        try (final SqlSession session = sqlSessionFactory.openSession())
           {
-            statement.executeUpdate("SHUTDOWN");
+            final T result = task.runInTransaction(session);
+            session.commit(); // FIXME: bind transactional context to thread, reuse
+            return result;
           }
-      }
-
-    @Override
-    public void createTables()
-      throws SQLException
-      {
-        try (final Connection connection = dataSource.getConnection();
-             final Statement statement = connection.createStatement())
-          {
-            PersistentScan.createTable(statement);
-            PersistentFileScan.createTable(statement);
-            connection.commit();
-          }
-      }
-
-    protected DataSource createDataSource()
-      {
-        final JdbcDataSource dataSource = new JdbcDataSource();
-        dataSource.setURL("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1");
-        return this.dataSource = dataSource;
+        // FIXME: handle exceptions, perform rollback
       }
   }

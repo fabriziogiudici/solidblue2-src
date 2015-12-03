@@ -50,8 +50,9 @@ public class MBPersistenceIntegrationTest extends PersistenceIntegrationTestSupp
       {
         final Injector injector = Guice.createInjector(new MBModule());
         persistence = injector.getInstance(Persistence.class);
+        persistence.createDataSource();
         scanRepository = injector.getInstance(ScanRepository.class);
         importController = injector.getInstance(ImportController.class);
-        createTables();
+        persistence.createTables();
       }
   }

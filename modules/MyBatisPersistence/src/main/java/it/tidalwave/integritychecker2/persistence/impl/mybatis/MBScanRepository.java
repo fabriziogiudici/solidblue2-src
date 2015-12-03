@@ -36,7 +36,6 @@ import javax.inject.Inject;
 import org.mybatis.guice.transactional.Transactional;
 import lombok.RequiredArgsConstructor;
 import static lombok.AccessLevel.PACKAGE;
-import org.apache.ibatis.session.SqlSession;
 
 /***********************************************************************************************************************
  *

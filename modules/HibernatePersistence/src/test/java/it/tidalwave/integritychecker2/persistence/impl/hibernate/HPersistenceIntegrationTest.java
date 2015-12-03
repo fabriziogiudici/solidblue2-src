@@ -51,6 +51,7 @@ public class HPersistenceIntegrationTest extends PersistenceIntegrationTestSuppo
       {
         context = new ClassPathXmlApplicationContext("META-INF/PersistenceBeans.xml");
         persistence = context.getBean(Persistence.class);
+        persistence.createDataSource();
         scanRepository = context.getBean(ScanRepository.class);
         importController = context.getBean(ImportController.class);
       }

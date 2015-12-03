@@ -28,6 +28,7 @@
 package it.tidalwave.integritychecker2.persistence;
 
 import java.sql.SQLException;
+import javax.sql.DataSource;
 
 /***********************************************************************************************************************
  *
@@ -37,6 +38,8 @@ import java.sql.SQLException;
  **********************************************************************************************************************/
 public interface Persistence
   {
+    public DataSource createDataSource();
+
     public void scratch()
       throws SQLException;
 
