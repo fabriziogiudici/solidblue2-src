@@ -36,6 +36,8 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import static lombok.AccessLevel.PACKAGE;
 
 /***********************************************************************************************************************
  *
@@ -43,18 +45,13 @@ import javax.transaction.Transactional;
  * @version $Id: Class.java,v 631568052e17 2013/02/19 15:45:02 fabrizio $
  *
  **********************************************************************************************************************/
+@RequiredArgsConstructor(access = PACKAGE, onConstructor = @__({@Inject}))
 public class HScanRepository implements ScanRepository
   {
     @PersistenceContext
     private EntityManager em;
 
     private final IdFactory idFactory;
-
-    @Inject
-    public HScanRepository (final IdFactory idFactory)
-      {
-        this.idFactory = idFactory;
-      }
 
     @Override
     @Transactional
