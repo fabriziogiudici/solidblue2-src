@@ -103,10 +103,10 @@ class SJPersistentFileScan implements PersistentFileScan
 
     private SqlParameterSource toSqlParameters()
       {
-       return new MapSqlParameterSource().addValue("id", id.stringValue())
-                                         .addValue("scanId", scan.getId().stringValue())
-                                         .addValue("fileName", fileName)
-                                         .addValue("fingerprint", fingerprint);
+        return new MapSqlParameterSource().addValue("id", id.stringValue())
+                                          .addValue("scanId", scan.getId().stringValue())
+                                          .addValue("fileName", fileName)
+                                          .addValue("fingerprint", fingerprint);
       }
 
     @Override
