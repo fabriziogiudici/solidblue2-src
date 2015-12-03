@@ -37,7 +37,6 @@ import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.type.StandardBasicTypes;
 
-
 /***********************************************************************************************************************
  *
  * @author Fabrizio Giudici <Fabrizio dot Giudici at tidalwave dot it>
