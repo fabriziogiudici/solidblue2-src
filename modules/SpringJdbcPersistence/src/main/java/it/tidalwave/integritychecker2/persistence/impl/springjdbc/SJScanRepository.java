@@ -32,7 +32,9 @@ import it.tidalwave.integritychecker2.persistence.ScanRepository;
 import it.tidalwave.role.IdFactory;
 import java.time.LocalDateTime;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
+import static lombok.AccessLevel.PACKAGE;
 
 /***********************************************************************************************************************
  *
@@ -40,17 +42,12 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
  * @version $Id: Class.java,v 631568052e17 2013/02/19 15:45:02 fabrizio $
  *
  **********************************************************************************************************************/
+@RequiredArgsConstructor(access = PACKAGE)
 class SJScanRepository implements ScanRepository
   {
     private final NamedParameterJdbcOperations jdbcOps;
 
     private final IdFactory idFactory;
-
-    SJScanRepository (final NamedParameterJdbcOperations jdbcOps, final IdFactory idFactory)
-      {
-        this.jdbcOps = jdbcOps;
-        this.idFactory = idFactory;
-      }
 
     @Override
     public PersistentScan createScan (final LocalDateTime dateTime)
