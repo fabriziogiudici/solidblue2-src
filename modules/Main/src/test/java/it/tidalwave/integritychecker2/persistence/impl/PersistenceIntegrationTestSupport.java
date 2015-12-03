@@ -46,6 +46,9 @@ import static it.tidalwave.util.test.FileComparisonUtils.assertSameContents;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import it.tidalwave.integritychecker2.persistence.ScanRepository;
+import static it.tidalwave.util.test.FileComparisonUtils.assertSameContents;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 /***********************************************************************************************************************
  *
@@ -57,7 +60,7 @@ public abstract class PersistenceIntegrationTestSupport
   {
     private static final Charset UTF_8 = Charset.forName("UTF-8");
 
-    protected ScanRepository scanDao;
+    protected ScanRepository scanRepository;
 
     protected Persistence persistence;
 
@@ -79,8 +82,8 @@ public abstract class PersistenceIntegrationTestSupport
     @Test
     public void must_properly_insert_a_single_Scan()
       {
-        final PersistentScan scan = scanDao.createScan(LocalDateTime.of(2015, 11, 30, 11, 42, 03));
-        final List<PersistentScan> allScans = scanDao.findAllScans();
+        final PersistentScan scan = scanRepository.createScan(LocalDateTime.of(2015, 11, 30, 11, 42, 03));
+        final List<PersistentScan> allScans = scanRepository.findAllScans();
 
         assertThat(allScans.size(), is(1));
         assertThat(allScans.get(0), is(scan));
@@ -89,9 +92,9 @@ public abstract class PersistenceIntegrationTestSupport
     @Test(dependsOnMethods = "must_properly_insert_a_single_Scan")
     public void must_properly_insert_two_Scans()
       {
-        final PersistentScan scan1 = scanDao.createScan(LocalDateTime.of(2015, 11, 30, 11, 42, 03));
-        final PersistentScan scan2 = scanDao.createScan(LocalDateTime.of(2014, 10, 29, 10, 41, 02));
-        final List<PersistentScan> allScans = scanDao.findAllScans();
+        final PersistentScan scan1 = scanRepository.createScan(LocalDateTime.of(2015, 11, 30, 11, 42, 03));
+        final PersistentScan scan2 = scanRepository.createScan(LocalDateTime.of(2014, 10, 29, 10, 41, 02));
+        final List<PersistentScan> allScans = scanRepository.findAllScans();
 
         assertThat(allScans.size(), is(2));
         assertThat(allScans.get(0), is(scan1));
@@ -101,8 +104,8 @@ public abstract class PersistenceIntegrationTestSupport
     @Test(dependsOnMethods = "must_properly_insert_two_Scans")
     public void must_properly_insert_ScanFiles_for_different_Scans()
       {
-        final PersistentScan scan1 = scanDao.createScan(LocalDateTime.of(2015, 11, 30, 11, 42, 03));
-        final PersistentScan scan2 = scanDao.createScan(LocalDateTime.of(2014, 10, 29, 10, 41, 02));
+        final PersistentScan scan1 = scanRepository.createScan(LocalDateTime.of(2015, 11, 30, 11, 42, 03));
+        final PersistentScan scan2 = scanRepository.createScan(LocalDateTime.of(2014, 10, 29, 10, 41, 02));
 
         final PersistentFileScan fileScan1a = scan1.createFileScan("file1a", "fp1a");
         final PersistentFileScan fileScan1b = scan1.createFileScan("file1b", "fp1b");
@@ -132,7 +135,7 @@ public abstract class PersistenceIntegrationTestSupport
 
         importController.importFile(LocalDateTime.of(2015, 11, 30, 11, 42, 03), expectedFile);
 
-        final PersistentScan scan2 = scanDao.findAllScans().get(0);
+        final PersistentScan scan2 = scanRepository.findAllScans().get(0);
         final Stream<String> s = scan2.findAllFileScans().stream().map(PersistentFileScan::toExportString);
         Files.write(actualFile, (Iterable<String>)s::iterator, UTF_8);
 
