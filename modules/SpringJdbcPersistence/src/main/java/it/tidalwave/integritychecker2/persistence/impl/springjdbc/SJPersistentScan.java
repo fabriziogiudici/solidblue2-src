@@ -36,10 +36,14 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+import static lombok.AccessLevel.PRIVATE;
+import lombok.Getter;
 
 /***********************************************************************************************************************
  *
@@ -47,6 +51,9 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
  * @version $Id: Class.java,v 631568052e17 2013/02/19 15:45:02 fabrizio $
  *
  **********************************************************************************************************************/
+@AllArgsConstructor(access = PRIVATE)
+@EqualsAndHashCode(exclude = {"jdbcOps", "idFactory"})
+@ToString(exclude = {"jdbcOps", "idFactory"})
 class SJPersistentScan implements PersistentScan
   {
     private static final String SELECT = "SELECT * FROM SCAN";
@@ -57,6 +64,7 @@ class SJPersistentScan implements PersistentScan
 
     private final IdFactory idFactory;
 
+    @Getter
     private final Id id;
 
     private final LocalDateTime creationDateTime;
@@ -71,17 +79,6 @@ class SJPersistentScan implements PersistentScan
         this.creationDateTime = dateTime;
       }
 
-    private SJPersistentScan (final NamedParameterJdbcOperations jdbcOps,
-                              final IdFactory idFactory,
-                              final Id id,
-                              final LocalDateTime dateTime)
-      {
-        this.jdbcOps = jdbcOps;
-        this.idFactory = idFactory;
-        this.id = id;
-        this.creationDateTime = dateTime;
-      }
-
     @Override
     public PersistentFileScan createFileScan (final String fileName, final String fingerprint)
       {
@@ -92,16 +89,6 @@ class SJPersistentScan implements PersistentScan
                                                                        fingerprint);
         fileScan.insert();
         return fileScan;
-      }
-
-    public Id getId()
-      {
-        return id;
-      }
-
-    public LocalDateTime getCreationDateTime()
-      {
-        return creationDateTime;
       }
 
     @Override
@@ -136,31 +123,5 @@ class SJPersistentScan implements PersistentScan
       {
         return new MapSqlParameterSource().addValue("id", id.stringValue())
                                           .addValue("creationTime", Timestamp.valueOf(creationDateTime));
-      }
-
-    @Override
-    public int hashCode()
-      {
-        return Objects.hash(id, creationDateTime);
-      }
-
-    @Override
-    public boolean equals (final Object obj)
-      {
-        if ((obj == null) || (getClass() != obj.getClass()))
-          {
-            return false;
-          }
-
-        final SJPersistentScan other = (SJPersistentScan)obj;
-
-        return Objects.equals(this.id, other.id)
-            && Objects.equals(this.creationDateTime, other.creationDateTime);
-      }
-
-    @Override
-    public String toString()
-      {
-        return String.format("Scan(id: %s, creationDateTime: %s", id, creationDateTime);
       }
   }
