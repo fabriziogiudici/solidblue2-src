@@ -98,9 +98,9 @@ class SJPersistentScan implements PersistentScan
       }
 
     static List<PersistentScan> selectAll (final NamedParameterJdbcOperations jdbcOps,
-                                           IdFactory idFactory)
+                                           final IdFactory idFactory)
       {
-        return jdbcOps.query(SELECT, (rs, rowNum) ->  SJPersistentScan.fromResultSet(jdbcOps, idFactory, rs));
+        return jdbcOps.query(SELECT, (rs, n) ->  fromResultSet(jdbcOps, idFactory, rs));
       }
 
     void insert()
