@@ -27,6 +27,8 @@
  */
 package it.tidalwave.integritychecker2.persistence.impl.mybatis;
 
+import it.tidalwave.integritychecker2.persistence.impl.mybatis.typehandler.IdTypeHandler;
+import it.tidalwave.integritychecker2.persistence.impl.mybatis.typehandler.LocalDateTimeTypeHandler;
 import it.tidalwave.util.Id;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -52,7 +54,7 @@ public interface MBPersistentScanMapper
     public List<MBPersistentScan> selectAll();
 
     @Insert("INSERT INTO SCAN(ID, CREATION_TIME) VALUES("
-            + "#{id, typeHandler=it.tidalwave.integritychecker2.persistence.impl.mybatis.IdTypeHandler}, "
-            + "#{creationDateTime, typeHandler=it.tidalwave.integritychecker2.persistence.impl.mybatis.LocalDateTimeTypeHandler})")
+            + "#{id, typeHandler=it.tidalwave.integritychecker2.persistence.impl.mybatis.typehandler.IdTypeHandler}, "
+            + "#{creationDateTime, typeHandler=it.tidalwave.integritychecker2.persistence.impl.mybatis.typehandler.LocalDateTimeTypeHandler})")
     public void insert (MBPersistentScan scan);
   }

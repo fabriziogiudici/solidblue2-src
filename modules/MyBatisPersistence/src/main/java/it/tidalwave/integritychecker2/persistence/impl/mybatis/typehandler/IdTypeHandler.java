@@ -25,7 +25,7 @@
  * *********************************************************************************************************************
  * #L%
  */
-package it.tidalwave.integritychecker2.persistence.impl.mybatis;
+package it.tidalwave.integritychecker2.persistence.impl.mybatis.typehandler;
 
 import it.tidalwave.util.Id;
 import java.sql.CallableStatement;

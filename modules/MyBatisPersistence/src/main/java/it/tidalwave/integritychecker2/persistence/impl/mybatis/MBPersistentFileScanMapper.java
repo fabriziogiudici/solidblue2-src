@@ -27,6 +27,7 @@
  */
 package it.tidalwave.integritychecker2.persistence.impl.mybatis;
 
+import it.tidalwave.integritychecker2.persistence.impl.mybatis.typehandler.IdTypeHandler;
 import it.tidalwave.util.Id;
 import java.util.List;
 import org.apache.ibatis.annotations.Arg;
@@ -54,8 +55,8 @@ public interface MBPersistentFileScanMapper
     public List<MBPersistentFileScan> selectByScan (@Param("scanId") String scanId);
 
     @Insert("INSERT INTO FILE_SCAN(ID, SCAN_ID, FILE_NAME, FINGERPRINT) VALUES ("
-            + "#{id, typeHandler=it.tidalwave.integritychecker2.persistence.impl.mybatis.IdTypeHandler}, "
-            + "#{scanId, typeHandler=it.tidalwave.integritychecker2.persistence.impl.mybatis.IdTypeHandler}, "
+            + "#{id, typeHandler=it.tidalwave.integritychecker2.persistence.impl.mybatis.typehandler.IdTypeHandler}, "
+            + "#{scanId, typeHandler=it.tidalwave.integritychecker2.persistence.impl.mybatis.typehandler.IdTypeHandler}, "
             + "#{fileName}, #{fingerprint})")
     void insert (MBPersistentFileScan fileScan);
   }
