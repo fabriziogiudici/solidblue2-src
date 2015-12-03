@@ -33,6 +33,7 @@ import it.tidalwave.integritychecker2.persistence.impl.PersistenceIntegrationTes
 import it.tidalwave.integritychecker2.persistence.impl.DefaultPersistence;
 import it.tidalwave.role.IdFactory;
 import java.sql.SQLException;
+import javax.sql.DataSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.testng.annotations.BeforeMethod;
@@ -50,10 +51,11 @@ public class SJPersistenceIntegrationTest extends PersistenceIntegrationTestSupp
       throws SQLException
       {
         persistence = new DefaultPersistence();
-        final NamedParameterJdbcOperations jdbcOps = new NamedParameterJdbcTemplate(persistence.createDataSource());
+        final DataSource dataSource = persistence.createDataSource();
+        persistence.createTables();
+        final NamedParameterJdbcOperations jdbcOps = new NamedParameterJdbcTemplate(dataSource);
         final IdFactory idFactory = new DefaultIdFactory();
         scanRepository = new SJScanRepository(jdbcOps, idFactory);
         importController = new DefaultImportController();
-        persistence.createTables();
       }
   }

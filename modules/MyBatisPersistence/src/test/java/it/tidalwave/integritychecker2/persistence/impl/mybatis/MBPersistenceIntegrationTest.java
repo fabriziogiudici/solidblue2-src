@@ -44,11 +44,13 @@ import it.tidalwave.integritychecker2.persistence.ScanRepository;
  **********************************************************************************************************************/
 public class MBPersistenceIntegrationTest extends PersistenceIntegrationTestSupport
   {
+    private Injector injector;
+
     @BeforeMethod
     public void prepare()
       throws SQLException
       {
-        final Injector injector = Guice.createInjector(new MBModule());
+        injector = Guice.createInjector(new MBModule());
         persistence = injector.getInstance(Persistence.class);
         persistence.createDataSource();
         persistence.createTables();
