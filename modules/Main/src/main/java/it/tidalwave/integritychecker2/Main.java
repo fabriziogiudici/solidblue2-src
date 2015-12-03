@@ -73,7 +73,7 @@ public class Main
         final ProgressTracker progressTracker = new ProgressTracker();
 
         try (final Stream<Path> stream = Files.walk(targetPath, FOLLOW_LINKS);
-             final Storage storage = new Storage(targetPath))
+             final FileStorage storage = new FileStorage(targetPath))
           {
             stream.filter(Main::matchesExtension)
                   .peek(progressTracker::notifyDiscoveredFile)
