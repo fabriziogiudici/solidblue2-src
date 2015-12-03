@@ -55,7 +55,7 @@ class SJScanDao implements ScanDao
     @Override
     public PersistentScan createScan (final LocalDateTime dateTime)
       {
-        final SJPersistentScan scan = new SJPersistentScan(jdbcOps, idFactory, idFactory.createId(PersistentScan.class), dateTime);
+        final SJPersistentScan scan = new SJPersistentScan(jdbcOps, idFactory, dateTime);
         scan.insert();
         return scan;
       }

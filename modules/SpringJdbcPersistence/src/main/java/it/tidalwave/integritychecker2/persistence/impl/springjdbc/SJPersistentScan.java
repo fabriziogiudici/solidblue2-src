@@ -31,12 +31,15 @@ import it.tidalwave.integritychecker2.persistence.PersistentFileScan;
 import it.tidalwave.integritychecker2.persistence.PersistentScan;
 import it.tidalwave.role.IdFactory;
 import it.tidalwave.util.Id;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 
 /***********************************************************************************************************************
  *
@@ -47,11 +50,12 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 class SJPersistentScan implements PersistentScan
   {
     private static final String SELECT = "SELECT * FROM SCAN";
+
     private static final String INSERT = "INSERT INTO SCAN(ID, CREATION_TIME) VALUES(:id, :creationTime)";
 
-    private final IdFactory idFactory;
-
     private final NamedParameterJdbcOperations jdbcOps;
+
+    private final IdFactory idFactory;
 
     private final Id id;
 
@@ -59,8 +63,18 @@ class SJPersistentScan implements PersistentScan
 
     SJPersistentScan (final NamedParameterJdbcOperations jdbcOps,
                       final IdFactory idFactory,
-                      final Id id,
                       final LocalDateTime dateTime)
+      {
+        this.jdbcOps = jdbcOps;
+        this.idFactory = idFactory;
+        this.id = idFactory.createId(PersistentScan.class);
+        this.creationDateTime = dateTime;
+      }
+
+    private SJPersistentScan (final NamedParameterJdbcOperations jdbcOps,
+                              final IdFactory idFactory,
+                              final Id id,
+                              final LocalDateTime dateTime)
       {
         this.jdbcOps = jdbcOps;
         this.idFactory = idFactory;
@@ -72,18 +86,56 @@ class SJPersistentScan implements PersistentScan
     public PersistentFileScan createFileScan (final String fileName, final String fingerprint)
       {
         final SJPersistentFileScan fileScan = new SJPersistentFileScan(jdbcOps,
+                                                                       idFactory,
                                                                        this,
-                                                                       idFactory.createId(PersistentFileScan.class),
                                                                        fileName,
                                                                        fingerprint);
         fileScan.insert();
         return fileScan;
       }
 
+    public Id getId()
+      {
+        return id;
+      }
+
+    public LocalDateTime getCreationDateTime()
+      {
+        return creationDateTime;
+      }
+
     @Override
     public List<PersistentFileScan> findAllFileScans()
       {
         return SJPersistentFileScan.selectByScan(jdbcOps, this);
+      }
+
+    static List<PersistentScan> selectAll (final NamedParameterJdbcOperations jdbcOps,
+                                           IdFactory idFactory)
+      {
+        return jdbcOps.query(SELECT, (rs, rowNum) ->  SJPersistentScan.fromResultSet(jdbcOps, idFactory, rs));
+      }
+
+    void insert()
+      {
+        jdbcOps.update(INSERT, toSqlParameters());
+      }
+
+    private static SJPersistentScan fromResultSet (final NamedParameterJdbcOperations jdbcOps,
+                                                   final IdFactory idFactory,
+                                                   final ResultSet rs)
+      throws SQLException
+      {
+        return new SJPersistentScan(jdbcOps,
+                                    idFactory,
+                                    new Id(rs.getString("ID")),
+                                    rs.getTimestamp("CREATION_TIME").toLocalDateTime());
+      }
+
+    private SqlParameterSource toSqlParameters()
+      {
+        return new MapSqlParameterSource().addValue("id", id.stringValue())
+                                          .addValue("creationTime", Timestamp.valueOf(creationDateTime));
       }
 
     @Override
@@ -110,26 +162,5 @@ class SJPersistentScan implements PersistentScan
     public String toString()
       {
         return String.format("Scan(id: %s, creationDateTime: %s", id, creationDateTime);
-      }
-
-    void insert()
-      {
-        jdbcOps.update(INSERT,
-                       new MapSqlParameterSource().addValue("id", id.stringValue())
-                                                  .addValue("creationTime", Timestamp.valueOf(creationDateTime)));
-      }
-
-    MapSqlParameterSource toSqlParameterSourceForId()
-      {
-        return new MapSqlParameterSource().addValue("scanId", id.stringValue());
-      }
-
-    static List<PersistentScan> selectAll (final NamedParameterJdbcOperations jdbcOps,
-                                           final IdFactory idFactory)
-      {
-        return jdbcOps.query(SELECT, (rs, rowNum) ->  new SJPersistentScan(jdbcOps,
-                                                                           idFactory,
-                                                                           new Id(rs.getString("ID")),
-                                                                           rs.getTimestamp("CREATION_TIME").toLocalDateTime()));
       }
   }

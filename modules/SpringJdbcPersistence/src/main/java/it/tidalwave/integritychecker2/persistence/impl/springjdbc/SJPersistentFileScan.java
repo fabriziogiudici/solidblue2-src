@@ -28,12 +28,15 @@
 package it.tidalwave.integritychecker2.persistence.impl.springjdbc;
 
 import it.tidalwave.integritychecker2.persistence.PersistentFileScan;
+import it.tidalwave.role.IdFactory;
 import it.tidalwave.util.Id;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 
 /***********************************************************************************************************************
  *
@@ -43,7 +46,10 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
  **********************************************************************************************************************/
 class SJPersistentFileScan implements PersistentFileScan
   {
-    private static final String INSERT = "INSERT INTO FILE_SCAN(ID, SCAN_ID, FILE_NAME, FINGERPRINT) VALUES (:id, :scanId, :fileName, :fingerprint)";
+    private static final String INSERT = "INSERT INTO FILE_SCAN(ID, SCAN_ID, FILE_NAME, FINGERPRINT) "
+                                                      + "VALUES(:id, :scanId, :fileName, :fingerprint)";
+
+    private static final String SELECT = "SELECT * FROM FILE_SCAN WHERE SCAN_ID=:scanId";
 
     private final NamedParameterJdbcOperations jdbcOps;
 
@@ -56,16 +62,58 @@ class SJPersistentFileScan implements PersistentFileScan
     private final String fingerprint;
 
     SJPersistentFileScan (final NamedParameterJdbcOperations jdbcOps,
+                          final IdFactory idFactory,
                           final SJPersistentScan scan,
-                          final Id id,
                           final String fileName,
                           final String fingerprint)
+      {
+        this(jdbcOps, scan, idFactory.createId(PersistentFileScan.class), fileName, fingerprint);
+      }
+
+    private SJPersistentFileScan (final NamedParameterJdbcOperations jdbcOps,
+                                  final SJPersistentScan scan,
+                                  final Id id,
+                                  final String fileName,
+                                  final String fingerprint)
       {
         this.jdbcOps = jdbcOps;
         this.scan = scan;
         this.id = id;
         this.fileName = fileName;
         this.fingerprint = fingerprint;
+      }
+
+    static List<PersistentFileScan> selectByScan (final NamedParameterJdbcOperations jdbcOps,
+                                                  final SJPersistentScan scan)
+      {
+        return jdbcOps.query(SELECT,
+                             new MapSqlParameterSource().addValue("scanId", scan.getId().stringValue()),
+                             (rs, rowNum) -> fromResultSet(jdbcOps, scan, rs));
+      }
+
+    void insert()
+      {
+        jdbcOps.update(INSERT, toSqlParameters());
+      }
+
+    private static SJPersistentFileScan fromResultSet (final NamedParameterJdbcOperations jdbcOps,
+                                                       final SJPersistentScan scan,
+                                                       final ResultSet rs)
+      throws SQLException
+      {
+        return new SJPersistentFileScan(jdbcOps,
+                                        scan,
+                                        new Id(rs.getString("ID")),
+                                        rs.getString("FILE_NAME"),
+                                        rs.getString("FINGERPRINT"));
+      }
+
+    private SqlParameterSource toSqlParameters()
+      {
+       return new MapSqlParameterSource().addValue("id", id.stringValue())
+                                         .addValue("scanId", scan.getId().stringValue())
+                                         .addValue("fileName", fileName)
+                                         .addValue("fingerprint", fingerprint);
       }
 
     @Override
@@ -100,32 +148,5 @@ class SJPersistentFileScan implements PersistentFileScan
     public String toExportString()
       {
         return String.format("MD5(%s)=%s", fileName, fingerprint);
-      }
-
-    static List<PersistentFileScan> selectByScan (final NamedParameterJdbcOperations jdbcOps,
-                                                  final SJPersistentScan scan)
-      {
-        return jdbcOps.query("SELECT * FROM FILE_SCAN WHERE SCAN_ID=:scanId",
-                             scan.toSqlParameterSourceForId(),
-                             (rs, rowNum) -> fromResultSet(jdbcOps, scan, rs));
-      }
-
-    void insert()
-      {
-        jdbcOps.update(SJPersistentFileScan.INSERT, scan.toSqlParameterSourceForId().addValue("id", id.stringValue())
-                                                                                    .addValue("fileName", fileName)
-                                                                                    .addValue("fingerprint", fingerprint));
-      }
-
-    private static PersistentFileScan fromResultSet (final NamedParameterJdbcOperations jdbcOps,
-                                                     final SJPersistentScan scan,
-                                                     final ResultSet rs)
-      throws SQLException
-      {
-        return new SJPersistentFileScan(jdbcOps,
-                                        scan,
-                                        new Id(rs.getString("ID")),
-                                        rs.getString("FILE_NAME"),
-                                        rs.getString("FINGERPRINT"));
       }
   }
