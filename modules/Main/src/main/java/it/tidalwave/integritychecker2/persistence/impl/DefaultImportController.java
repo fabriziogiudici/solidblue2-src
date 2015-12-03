@@ -29,13 +29,13 @@ package it.tidalwave.integritychecker2.persistence.impl;
 
 import it.tidalwave.integritychecker2.persistence.ImportController;
 import it.tidalwave.integritychecker2.persistence.PersistentScan;
-import it.tidalwave.integritychecker2.persistence.ScanDao;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import javax.inject.Inject;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import it.tidalwave.integritychecker2.persistence.ScanRepository;
 
 /***********************************************************************************************************************
  *
@@ -45,10 +45,10 @@ import static java.nio.charset.StandardCharsets.UTF_8;
  **********************************************************************************************************************/
 public class DefaultImportController implements ImportController
   {
-    private final ScanDao scanDao;
+    private final ScanRepository scanDao;
 
     @Inject
-    public DefaultImportController (final ScanDao scanDao)
+    public DefaultImportController (final ScanRepository scanDao)
       {
         this.scanDao = scanDao;
       }

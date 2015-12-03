@@ -31,10 +31,10 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import it.tidalwave.integritychecker2.persistence.ImportController;
 import it.tidalwave.integritychecker2.persistence.Persistence;
-import it.tidalwave.integritychecker2.persistence.ScanDao;
 import it.tidalwave.integritychecker2.persistence.impl.PersistenceIntegrationTestSupport;
 import java.sql.SQLException;
 import org.testng.annotations.BeforeMethod;
+import it.tidalwave.integritychecker2.persistence.ScanRepository;
 
 /***********************************************************************************************************************
  *
@@ -50,7 +50,7 @@ public class MBPersistenceIntegrationTest extends PersistenceIntegrationTestSupp
       {
         final Injector injector = Guice.createInjector(new MBModule());
         persistence = injector.getInstance(Persistence.class);
-        scanDao = injector.getInstance(ScanDao.class);
+        scanDao = injector.getInstance(ScanRepository.class);
         importController = injector.getInstance(ImportController.class);
         createTables();
       }

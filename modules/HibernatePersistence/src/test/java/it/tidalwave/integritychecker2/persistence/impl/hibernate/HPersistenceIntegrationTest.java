@@ -29,11 +29,11 @@ package it.tidalwave.integritychecker2.persistence.impl.hibernate;
 
 import it.tidalwave.integritychecker2.persistence.ImportController;
 import it.tidalwave.integritychecker2.persistence.Persistence;
-import it.tidalwave.integritychecker2.persistence.ScanDao;
 import it.tidalwave.integritychecker2.persistence.impl.PersistenceIntegrationTestSupport;
 import java.sql.SQLException;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.testng.annotations.BeforeMethod;
+import it.tidalwave.integritychecker2.persistence.ScanRepository;
 
 /***********************************************************************************************************************
  *
@@ -51,7 +51,7 @@ public class HPersistenceIntegrationTest extends PersistenceIntegrationTestSuppo
       {
         context = new ClassPathXmlApplicationContext("META-INF/PersistenceBeans.xml");
         persistence = context.getBean(Persistence.class);
-        scanDao = context.getBean(ScanDao.class);
+        scanDao = context.getBean(ScanRepository.class);
         importController = context.getBean(ImportController.class);
       }
   }

@@ -28,13 +28,13 @@
 package it.tidalwave.integritychecker2.persistence.impl.mybatis;
 
 import it.tidalwave.integritychecker2.persistence.PersistentScan;
-import it.tidalwave.integritychecker2.persistence.ScanDao;
 import it.tidalwave.integritychecker2.persistence.impl.DefaultImportController;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import javax.inject.Inject;
 import org.mybatis.guice.transactional.Transactional;
+import it.tidalwave.integritychecker2.persistence.ScanRepository;
 
 /***********************************************************************************************************************
  *
@@ -45,7 +45,7 @@ import org.mybatis.guice.transactional.Transactional;
 public class MBImportController extends DefaultImportController
   {
     @Inject
-    public MBImportController (final ScanDao scanDao)
+    public MBImportController (final ScanRepository scanDao)
       {
         super(scanDao);
       }

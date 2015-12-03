@@ -36,7 +36,7 @@ import java.util.List;
  * @version $Id: Interface.java,v 631568052e17 2013/02/19 15:45:02 fabrizio $
  *
  **********************************************************************************************************************/
-public interface ScanDao
+public interface ScanRepository
   {
     public PersistentScan createScan (LocalDateTime dateTime);
 

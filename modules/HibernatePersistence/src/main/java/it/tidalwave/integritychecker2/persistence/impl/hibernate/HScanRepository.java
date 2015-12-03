@@ -25,15 +25,17 @@
  * *********************************************************************************************************************
  * #L%
  */
-package it.tidalwave.integritychecker2.persistence.impl.mybatis;
+package it.tidalwave.integritychecker2.persistence.impl.hibernate;
 
 import it.tidalwave.integritychecker2.persistence.PersistentScan;
-import it.tidalwave.integritychecker2.persistence.ScanDao;
+import it.tidalwave.integritychecker2.persistence.ScanRepository;
 import it.tidalwave.role.IdFactory;
 import java.time.LocalDateTime;
 import java.util.List;
 import javax.inject.Inject;
-import org.mybatis.guice.transactional.Transactional;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
 
 /***********************************************************************************************************************
  *
@@ -41,33 +43,25 @@ import org.mybatis.guice.transactional.Transactional;
  * @version $Id: Class.java,v 631568052e17 2013/02/19 15:45:02 fabrizio $
  *
  **********************************************************************************************************************/
-public class MBScanDao implements ScanDao
+public class HScanRepository implements ScanRepository
   {
-    private final TransactionManager transactionManager;
+    @PersistenceContext
+    private EntityManager em;
 
     private final IdFactory idFactory;
 
-    private final MBPersistentScanMapper persistentScanMapper;
-
     @Inject
-    MBScanDao (final TransactionManager transactionManager,
-               final IdFactory idFactory,
-               final MBPersistentScanMapper persistentScanMapper)
+    public HScanRepository (final IdFactory idFactory)
       {
-        this.transactionManager = transactionManager;
         this.idFactory = idFactory;
-        this.persistentScanMapper = persistentScanMapper;
       }
 
     @Override
     @Transactional
     public PersistentScan createScan (final LocalDateTime dateTime)
       {
-        final MBPersistentScan scan = new MBPersistentScan(transactionManager,
-                                                           idFactory,
-                                                           idFactory.createId(PersistentScan.class),
-                                                           dateTime);
-        scan.insert();
+        final HPersistentScan scan = new HPersistentScan(idFactory.createId(HScanRepository.class), dateTime);
+        em.persist(scan);
         return scan;
       }
 
@@ -75,8 +69,6 @@ public class MBScanDao implements ScanDao
     @Transactional
     public List<PersistentScan> findAllScans()
       {
-        final List<MBPersistentScan> result = persistentScanMapper.selectAll();
-        result.stream().forEach(scan -> scan.bind(transactionManager, idFactory));
-        return (List)result;
+        return (List)em.createQuery("SELECT s FROM HPersistentScan s", HPersistentScan.class).getResultList();
       }
   }

@@ -28,13 +28,13 @@
 package it.tidalwave.integritychecker2.persistence.impl.hibernate;
 
 import it.tidalwave.integritychecker2.persistence.PersistentScan;
-import it.tidalwave.integritychecker2.persistence.ScanDao;
 import it.tidalwave.integritychecker2.persistence.impl.DefaultImportController;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import it.tidalwave.integritychecker2.persistence.ScanRepository;
 
 /***********************************************************************************************************************
  *
@@ -45,7 +45,7 @@ import javax.transaction.Transactional;
 public class HImportController extends DefaultImportController
   {
     @Inject
-    public HImportController (final ScanDao scanDao)
+    public HImportController (final ScanRepository scanDao)
       {
         super(scanDao);
       }

@@ -31,7 +31,6 @@ import it.tidalwave.integritychecker2.persistence.ImportController;
 import it.tidalwave.integritychecker2.persistence.Persistence;
 import it.tidalwave.integritychecker2.persistence.PersistentFileScan;
 import it.tidalwave.integritychecker2.persistence.PersistentScan;
-import it.tidalwave.integritychecker2.persistence.ScanDao;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -46,6 +45,7 @@ import org.testng.annotations.AfterMethod;
 import static it.tidalwave.util.test.FileComparisonUtils.assertSameContents;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import it.tidalwave.integritychecker2.persistence.ScanRepository;
 
 /***********************************************************************************************************************
  *
@@ -57,7 +57,7 @@ public abstract class PersistenceIntegrationTestSupport
   {
     private static final Charset UTF_8 = Charset.forName("UTF-8");
 
-    protected ScanDao scanDao;
+    protected ScanRepository scanDao;
 
     protected Persistence persistence;
 
