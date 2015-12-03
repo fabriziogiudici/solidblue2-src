@@ -128,8 +128,8 @@ class SJPersistentScan implements PersistentScan
                                            final IdFactory idFactory)
       {
         return jdbcOps.query(SELECT, (rs, rowNum) ->  new SJPersistentScan(jdbcOps,
-                                                      idFactory,
-                                                      new Id(rs.getString("ID")),
-                                                      rs.getTimestamp("CREATION_TIME").toLocalDateTime()));
+                                                                           idFactory,
+                                                                           new Id(rs.getString("ID")),
+                                                                           rs.getTimestamp("CREATION_TIME").toLocalDateTime()));
       }
   }
