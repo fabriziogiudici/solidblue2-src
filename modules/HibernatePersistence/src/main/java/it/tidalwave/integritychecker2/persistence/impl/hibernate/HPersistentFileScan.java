@@ -30,13 +30,17 @@ package it.tidalwave.integritychecker2.persistence.impl.hibernate;
 import it.tidalwave.integritychecker2.persistence.PersistentFileScan;
 import it.tidalwave.util.Id;
 import java.io.Serializable;
-import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.Type;
+import static lombok.AccessLevel.PROTECTED;
 
 /***********************************************************************************************************************
  *
@@ -46,6 +50,10 @@ import org.hibernate.annotations.Type;
  **********************************************************************************************************************/
 @Entity
 @Table(name = "FILE_SCAN")
+@AllArgsConstructor(access = PROTECTED)
+@NoArgsConstructor(access = PROTECTED)
+@EqualsAndHashCode(of = "id")
+@ToString(exclude = "scan")
 public class HPersistentFileScan implements PersistentFileScan, Serializable
   {
     private static final long serialVersionUID = -7576194500313591212L;
@@ -55,51 +63,15 @@ public class HPersistentFileScan implements PersistentFileScan, Serializable
     @Type(type="it.tidalwave.integritychecker2.persistence.impl.hibernate.IdUserType")
     private Id id;
 
+    @JoinColumn(name = "SCAN_ID")
+    @ManyToOne
+    private HPersistentScan scan;
+
     @Column(name = "FILE_NAME", length = 200)
     private String fileName;
 
     @Column(name = "FINGERPRINT", length = 32)
     private String fingerprint;
-
-    @JoinColumn(name = "SCAN_ID")
-    @ManyToOne
-    private HPersistentScan scan;
-
-    protected HPersistentFileScan()
-      {
-      }
-
-    HPersistentFileScan (final Id id, final HPersistentScan scan, final String fileName, final String fingerprint)
-      {
-        this.id = id;
-        this.scan = scan;
-        this.fileName = fileName;
-        this.fingerprint = fingerprint;
-      }
-
-    @Override
-    public int hashCode()
-      {
-        return Objects.hash(id);
-      }
-
-    @Override
-    public boolean equals (final Object obj)
-      {
-        if ((obj == null) || !(obj instanceof HPersistentFileScan))
-          {
-            return false;
-          }
-
-        final HPersistentFileScan other = (HPersistentFileScan)obj;
-        return Objects.equals(this.id, other.id);
-      }
-
-    @Override
-    public String toString()
-      {
-        return String.format("FileScan(id: %s, fileName: %s, fingerPrint: %s", id, fileName, fingerprint);
-      }
 
     @Override
     public String toExportString()

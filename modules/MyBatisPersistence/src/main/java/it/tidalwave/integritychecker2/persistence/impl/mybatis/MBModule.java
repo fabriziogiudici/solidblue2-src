@@ -32,7 +32,6 @@ import it.tidalwave.integritychecker2.persistence.ImportController;
 import it.tidalwave.integritychecker2.persistence.Persistence;
 import it.tidalwave.integritychecker2.persistence.ScanDao;
 import it.tidalwave.integritychecker2.persistence.impl.DefaultIdFactory;
-import it.tidalwave.integritychecker2.persistence.impl.DefaultImportController;
 import it.tidalwave.role.IdFactory;
 import java.util.Properties;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;

@@ -34,7 +34,6 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 import javax.persistence.Access;
 import javax.persistence.Column;
@@ -42,9 +41,13 @@ import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import org.hibernate.annotations.Type;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import static javax.persistence.FetchType.EAGER;
 import static javax.persistence.AccessType.FIELD;
 import static javax.persistence.CascadeType.PERSIST;
+import static lombok.AccessLevel.PROTECTED;
 
 /***********************************************************************************************************************
  *
@@ -55,6 +58,9 @@ import static javax.persistence.CascadeType.PERSIST;
 @Entity
 @Access(FIELD)
 @Table(name = "SCAN")
+@NoArgsConstructor(access = PROTECTED)
+@EqualsAndHashCode(of = "id")
+@ToString(exclude = "fileScans")
 public class HPersistentScan implements PersistentScan, Serializable
   {
     private static final long serialVersionUID = 3377846109713145331L;
@@ -71,38 +77,10 @@ public class HPersistentScan implements PersistentScan, Serializable
     @OneToMany(fetch = EAGER, cascade = PERSIST, mappedBy = "scan")
     private List<HPersistentFileScan> fileScans;
 
-    protected HPersistentScan()
-      {
-      }
-
     HPersistentScan (final Id id, final LocalDateTime creationDateTime)
       {
         this.id = id;
         this.creationDateTime = creationDateTime;
-      }
-
-    @Override
-    public int hashCode()
-      {
-        return Objects.hash(id, creationDateTime);
-      }
-
-    @Override
-    public boolean equals (final Object obj)
-      {
-        if ((obj == null) || !(obj instanceof HPersistentScan))
-          {
-            return false;
-          }
-
-        final HPersistentScan other = (HPersistentScan)obj;
-        return Objects.equals(this.id, other.id);
-      }
-
-    @Override
-    public String toString()
-      {
-        return String.format("Scan(id: %s, creationDateTime: %s", id, creationDateTime);
       }
 
     @Override
