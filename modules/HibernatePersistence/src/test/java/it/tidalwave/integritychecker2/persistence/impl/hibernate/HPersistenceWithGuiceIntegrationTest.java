@@ -35,7 +35,6 @@ import it.tidalwave.integritychecker2.persistence.Persistence;
 import it.tidalwave.integritychecker2.persistence.ScanRepository;
 import it.tidalwave.integritychecker2.persistence.impl.PersistenceIntegrationTestSupport;
 import java.sql.SQLException;
-import java.util.Properties;
 import lombok.extern.slf4j.Slf4j;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -51,17 +50,13 @@ public class HPersistenceWithGuiceIntegrationTest extends PersistenceIntegration
   {
     private Injector injector;
 
-    private PersistService persistService ;
+    private PersistService persistService;
 
     @BeforeMethod
     public void prepare()
       throws SQLException
       {
         log.info("***** prepare()");
-
-        final Properties properties = new Properties();
-        properties.put("db.url", TEST_DB_URL);
-
         injector = Guice.createInjector(new HModule().properties(properties));
         persistService = injector.getInstance(PersistService.class);
         persistService.start();

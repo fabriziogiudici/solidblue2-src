@@ -29,7 +29,6 @@ package it.tidalwave.integritychecker2.persistence.impl.springjdbc;
 
 import it.tidalwave.integritychecker2.persistence.impl.PersistenceIntegrationTestSupport;
 import java.sql.SQLException;
-import java.util.Properties;
 import lombok.extern.slf4j.Slf4j;
 import org.testng.annotations.BeforeMethod;
 
@@ -46,8 +45,6 @@ public class SJPersistenceIntegrationTest extends PersistenceIntegrationTestSupp
     public void prepare()
       throws SQLException
       {
-        final Properties properties = new Properties();
-        properties.setProperty("db.url", TEST_DB_URL);
         final SJModule module = new SJModule(properties);
         persistence = module.getPersistence();
         scanRepository = module.getScanRepository();

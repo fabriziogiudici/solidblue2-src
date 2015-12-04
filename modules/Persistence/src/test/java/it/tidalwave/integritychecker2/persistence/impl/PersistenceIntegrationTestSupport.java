@@ -32,15 +32,16 @@ import it.tidalwave.integritychecker2.model.Scan;
 import it.tidalwave.integritychecker2.persistence.ImportController;
 import it.tidalwave.integritychecker2.persistence.Persistence;
 import it.tidalwave.integritychecker2.persistence.PersistentScan;
+import it.tidalwave.integritychecker2.persistence.ScanRepository;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Properties;
 import org.testng.annotations.Test;
 import org.testng.annotations.AfterMethod;
-import it.tidalwave.integritychecker2.persistence.ScanRepository;
 import static it.tidalwave.util.test.FileComparisonUtils.assertSameContents;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -55,11 +56,18 @@ public abstract class PersistenceIntegrationTestSupport
   {
     protected static final String TEST_DB_URL = "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1";
 
+    protected final Properties properties = new Properties();
+
     protected ScanRepository scanRepository;
 
     protected Persistence persistence;
 
     protected ImportController importController;
+
+    protected PersistenceIntegrationTestSupport()
+      {
+        properties.setProperty("db.url", TEST_DB_URL);
+      }
 
     @AfterMethod
     public void cleanup()
