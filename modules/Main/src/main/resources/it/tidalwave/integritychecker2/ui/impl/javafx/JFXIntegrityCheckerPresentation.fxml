@@ -6,7 +6,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane id="topNode" fx:id="root" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="470.0" xmlns:fx="http://javafx.com/fxml" fx:controller="it.tidalwave.solidblue2.ui.JFXIntegrityCheckerPresentation">
+<BorderPane id="topNode" fx:id="root" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="470.0" xmlns:fx="http://javafx.com/fxml" fx:controller="it.tidalwave.integritychecker2.ui.impl.javafx.JFXIntegrityCheckerPresentationAdapter">
   <right>
     <VBox id="root" prefHeight="265.0" prefWidth="600.0">
       <children>
