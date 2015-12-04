@@ -112,7 +112,7 @@ public class Main extends Application
                 stream.filter(Main::matchesExtension)
                       .peek(progressTracker::notifyDiscoveredFile)
                       .collect(storage.getIntermediateCollector())
-                      .stream()
+                      .parallelStream()
                       .map(FileAndFingerprint::new)
                       .peek(progressTracker::notifyScannedFile)
                       .collect(storage.getFinalCollector());
