@@ -29,7 +29,7 @@ package it.tidalwave.integritychecker2.ui;
 
 /***********************************************************************************************************************
  *
- * @author  Fabrizio Giudici
+ * @author  Fabrizio Giudici (Fabrizio.Giudici@tidalwave.it)
  * @version $Id: IntegrityCheckerFieldsBean.java,v a805d99df4b0 2015/11/03 19:51:11 fabrizio $
  *
  **********************************************************************************************************************/
