@@ -38,7 +38,7 @@ import javafx.application.Platform;
  * @version $Id: JFXIntegrityCheckerPresentation.java,v a805d99df4b0 2015/11/03 19:51:11 fabrizio $
  *
  **********************************************************************************************************************/
-public class JFXIntegrityCheckerPresentation
+public class JFXIntegrityCheckerPresentation implements IntegrityCheckerPresentation
   {
     @FXML
     private Label lbElapsedTime;
@@ -61,16 +61,19 @@ public class JFXIntegrityCheckerPresentation
     @FXML
     private Label lbProgress;
 
+    @Override
     public void initialize()
       {
         populate(new IntegrityCheckerFieldsBean());
       }
 
+    @Override
     public void renderBeginOfScan()
       {
         Platform.runLater(() -> pbProgress.setProgress(-1)); // indeterminate
       }
 
+    @Override
     public void populate (final IntegrityCheckerFieldsBean fields)
       {
         Platform.runLater(() ->

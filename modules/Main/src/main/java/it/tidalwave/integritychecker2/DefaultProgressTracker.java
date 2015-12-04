@@ -28,7 +28,7 @@
 package it.tidalwave.integritychecker2;
 
 import it.tidalwave.integritychecker2.ui.IntegrityCheckerFieldsBean;
-import it.tidalwave.integritychecker2.ui.JFXIntegrityCheckerPresentation;
+import it.tidalwave.integritychecker2.ui.IntegrityCheckerPresentation;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -53,9 +53,9 @@ public class DefaultProgressTracker implements ProgressTracker
     private final AtomicLong discoverySize = new AtomicLong();
     private final AtomicLong scanSize = new AtomicLong();
 
-    private final JFXIntegrityCheckerPresentation presentation;
+    private final IntegrityCheckerPresentation presentation;
 
-    public DefaultProgressTracker (final JFXIntegrityCheckerPresentation presentation)
+    public DefaultProgressTracker (final IntegrityCheckerPresentation presentation)
       {
         this.presentation = presentation;
       }

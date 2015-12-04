@@ -27,7 +27,7 @@
  */
 package it.tidalwave.integritychecker2;
 
-import it.tidalwave.integritychecker2.ui.JFXIntegrityCheckerPresentation;
+import it.tidalwave.integritychecker2.ui.IntegrityCheckerPresentation;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -59,7 +59,7 @@ public class Main extends Application
 
     private static Path targetPath;
 
-    private JFXIntegrityCheckerPresentation presentation;
+    private IntegrityCheckerPresentation presentation;
 
     /*******************************************************************************************************************
      *
