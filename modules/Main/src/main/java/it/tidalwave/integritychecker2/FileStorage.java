@@ -33,12 +33,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import static it.tidalwave.util.TimerTaskAdapterFactory.toTimerTask;
 import static it.tidalwave.util.stream.FileCollector.toFile;
 import static java.util.Comparator.comparing;
 
@@ -67,21 +67,7 @@ public class FileStorage implements Storage
         storageFile = folder.resolve("fingerprints-j8.txt");
         Files.createDirectories(folder);
         log.info("Storing results into {} ...", storageFile);
-        timer.scheduleAtFixedRate(new TimerTask()
-          {
-            @Override
-            public void run()
-              {
-                try
-                  {
-                    store();
-                  }
-                catch (IOException e)
-                  {
-                    log.error("", e);
-                  }
-              }
-          }, STORE_INTERVAL, STORE_INTERVAL);
+        timer.scheduleAtFixedRate(toTimerTask(this::store), STORE_INTERVAL, STORE_INTERVAL);
       }
 
     @Override
