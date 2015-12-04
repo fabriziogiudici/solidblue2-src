@@ -28,22 +28,20 @@
 package it.tidalwave.integritychecker2;
 
 import it.tidalwave.integritychecker2.ui.IntegrityCheckerPresentation;
+import it.tidalwave.integritychecker2.ui.JFXIntegrityCheckerPresentation;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.Executors;
 import java.util.stream.Stream;
+import javafx.application.Application;
+import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import static java.nio.file.FileVisitOption.*;
-import java.util.concurrent.Executors;
-import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
 
 /***********************************************************************************************************************
  *
@@ -82,15 +80,7 @@ public class Main extends Application
     public void start (final Stage primaryStage)
       throws IOException
       {
-        final FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/tidalwave/integritychecker2/ui/JFXIntegrityCheckerPresentation.fxml"));
-        loader.load();
-        final Parent root = loader.getRoot();
-        presentation = loader.getController();
-
-        final Scene scene = new Scene(root, 600, 200);
-        primaryStage.setTitle("SolidBlue II");
-        primaryStage.setScene(scene);
-        primaryStage.show();
+        presentation = new JFXIntegrityCheckerPresentation(primaryStage);
         Executors.newSingleThreadExecutor().execute(this::scan);
       }
 
