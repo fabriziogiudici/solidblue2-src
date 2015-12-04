@@ -55,11 +55,7 @@ public class DefaultPersistence implements Persistence
       throws SQLException
       {
         log.info("scratch()");
-        try (final Connection connection = dataSource.getConnection();
-             final Statement statement = connection.createStatement())
-          {
-            statement.executeUpdate("SHUTDOWN");
-          }
+        executeSQL(statement -> statement.executeUpdate("SHUTDOWN"));
       }
 
     @Override
@@ -67,12 +63,38 @@ public class DefaultPersistence implements Persistence
       throws SQLException
       {
         log.info("createTables()");
-        try (final Connection connection = dataSource.getConnection();
-             final Statement statement = connection.createStatement())
+        executeSQL(statement ->
           {
             PersistentScan.createTable(statement);
             PersistentFileScan.createTable(statement);
-            connection.commit();
+          });
+      }
+
+    static interface Task
+      {
+        public void runWith (Statement statement)
+          throws SQLException;
+      }
+
+    private void executeSQL (final Task task)
+      throws SQLException
+      {
+        try (final Connection connection = dataSource.getConnection();
+             final Statement statement = connection.createStatement())
+          {
+            task.runWith(statement);
+
+            try
+              {
+                connection.commit();
+              }
+            catch (SQLException e)
+              {
+                if (!e.getMessage().startsWith("Database is already closed"))
+                  {
+                    throw e;
+                  }
+              }
           }
       }
   }
