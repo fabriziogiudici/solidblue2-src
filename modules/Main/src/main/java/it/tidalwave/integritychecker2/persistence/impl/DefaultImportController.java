@@ -48,8 +48,8 @@ public class DefaultImportController implements ImportController
     public Scan importFile (final LocalDateTime creationDateTime, final Path file)
       throws IOException
       {
-        final AtomicReference<Scan> scanHolder = new AtomicReference<>(new Scan(creationDateTime));
-        Files.lines(file, UTF_8).forEach(string -> scanHolder.getAndUpdate(scan -> scan.withImportedFileScan(string)));
-        return scanHolder.get();
+        final AtomicReference<Scan> holder = new AtomicReference<>(Scan.builder().creationDateTime(creationDateTime).build());
+        Files.lines(file, UTF_8).forEach(string -> holder.getAndUpdate(scan -> scan.withImportedFileScan(string)));
+        return holder.get();
       }
   }

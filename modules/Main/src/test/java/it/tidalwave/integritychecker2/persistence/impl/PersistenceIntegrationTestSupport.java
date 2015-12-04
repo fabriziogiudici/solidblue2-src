@@ -91,10 +91,12 @@ public abstract class PersistenceIntegrationTestSupport
     @Test(dependsOnMethods = "must_properly_insert_two_Scans")
     public void must_properly_store_and_reload_stuff()
       {
-        final Scan scan1 = new Scan(LocalDateTime.of(2015, 11, 30, 11, 42, 03))
+        final Scan scan1 = Scan.builder().creationDateTime(LocalDateTime.of(2015, 11, 30, 11, 42, 03))
+                                .build()
                                 .with(new FileAndFingerprint(Paths.get("file1a"), "fp1a"))
                                 .with(new FileAndFingerprint(Paths.get("file1b"), "fp1b"));
-        final Scan scan2 = new Scan(LocalDateTime.of(2014, 10, 29, 10, 41, 02))
+        final Scan scan2 = Scan.builder().creationDateTime(LocalDateTime.of(2014, 10, 29, 10, 41, 02))
+                                .build()
                                 .with(new FileAndFingerprint(Paths.get("file2a"), "fp2a"))
                                 .with(new FileAndFingerprint(Paths.get("file2b"), "fp2b"))
                                 .with(new FileAndFingerprint(Paths.get("file2c"), "fp2c"));

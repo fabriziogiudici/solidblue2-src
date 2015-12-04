@@ -42,6 +42,7 @@ import java.util.stream.Stream;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import static java.util.stream.Collectors.toList;
+import lombok.experimental.Builder;
 
 /***********************************************************************************************************************
  *
@@ -66,7 +67,8 @@ public class Scan
      * @param   creationDateTime    the creation date & time
      *
      ******************************************************************************************************************/
-    public Scan (final LocalDateTime creationDateTime)
+    @Builder
+    private Scan (final LocalDateTime creationDateTime)
       {
         this.creationDateTime = creationDateTime;
         this.fileScans = new ArrayList<>();
