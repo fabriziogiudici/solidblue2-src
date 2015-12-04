@@ -70,9 +70,10 @@ public class HPersistenceWithGuiceIntegrationTest extends PersistenceIntegration
         persistService = injector.getInstance(PersistService.class);
         persistService.start();
         persistence = injector.getInstance(Persistence.class);
-        persistence.createTables();
         scanRepository = injector.getInstance(ScanRepository.class);
         importController = injector.getInstance(ImportController.class);
+        
+        persistence.createTables();
       }
 
     @AfterMethod
