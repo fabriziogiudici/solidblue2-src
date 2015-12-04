@@ -137,7 +137,6 @@
             <scope>provided</scope>
         </dependency>
 
-
         <!-- Test dependencies -->
         <dependency>
             <groupId>it.tidalwave.thesefoolishthings</groupId>
