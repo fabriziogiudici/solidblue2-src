@@ -36,6 +36,7 @@ import it.tidalwave.integritychecker2.persistence.impl.DefaultIdFactory;
 import it.tidalwave.integritychecker2.persistence.impl.DefaultImportController;
 import it.tidalwave.integritychecker2.persistence.impl.DefaultPersistence;
 import it.tidalwave.role.IdFactory;
+import java.util.Map;
 import java.util.Properties;
 import javax.sql.DataSource;
 import org.h2.jdbcx.JdbcDataSource;
@@ -48,17 +49,27 @@ import org.h2.jdbcx.JdbcDataSource;
  **********************************************************************************************************************/
 public class HModule extends AbstractModule
   {
+    private final Properties properties = new Properties();
+
+    private final JdbcDataSource dataSource = new JdbcDataSource(); // FIXME: use DBCP?
+
+    public HModule()
+      {
+        properties.put("hibernate.connection.datasource", dataSource);
+        properties.put("hibernate.cache.provider_class", "org.hibernate.cache.NoCacheProvider");
+        properties.put("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
+      }
+
+    public HModule properties (final Map<?, ?> properties)
+      {
+        this.properties.putAll(properties);
+        return this;
+      }
+
     @Override
     protected void configure()
       {
-        final JdbcDataSource dataSource = new JdbcDataSource(); // FIXME: use DBCP?
-        dataSource.setURL("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1");
-
-        final Properties properties = new Properties();
-        properties.put("hibernate.connection.datasource", dataSource);
-        properties.put("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
-        properties.put("hibernate.cache.provider_class", "org.hibernate.cache.NoCacheProvider");
-
+        dataSource.setURL(properties.getProperty("db.url"));
         install(new JpaPersistModule("SLBPU").properties(properties));
         bind(DataSource.class).toInstance(dataSource);
         bind(IdFactory.class).to(DefaultIdFactory.class);
