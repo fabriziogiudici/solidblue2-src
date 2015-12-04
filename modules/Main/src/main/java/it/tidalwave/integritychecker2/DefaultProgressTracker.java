@@ -122,4 +122,14 @@ public class DefaultProgressTracker implements ProgressTracker
         fields.setProgress((float)ss / ds);
         Platform.runLater(() -> presentation.populate(fields));
       }
+
+    /*******************************************************************************************************************
+     *
+     * {@inheritDoc}
+     *
+     ******************************************************************************************************************/
+    @Override
+    public void close() throws Exception
+      {
+      }
   }

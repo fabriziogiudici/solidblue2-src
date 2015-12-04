@@ -35,7 +35,7 @@ import java.nio.file.Path;
  * @version $Id: Class.java,v 631568052e17 2013/02/19 15:45:02 fabrizio $
  *
  **********************************************************************************************************************/
-public interface ProgressTracker
+public interface ProgressTracker extends AutoCloseable
   {
     /*******************************************************************************************************************
      *

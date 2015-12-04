@@ -104,10 +104,10 @@ public class Main extends Application
         try
           {
             log.info("Scanning {}...", targetPath);
-            final ProgressTracker progressTracker = new DefaultProgressTracker(presentation);
 
             try (final Stream<Path> stream = Files.walk(targetPath, FOLLOW_LINKS);
-                 final FileStorage storage = new FileStorage(targetPath))
+                 final FileStorage storage = new FileStorage(targetPath);
+                 final ProgressTracker progressTracker = new DefaultProgressTracker(presentation))
               {
                 stream.filter(Main::matchesExtension)
                       .peek(progressTracker::notifyDiscoveredFile)
@@ -118,7 +118,7 @@ public class Main extends Application
                       .collect(storage.getFinalCollector());
               }
           }
-        catch (IOException e)
+        catch (Exception e)
           {
             log.error("", e);
           }
