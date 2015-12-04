@@ -53,21 +53,14 @@ public class SJPersistenceIntegrationTest extends PersistenceIntegrationTestSupp
     public void prepare()
       throws SQLException
       {
-        final DataSource dataSource = createDataSource();
+        final JdbcDataSource dataSource = new JdbcDataSource();
+        dataSource.setURL("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1");
         persistence = new DefaultPersistence(dataSource);
         persistence.createTables();
         final NamedParameterJdbcOperations jdbcOps = new NamedParameterJdbcTemplate(dataSource);
         final IdFactory idFactory = new DefaultIdFactory();
         scanRepository = new SJScanRepository(jdbcOps, idFactory);
         importController = new DefaultImportController();
-      }
-
-    private static DataSource createDataSource()
-      {
-        log.info("createDataSource()");
-        final JdbcDataSource dataSource = new JdbcDataSource(); // FIXME: use DBCP
-        dataSource.setURL("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1");
-        return dataSource;
       }
 
     // FIXME: missing shutdown of persistence

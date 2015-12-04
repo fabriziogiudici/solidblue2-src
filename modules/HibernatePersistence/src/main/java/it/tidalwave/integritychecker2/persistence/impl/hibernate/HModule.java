@@ -51,7 +51,7 @@ public class HModule extends AbstractModule
   {
     private final Properties properties = new Properties();
 
-    private final JdbcDataSource dataSource = new JdbcDataSource(); // FIXME: use DBCP?
+    private final JdbcDataSource dataSource = new JdbcDataSource();
 
     public HModule()
       {

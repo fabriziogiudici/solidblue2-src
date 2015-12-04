@@ -22,9 +22,8 @@
         <property name="entityManagerFactory" ref="entityManagerFactory" />
     </bean>-->
 
-    <bean name="dataSource" class="org.apache.commons.dbcp2.BasicDataSource">
-        <property name="driverClassName" value="org.h2.Driver" />
-        <property name="url" value="jdbc:h2:mem:test;DB_CLOSE_DELAY=-1" />
+    <bean name="dataSource" class="org.h2.jdbcx.JdbcDataSource">
+        <property name="uRL" value="jdbc:h2:mem:test;DB_CLOSE_DELAY=-1" />
     </bean>
 
     <bean class="it.tidalwave.integritychecker2.persistence.impl.DefaultIdFactory" />
