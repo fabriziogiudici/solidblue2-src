@@ -27,15 +27,15 @@
  */
 package it.tidalwave.integritychecker2.persistence.impl.springjdbc;
 
-import it.tidalwave.integritychecker2.persistence.PersistentScan;
+import it.tidalwave.integritychecker2.persistence.ImportController;
+import it.tidalwave.integritychecker2.persistence.Persistence;
 import it.tidalwave.integritychecker2.persistence.ScanRepository;
-import it.tidalwave.role.IdFactory;
-import java.time.LocalDateTime;
-import java.util.List;
-import javax.inject.Inject;
-import lombok.RequiredArgsConstructor;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
-import static lombok.AccessLevel.PACKAGE;
+import it.tidalwave.integritychecker2.persistence.impl.PersistenceIntegrationTestSupport;
+import java.sql.SQLException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
 
 /***********************************************************************************************************************
  *
@@ -43,31 +43,27 @@ import static lombok.AccessLevel.PACKAGE;
  * @version $Id: Class.java,v 631568052e17 2013/02/19 15:45:02 fabrizio $
  *
  **********************************************************************************************************************/
-@RequiredArgsConstructor(access = PACKAGE, onConstructor = @__({@Inject}))
-class SJScanRepository implements ScanRepository
+@Slf4j
+public class SJPersistenceWithSpringIntegrationTest extends PersistenceIntegrationTestSupport
   {
-    private final NamedParameterJdbcOperations jdbcOps;
+    private ClassPathXmlApplicationContext context;
 
-    private final IdFactory idFactory;
-
-    @Override
-    public PersistentScan createScan (final LocalDateTime dateTime)
+    @BeforeMethod
+    public void prepare()
+      throws SQLException
       {
-        final SJPersistentScan scan = new SJPersistentScan(jdbcOps, idFactory, dateTime);
-        scan.insert();
-        return scan;
+        log.info("***** prepare()");
+        context = new ClassPathXmlApplicationContext("META-INF/PersistenceBeans.xml");
+        persistence = context.getBean(Persistence.class);
+        persistence.createTables();
+        scanRepository = context.getBean(ScanRepository.class);
+        importController = context.getBean(ImportController.class);
       }
 
-    @Override
-    public List<PersistentScan> findAllScans()
+    @AfterMethod
+    public void shutdown()
       {
-        return SJPersistentScan.selectAll(jdbcOps, idFactory);
-      }
-
-    @Override
-    public void runInTransaction (final Runnable task)
-      {
-        //FIXME
-        task.run();
+        log.info("***** shutdown()");
+        context.destroy();
       }
   }
