@@ -59,12 +59,23 @@ public class Scan
 
     private final List<FileScan> fileScans;
 
+    /*******************************************************************************************************************
+     *
+     * Creates a new {@code Scan}.
+     *
+     * @param   creationDateTime    the creation date & time
+     *
+     ******************************************************************************************************************/
     public Scan (final LocalDateTime creationDateTime)
       {
         this.creationDateTime = creationDateTime;
         this.fileScans = new ArrayList<>();
       }
 
+    /*******************************************************************************************************************
+     *
+     *
+     ******************************************************************************************************************/
     private Scan (final Scan oldScan, final Function<Scan, FileScan> scanFactory)
       {
         this.creationDateTime = oldScan.creationDateTime;
@@ -73,22 +84,48 @@ public class Scan
                                .collect(toList());
       }
 
+    /*******************************************************************************************************************
+     *
+     *
+     ******************************************************************************************************************/
     public Scan withImportedFileScan (final String newString)
       {
         return new Scan(this, scan -> FileScan.fromImportString(scan, newString));
       }
 
-    public Scan with (final FileAndFingerprint faf)
+    /*******************************************************************************************************************
+     *
+     * Creates a clone of this {@code Scan} with a new entry.
+     *
+     * @param   entry   the new entry
+     *
+     ******************************************************************************************************************/
+    public Scan with (final FileAndFingerprint entry)
       {
-        return new Scan(this, scan -> new FileScan(scan, faf.getFile().getFileName().toString(),
-                                                         faf.getFingerPrint()));
+        return new Scan(this, scan -> new FileScan(scan, entry.getFile().getFileName().toString(),
+                                                         entry.getFingerPrint()));
       }
 
+    /*******************************************************************************************************************
+     *
+     * Loads all the {@link Scan}s from the given {@link ScanRepository}.
+     *
+     * @param   repository  the source repository
+     * @return              the retrieved {@link Scan}s
+     *
+     ******************************************************************************************************************/
     public static List<Scan> loadAll (final ScanRepository repository)
       {
         return repository.findAllScans().stream().map(PersistentScan::toModel).collect(toList());
       }
 
+    /*******************************************************************************************************************
+     *
+     * Stores this {@code Scan} into the given {@link ScanRepository}.
+     *
+     * @param   repository  the source repository
+     *
+     ******************************************************************************************************************/
     public void store (final ScanRepository repository)
       {
         repository.runInTransaction(() ->
@@ -98,6 +135,11 @@ public class Scan
           });
       }
 
+    /*******************************************************************************************************************
+     *
+     * FIXME: refactor to export (Exporter)?
+     *
+     ******************************************************************************************************************/
     public void export (final Path file)
       throws IOException
       {
