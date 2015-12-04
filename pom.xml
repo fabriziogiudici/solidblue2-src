@@ -33,8 +33,8 @@
         <scm.repo.url>git@bitbucket.org:tidalwave/solidblue2-src.git</scm.repo.url>
         <scm.repo.readonly.url>https://bitbucket.org/tidalwave/solidblue2-src.git</scm.repo.readonly.url>
         <scm.repo.browse.url>https://bitbucket.org/tidalwave/solidblue2-src/src</scm.repo.browse.url>
-        <!--        <tidalwave.ci.view>SolidBlue</tidalwave.ci.view>
-        <tidalwave.issues>SLB</tidalwave.issues>-->
+        <tidalwave.ci.view>SolidBlue2</tidalwave.ci.view>
+        <tidalwave.issues>SLBII</tidalwave.issues>
 
         <!--        <tft.netbeans.vmargs>-Xms25m -Xmx128m -XX:CompileCommand=exclude,java/nio/MappedByteBuffer,load -Dit.tidalwave.netbeans.disableTabs=true -Dit.tidalwave.netbeans.disableQuaua=false -Dit.tidalwave.netbeans.quaqua.disableSheet=true</tft.netbeans.vmargs>
         <tft.netbeans.vmargsj>-J-Xms25m -J-Xmx128m -J-XX:CompileCommand=exclude,java/nio/MappedByteBuffer,load -J-Dit.tidalwave.netbeans.disableTabs=true -J-Dit.tidalwave.netbeans.disableQuaua=false -J-Dit.tidalwave.netbeans.quaqua.disableSheet=true</tft.netbeans.vmargsj>-->
