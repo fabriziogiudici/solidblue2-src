@@ -19,7 +19,7 @@
     <dependencies>
         <dependency>
             <groupId>it.tidalwave.solidblue2</groupId>
-            <artifactId>solidblue2-main</artifactId>
+            <artifactId>solidblue2-persistence</artifactId>
         </dependency>
         <dependency>
             <groupId>org.mybatis</groupId>
@@ -40,7 +40,7 @@
 
         <dependency>
             <groupId>it.tidalwave.solidblue2</groupId>
-            <artifactId>solidblue2-main</artifactId>
+            <artifactId>solidblue2-persistence</artifactId>
             <classifier>tests</classifier>
             <scope>test</scope>
         </dependency>

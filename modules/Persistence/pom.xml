@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>it.tidalwave.solidblue2</groupId>
+        <artifactId>solidblue2-modules</artifactId>
+        <version>1.0-ALPHA-5-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <groupId>it.tidalwave.solidblue2</groupId>
+    <artifactId>solidblue2-persistence</artifactId>
+    <version>1.0-ALPHA-5-SNAPSHOT</version>
+    <packaging>jar</packaging>
+    <name>SolidBlue2 - Persistence</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>it.tidalwave.solidblue2</groupId>
+            <artifactId>solidblue2-main</artifactId>
+        </dependency>
+    </dependencies>
+
+</project>

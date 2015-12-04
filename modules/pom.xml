@@ -156,6 +156,7 @@
 
     <modules>
         <module>Main</module>
+        <module>Persistence</module>
         <module>SpringJdbcPersistence</module>
         <module>MyBatisPersistence</module>
         <module>HibernatePersistence</module>

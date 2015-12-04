@@ -112,7 +112,7 @@ public abstract class PersistenceIntegrationTestSupport
     public void must_properly_import_and_export()
       throws IOException
       {
-        final Path expectedFile = Paths.get("../Main/target/test-classes/fingerprints-20151112_1449.txt");
+        final Path expectedFile = Paths.get("../Persistence/target/test-classes/fingerprints-20151112_1449.txt"); // FIXME
         final Path actualFile = Paths.get("target/fingerprints-exported.txt");
 
         final Scan scan = importController.importFile(LocalDateTime.of(2015, 11, 30, 11, 42, 03), expectedFile);
