@@ -98,8 +98,8 @@ public class HPersistentScan implements PersistentScan, Serializable
     @Override
     public Scan toModel()
       {
-        final AtomicReference<Scan> scanHolder = new AtomicReference<>(new Scan(creationDateTime));
-        fileScans.stream().forEach(fs -> scanHolder.getAndUpdate(scan -> scan.with(fs.toFileAndFingerprint())));
-        return scanHolder.get();
+        final AtomicReference<Scan> holder = new AtomicReference<>(Scan.builder().creationDateTime(creationDateTime).build());
+        fileScans.stream().forEach(fs -> holder.getAndUpdate(scan -> scan.with(fs.toFileAndFingerprint())));
+        return holder.get();
       }
   }

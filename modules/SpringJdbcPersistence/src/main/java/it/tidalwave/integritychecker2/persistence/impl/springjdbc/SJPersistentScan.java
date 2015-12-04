@@ -124,9 +124,9 @@ class SJPersistentScan implements PersistentScan
     @Override
     public Scan toModel()
       {
-        final AtomicReference<Scan> scanHolder = new AtomicReference<>(new Scan(creationDateTime));
+        final AtomicReference<Scan> holder = new AtomicReference<>(Scan.builder().creationDateTime(creationDateTime).build());
         SJPersistentFileScan.selectByScan(jdbcOps, this).stream()
-                .forEach(fs -> scanHolder.getAndUpdate(scan -> scan.with(fs.toFileAndFingerprint())));
-        return scanHolder.get();
+                .forEach(fs -> holder.getAndUpdate(scan -> scan.with(fs.toFileAndFingerprint())));
+        return holder.get();
       }
   }
