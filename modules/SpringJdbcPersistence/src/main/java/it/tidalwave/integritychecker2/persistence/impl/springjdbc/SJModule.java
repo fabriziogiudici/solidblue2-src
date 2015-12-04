@@ -27,11 +27,19 @@
  */
 package it.tidalwave.integritychecker2.persistence.impl.springjdbc;
 
-import it.tidalwave.integritychecker2.persistence.impl.PersistenceIntegrationTestSupport;
+import it.tidalwave.integritychecker2.persistence.ImportController;
+import it.tidalwave.integritychecker2.persistence.Persistence;
+import it.tidalwave.integritychecker2.persistence.ScanRepository;
+import it.tidalwave.integritychecker2.persistence.impl.DefaultIdFactory;
+import it.tidalwave.integritychecker2.persistence.impl.DefaultImportController;
+import it.tidalwave.integritychecker2.persistence.impl.DefaultPersistence;
+import it.tidalwave.role.IdFactory;
 import java.sql.SQLException;
 import java.util.Properties;
-import lombok.extern.slf4j.Slf4j;
-import org.testng.annotations.BeforeMethod;
+import lombok.Getter;
+import org.h2.jdbcx.JdbcDataSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 /***********************************************************************************************************************
  *
@@ -39,20 +47,25 @@ import org.testng.annotations.BeforeMethod;
  * @version $Id: Class.java,v 631568052e17 2013/02/19 15:45:02 fabrizio $
  *
  **********************************************************************************************************************/
-@Slf4j
-public class SJPersistenceIntegrationTest extends PersistenceIntegrationTestSupport
+@Getter
+public class SJModule
   {
-    @BeforeMethod
-    public void prepare()
+    private final Persistence persistence;
+
+    private final ScanRepository scanRepository;
+
+    private final ImportController importController;
+
+    public SJModule (final Properties properties)
       throws SQLException
       {
-        final Properties properties = new Properties();
-        properties.setProperty("db.url", TEST_DB_URL);
-        final SJModule module = new SJModule(properties);
-        persistence = module.getPersistence();
-        scanRepository = module.getScanRepository();
-        importController = module.getImportController();
+        final JdbcDataSource dataSource = new JdbcDataSource();
+        dataSource.setURL(properties.getProperty("db.url"));
+        persistence = new DefaultPersistence(dataSource);
+        persistence.createTables();
+        final NamedParameterJdbcOperations jdbcOps = new NamedParameterJdbcTemplate(dataSource);
+        final IdFactory idFactory = new DefaultIdFactory();
+        scanRepository = new SJScanRepository(jdbcOps, idFactory);
+        importController = new DefaultImportController();
       }
-
-    // FIXME: missing shutdown of persistence
   }
