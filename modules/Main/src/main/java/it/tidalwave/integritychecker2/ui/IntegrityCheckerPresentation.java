@@ -35,9 +35,5 @@ package it.tidalwave.integritychecker2.ui;
  **********************************************************************************************************************/
 public interface IntegrityCheckerPresentation
   {
-    public void initialize();
-
-    public void populate (IntegrityCheckerFieldsBean fields);
-
-    public void renderBeginOfScan();
+    public void bind (IntegrityCheckerFieldsBean fields);
   }

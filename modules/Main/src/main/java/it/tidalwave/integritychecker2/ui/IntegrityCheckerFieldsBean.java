@@ -27,119 +27,80 @@
  */
 package it.tidalwave.integritychecker2.ui;
 
+import javafx.beans.property.FloatProperty;
+import javafx.beans.property.SimpleFloatProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
 /***********************************************************************************************************************
  *
  * @author  Fabrizio Giudici (Fabrizio.Giudici@tidalwave.it)
  * @version $Id: IntegrityCheckerFieldsBean.java,v a805d99df4b0 2015/11/03 19:51:11 fabrizio $
  *
  **********************************************************************************************************************/
+
 public class IntegrityCheckerFieldsBean
   {
-    private String elapsedTime = " ";
+    private final StringProperty elapsedTime = new SimpleStringProperty(" ");
 
-    private String remainingTime = " ";
+    private final StringProperty remainingTime = new SimpleStringProperty(" ");
 
-    private String total = " ";
+    private final StringProperty total = new SimpleStringProperty(" ");
 
-    private String processed = " ";
+    private final StringProperty processed = new SimpleStringProperty(" ");
 
-    private String speed = " ";
+    private final StringProperty speed = new SimpleStringProperty(" ");
 
-    private String pending = " ";
+    private final StringProperty pending = new SimpleStringProperty(" ");
 
-    private String running = " ";
+    private final StringProperty running = new SimpleStringProperty(" ");
 
-    private float progress = 0;
+    private final FloatProperty progress = new SimpleFloatProperty(-1);
 
-    private String progressLabel = " ";
+    private final StringProperty progressLabel = new SimpleStringProperty(" ");
 
-    public String getElapsedTime()
+    public StringProperty elapsedTimeProperty()
       {
         return elapsedTime;
       }
 
-    public void setElapsedTime (String elapsedTime)
-      {
-        this.elapsedTime = elapsedTime;
-      }
-
-    public String getRemainingTime()
+    public StringProperty remainingTimeProperty()
       {
         return remainingTime;
       }
 
-    public void setRemainingTime (String remainingTime)
-      {
-        this.remainingTime = remainingTime;
-      }
-
-    public String getTotal()
+    public StringProperty totalProperty()
       {
         return total;
       }
 
-    public void setTotal (String total)
-      {
-        this.total = total;
-      }
-
-    public String getProcessed()
+    public StringProperty processedProperty()
       {
         return processed;
       }
 
-    public void setProcessed (String processed)
-      {
-        this.processed = processed;
-      }
-
-    public String getSpeed()
+    public StringProperty speedProperty()
       {
         return speed;
       }
 
-    public void setSpeed (String speed)
-      {
-        this.speed = speed;
-      }
-
-    public String getPending()
+    public StringProperty pendingProperty()
       {
         return pending;
       }
 
-    public void setPending (String pending)
-      {
-        this.pending = pending;
-      }
-
-    public String getRunning()
+    public StringProperty runningProperty()
       {
         return running;
       }
 
-    public void setRunning (String running)
-      {
-        this.running = running;
-      }
-
-    public float getProgress()
+    public FloatProperty progressProperty()
       {
         return progress;
       }
 
-    public void setProgress (float progress)
-      {
-        this.progress = progress;
-      }
-
-    public String getProgressLabel()
+    public StringProperty progressLabelProperty()
       {
         return progressLabel;
-      }
-
-    public void setProgressLabel (String progressLabel)
-      {
-        this.progressLabel = progressLabel;
       }
   }

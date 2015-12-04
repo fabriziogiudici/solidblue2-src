@@ -53,11 +53,14 @@ public class DefaultProgressTracker implements ProgressTracker
     private final AtomicLong discoverySize = new AtomicLong();
     private final AtomicLong scanSize = new AtomicLong();
 
+    private final IntegrityCheckerFieldsBean fields = new IntegrityCheckerFieldsBean();
+
     private final IntegrityCheckerPresentation presentation;
 
     public DefaultProgressTracker (final IntegrityCheckerPresentation presentation)
       {
         this.presentation = presentation;
+        presentation.bind(fields);
       }
 
     /*******************************************************************************************************************
@@ -116,11 +119,12 @@ public class DefaultProgressTracker implements ProgressTracker
         log.info("{}", String.format("Processed files: %d/%d (%d%%) - size: %dMB/%dMB (%d%%)",
                                      sc, dc, (100 * sc / dc),
                                      ss / 1_000_000, ds / 1_000_000, (100 * ss / ds)));
-        final IntegrityCheckerFieldsBean fields = new IntegrityCheckerFieldsBean();
-        fields.setProcessed(String.format("%d/%d", sc, dc));
-        fields.setTotal(String.format("%dMB/%dMB", ss / 1_000_000, ds / 1_000_000));
-        fields.setProgress((float)ss / ds);
-        Platform.runLater(() -> presentation.populate(fields));
+        Platform.runLater(() -> // FIXME: remove Platform from here
+          {
+            fields.processedProperty().set(String.format("%d/%d", sc, dc));
+            fields.totalProperty().set(String.format("%dMB/%dMB", ss / 1_000_000, ds / 1_000_000));
+            fields.progressProperty().set((float)ss / ds);
+          });
       }
 
     /*******************************************************************************************************************

@@ -58,20 +58,8 @@ public class JFXIntegrityCheckerPresentation implements IntegrityCheckerPresenta
       }
 
     @Override
-    public void initialize()
+    public void bind (final IntegrityCheckerFieldsBean fields)
       {
-        adapter.initialize();
-      }
-
-    @Override
-    public void populate (final IntegrityCheckerFieldsBean fields)
-      {
-        adapter.populate(fields);
-      }
-
-    @Override
-    public void renderBeginOfScan()
-      {
-        adapter.renderBeginOfScan();
+        adapter.bind(fields);
       }
   }

@@ -62,31 +62,23 @@ public class JFXIntegrityCheckerPresentationAdapter implements IntegrityCheckerP
     private Label lbProgress;
 
     @Override
-    public void initialize()
-      {
-        populate(new IntegrityCheckerFieldsBean());
-      }
-
-    @Override
-    public void renderBeginOfScan()
-      {
-        Platform.runLater(() -> pbProgress.setProgress(-1)); // indeterminate
-      }
-
-    @Override
-    public void populate (final IntegrityCheckerFieldsBean fields)
+    public void bind (final IntegrityCheckerFieldsBean fields)
       {
         Platform.runLater(() ->
           {
-            lbTotalData.setText(fields.getTotal());
-            lbProcessedData.setText(fields.getProcessed());
-            lbElapsedTime.setText(fields.getElapsedTime());
-            lbEstimatedRemainingTime.setText(fields.getRemainingTime());
-            lbSpeed.setText(fields.getSpeed());
-            final double progress = fields.getProgress();
-            final boolean indeterminate = (progress == 0) && (pbProgress.getProgress() < 0);
-            pbProgress.setProgress(indeterminate ? -1 : progress);
-            lbProgress.setText(indeterminate || (progress == 0) ? "" : String.format("%.1f %%", 100 * progress));
+            lbTotalData.textProperty().bind(fields.totalProperty());
+            lbProcessedData.textProperty().bind(fields.processedProperty());
+            lbElapsedTime.textProperty().bind(fields.elapsedTimeProperty());
+            lbEstimatedRemainingTime.textProperty().bind(fields.remainingTimeProperty());
+            lbSpeed.textProperty().bind(fields.speedProperty());
+
+            fields.progressProperty().addListener((observable, oldValue, newValue) ->
+              {
+                final double progress = newValue.floatValue();
+                final boolean indeterminate = (progress == 0) && (pbProgress.getProgress() < 0);
+                pbProgress.setProgress(indeterminate ? -1 : progress);
+                lbProgress.setText(indeterminate || (progress == 0) ? "" : String.format("%.1f %%", 100 * progress));
+              });
           });
       }
   }
