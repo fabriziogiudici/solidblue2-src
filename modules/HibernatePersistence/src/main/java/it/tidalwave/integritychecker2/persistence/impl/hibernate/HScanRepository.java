@@ -56,7 +56,7 @@ public class HScanRepository implements ScanRepository
     @Transactional
     public PersistentScan createScan (final LocalDateTime dateTime)
       {
-        final HPersistentScan scan = new HPersistentScan(idFactory.createId(HScanRepository.class), dateTime);
+        final HPersistentScan scan = new HPersistentScan(idFactory, dateTime);
         em.persist(scan);
         return scan;
       }

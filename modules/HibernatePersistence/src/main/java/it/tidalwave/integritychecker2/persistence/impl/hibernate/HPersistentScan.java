@@ -30,12 +30,12 @@ package it.tidalwave.integritychecker2.persistence.impl.hibernate;
 import it.tidalwave.integritychecker2.model.Scan;
 import it.tidalwave.integritychecker2.persistence.PersistentFileScan;
 import it.tidalwave.integritychecker2.persistence.PersistentScan;
+import it.tidalwave.role.IdFactory;
 import it.tidalwave.util.Id;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 import javax.persistence.Access;
 import javax.persistence.Column;
@@ -49,6 +49,7 @@ import lombok.ToString;
 import static javax.persistence.FetchType.EAGER;
 import static javax.persistence.AccessType.FIELD;
 import static javax.persistence.CascadeType.PERSIST;
+import javax.persistence.Transient;
 import static lombok.AccessLevel.PROTECTED;
 
 /***********************************************************************************************************************
@@ -79,19 +80,21 @@ public class HPersistentScan implements PersistentScan, Serializable
     @OneToMany(fetch = EAGER, cascade = PERSIST, mappedBy = "scan")
     private List<HPersistentFileScan> fileScans = new ArrayList<>();
 
-    HPersistentScan (final Id id, final LocalDateTime creationDateTime)
+    @Transient
+    private IdFactory idFactory;
+
+    HPersistentScan (final IdFactory idFactory, final LocalDateTime creationDateTime)
       {
-        this.id = id;
+        this.idFactory = idFactory;
+        this.id = idFactory.createId(HPersistentScan.class);
         this.creationDateTime = creationDateTime;
       }
 
     @Override
     public PersistentFileScan createFileScan (final String fileName, final String fingerprint)
       {
-        final Id i = new Id(UUID.randomUUID().toString()); // FIXME: use IdFactory
-        final HPersistentFileScan fileScan = new HPersistentFileScan(i, this, fileName, fingerprint);
+        final HPersistentFileScan fileScan = new HPersistentFileScan(idFactory, this, fileName, fingerprint);
         fileScans.add(fileScan);
-
         return fileScan;
       }
 

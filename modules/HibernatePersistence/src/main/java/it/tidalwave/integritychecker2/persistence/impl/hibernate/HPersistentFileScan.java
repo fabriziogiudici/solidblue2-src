@@ -29,6 +29,7 @@ package it.tidalwave.integritychecker2.persistence.impl.hibernate;
 
 import it.tidalwave.integritychecker2.FileAndFingerprint;
 import it.tidalwave.integritychecker2.persistence.PersistentFileScan;
+import it.tidalwave.role.IdFactory;
 import it.tidalwave.util.Id;
 import java.io.Serializable;
 import java.nio.file.Paths;
@@ -38,7 +39,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import org.hibernate.annotations.Type;
-import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -52,7 +52,6 @@ import static lombok.AccessLevel.*;
  **********************************************************************************************************************/
 @Entity
 @Table(name = "FILE_SCAN")
-@AllArgsConstructor(access = PROTECTED)
 @NoArgsConstructor(access = PROTECTED)
 @EqualsAndHashCode(of = "id")
 @ToString(exclude = "scan")
@@ -74,6 +73,17 @@ public class HPersistentFileScan implements PersistentFileScan, Serializable
 
     @Column(name = "FINGERPRINT", length = 32)
     private String fingerprint;
+
+    HPersistentFileScan (final IdFactory idFactory,
+                         final HPersistentScan scan,
+                         final String fileName,
+                         final String fingerprint)
+      {
+        this.id = idFactory.createId();
+        this.scan = scan;
+        this.fileName = fileName;
+        this.fingerprint = fingerprint;
+      }
 
     @Override
     public FileAndFingerprint toFileAndFingerprint()
