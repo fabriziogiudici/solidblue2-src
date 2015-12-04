@@ -51,11 +51,8 @@ public class HModule extends AbstractModule
   {
     private final Properties properties = new Properties();
 
-    private final JdbcDataSource dataSource = new JdbcDataSource();
-
     public HModule()
       {
-        properties.put("hibernate.connection.datasource", dataSource);
         properties.put("hibernate.cache.provider_class", "org.hibernate.cache.NoCacheProvider");
         properties.put("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
       }
@@ -69,6 +66,9 @@ public class HModule extends AbstractModule
     @Override
     protected void configure()
       {
+        final JdbcDataSource dataSource = new JdbcDataSource();
+        properties.put("hibernate.connection.datasource", dataSource);
+
         dataSource.setURL(properties.getProperty("db.url"));
         install(new JpaPersistModule("SLBPU").properties(properties));
         bind(DataSource.class).toInstance(dataSource);
