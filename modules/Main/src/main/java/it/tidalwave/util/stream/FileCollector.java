@@ -42,7 +42,7 @@ import java.util.stream.Collector;
  * It can't be used with a parallel {@code Stream}, otherwise an {@link IllegalStateException} will be thrown. Even
  * in this case, the file could be partially written.
  *
- * @author  Fabrizio Giudici <Fabrizio dot Giudici at tidalwave dot it>
+ * @author  Fabrizio Giudici (Fabrizio.Giudici@tidalwave.it)
  * @version $Id: FileCollector.java,v bfe8bea5b104 2015/11/07 08:41:06 fabrizio $
  *
  **********************************************************************************************************************/

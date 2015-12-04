@@ -40,7 +40,7 @@ import static java.nio.file.FileVisitOption.*;
 
 /***********************************************************************************************************************
  *
- * @author  Fabrizio Giudici <Fabrizio dot Giudici at tidalwave dot it>
+ * @author  Fabrizio Giudici (Fabrizio.Giudici@tidalwave.it)
  * @version $Id: Main.java,v b4f706516290 2015/11/07 08:47:17 fabrizio $
  *
  **********************************************************************************************************************/
