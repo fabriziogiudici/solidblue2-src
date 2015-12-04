@@ -28,6 +28,7 @@
 package it.tidalwave.integritychecker2.persistence.impl.hibernate;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.persist.jpa.JpaPersistModule;
 import it.tidalwave.integritychecker2.persistence.ImportController;
 import it.tidalwave.integritychecker2.persistence.Persistence;
 import it.tidalwave.integritychecker2.persistence.ScanRepository;
@@ -35,6 +36,7 @@ import it.tidalwave.integritychecker2.persistence.impl.DefaultIdFactory;
 import it.tidalwave.integritychecker2.persistence.impl.DefaultImportController;
 import it.tidalwave.integritychecker2.persistence.impl.DefaultPersistence;
 import it.tidalwave.role.IdFactory;
+import java.util.Properties;
 import javax.sql.DataSource;
 import org.h2.jdbcx.JdbcDataSource;
 
@@ -49,18 +51,19 @@ public class HModule extends AbstractModule
     @Override
     protected void configure()
       {
-        bind(DataSource.class).toInstance(createDataSource());
+        final JdbcDataSource dataSource = new JdbcDataSource(); // FIXME: use DBCP?
+        dataSource.setURL("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1");
+
+        final Properties properties = new Properties();
+        properties.put("hibernate.connection.datasource", dataSource);
+        properties.put("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
+        properties.put("hibernate.cache.provider_class", "org.hibernate.cache.NoCacheProvider");
+
+        install(new JpaPersistModule("SLBPU").properties(properties));
+        bind(DataSource.class).toInstance(dataSource);
         bind(IdFactory.class).to(DefaultIdFactory.class);
         bind(ImportController.class).to(DefaultImportController.class);
         bind(Persistence.class).to(DefaultPersistence.class);
         bind(ScanRepository.class).to(HScanRepository.class);
-      }
-
-    static DataSource createDataSource()
-      {
-//        log.info("createDataSource()");
-        final JdbcDataSource dataSource = new JdbcDataSource(); // FIXME: use DBCP
-        dataSource.setURL("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1");
-        return dataSource;
       }
   }

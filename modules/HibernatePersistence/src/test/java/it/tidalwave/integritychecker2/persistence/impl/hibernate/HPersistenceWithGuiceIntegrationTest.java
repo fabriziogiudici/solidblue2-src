@@ -30,13 +30,11 @@ package it.tidalwave.integritychecker2.persistence.impl.hibernate;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.persist.PersistService;
-import com.google.inject.persist.jpa.JpaPersistModule;
 import it.tidalwave.integritychecker2.persistence.ImportController;
 import it.tidalwave.integritychecker2.persistence.Persistence;
 import it.tidalwave.integritychecker2.persistence.ScanRepository;
 import it.tidalwave.integritychecker2.persistence.impl.PersistenceIntegrationTestSupport;
 import java.sql.SQLException;
-import java.util.Properties;
 import lombok.extern.slf4j.Slf4j;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -59,20 +57,13 @@ public class HPersistenceWithGuiceIntegrationTest extends PersistenceIntegration
       throws SQLException
       {
         log.info("***** prepare()");
-        final Properties properties = new Properties();
-        properties.put("hibernate.connection.driver_class", "org.h2.Driver");
-        properties.put("hibernate.connection.url", "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1");
-        properties.put("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
-        properties.put("hibernate.cache.provider_class", "org.hibernate.cache.NoCacheProvider");
-        properties.put("hibernate.connection.datasource", HModule.createDataSource()); // FIXME: using 2 datasources
-
-        injector = Guice.createInjector(new HModule(), new JpaPersistModule("SLBPU").properties(properties));
+        injector = Guice.createInjector(new HModule());
         persistService = injector.getInstance(PersistService.class);
         persistService.start();
         persistence = injector.getInstance(Persistence.class);
         scanRepository = injector.getInstance(ScanRepository.class);
         importController = injector.getInstance(ImportController.class);
-        
+
         persistence.createTables();
       }
 
