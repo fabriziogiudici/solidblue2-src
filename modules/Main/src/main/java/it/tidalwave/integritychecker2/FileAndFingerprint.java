@@ -40,7 +40,9 @@ import static java.nio.channels.FileChannel.MapMode.READ_ONLY;
 
 /***********************************************************************************************************************
  *
- * @author  Fabrizio Giudici <Fabrizio dot Giudici at tidalwave dot it>
+ * An object that contains a file and its fingerprint.
+ *
+ * @author  Fabrizio Giudici (Fabrizio.Giudici@tidalwave.it)
  * @version $Id: Class.java,v 631568052e17 2013/02/19 15:45:02 fabrizio $
  *
  **********************************************************************************************************************/
@@ -52,28 +54,48 @@ public class FileAndFingerprint
 
     private final String fingerPrint;
 
+    /*******************************************************************************************************************
+     *
+     * Creates an instance for the given file, computing its fingerprint.
+     *
+     * @param   file            the file
+     *
+     ******************************************************************************************************************/
     public FileAndFingerprint (final Path file)
       {
         this.file = file;
         this.fingerPrint = computeFingerprint("MD5");
       }
 
-    public FileAndFingerprint (final Path file, final String fingerPrint)
-      {
-        this.file = file;
-        this.fingerPrint = fingerPrint;
-      }
-
+    /*******************************************************************************************************************
+     *
+     * Returns the file.
+     *
+     * @return  the file
+     *
+     ******************************************************************************************************************/
     public Path getFile()
       {
         return file;
       }
 
+    /*******************************************************************************************************************
+     *
+     * Returns the fingerprint.
+     *
+     * @return  the fingerprint
+     *
+     ******************************************************************************************************************/
     public String getFingerPrint()
       {
         return fingerPrint;
       }
 
+    /*******************************************************************************************************************
+     *
+     * {@inheritDoc}
+     *
+     ******************************************************************************************************************/
     @Override
     public String toString()
       {

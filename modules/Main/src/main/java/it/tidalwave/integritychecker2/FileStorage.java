@@ -33,18 +33,18 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import static it.tidalwave.util.TimerTaskAdapterFactory.toTimerTask;
 import static it.tidalwave.util.stream.FileCollector.toFile;
 import static java.util.Comparator.comparing;
 
 /***********************************************************************************************************************
  *
- * @author  Fabrizio Giudici <Fabrizio dot Giudici at tidalwave dot it>
+ * @author  Fabrizio Giudici (Fabrizio.Giudici@tidalwave.it)
  * @version $Id: Class.java,v 631568052e17 2013/02/19 15:45:02 fabrizio $
  *
  **********************************************************************************************************************/
@@ -60,30 +60,31 @@ public class FileStorage implements Storage
 
     private final Timer timer = new Timer();
 
-    public FileStorage (final Path targetPath)
+    /*******************************************************************************************************************
+     *
+     * Creates an instance whose backing file is inside the given folder.
+     *
+     * @param   folder          the target folder
+     * @throws  IOException     in case of exception
+     *
+     ******************************************************************************************************************/
+    public FileStorage (final Path folder)
       throws IOException
       {
-        final Path folder = targetPath.resolve(".it.tidalwave.solidblue2");
-        storageFile = folder.resolve("fingerprints-j8.txt");
-        Files.createDirectories(folder);
+        final Path storageFolder = folder.resolve(".it.tidalwave.solidblue2");
+        storageFile = storageFolder.resolve("fingerprints-j8.txt");
+        Files.createDirectories(storageFolder);
         log.info("Storing results into {} ...", storageFile);
-        timer.scheduleAtFixedRate(new TimerTask()
-          {
-            @Override
-            public void run()
-              {
-                try
-                  {
-                    store();
-                  }
-                catch (IOException e)
-                  {
-                    log.error("", e);
-                  }
-              }
-          }, STORE_INTERVAL, STORE_INTERVAL);
+        timer.scheduleAtFixedRate(toTimerTask(this::store), STORE_INTERVAL, STORE_INTERVAL);
       }
 
+    /*******************************************************************************************************************
+     *
+     * Returns the intermediate {@link Collector} which stores placeholder entries for all the files.
+     *
+     * @return  the {@code Collector}
+     *
+     ******************************************************************************************************************/
     @Override
     public Collector<Path, ?, FileStorage> getIntermediateCollector()
       {
@@ -92,6 +93,13 @@ public class FileStorage implements Storage
                             (a, b) -> a);
       }
 
+    /*******************************************************************************************************************
+     *
+     * Returns the final {@link Collector} which stores final data.
+     *
+     * @return  the {@code Collector}
+     *
+     ******************************************************************************************************************/
     @Override
     public Collector<FileAndFingerprint, ?, FileStorage> getFinalCollector()
       {
@@ -100,11 +108,25 @@ public class FileStorage implements Storage
                             (a, b) -> a);
       }
 
+    /*******************************************************************************************************************
+     *
+     * Returns a {@link Stream} of the {@link Path}s previously collected by the intermediate [@link Collector}.
+     *
+     * @see     #getIntermediateCollector()
+     * @return  the {@code Stream}
+     *
+     ******************************************************************************************************************/
+    @Override
     public Stream<Path> stream()
       {
         return map.keySet().stream();
       }
 
+    /*******************************************************************************************************************
+     *
+     * {@inheritDoc}
+     *
+     ******************************************************************************************************************/
     @Override
     public void close()
       throws IOException
@@ -114,11 +136,19 @@ public class FileStorage implements Storage
         store();
       }
 
+    /*******************************************************************************************************************
+     *
+     *
+     ******************************************************************************************************************/
     private void storeItem (final Path file)
       {
         map.put(file, "unavailable");
       }
 
+    /*******************************************************************************************************************
+     *
+     *
+     ******************************************************************************************************************/
     private void storeItem (final FileAndFingerprint faf)
       {
         map.put(faf.getFile(), faf.getFingerPrint());

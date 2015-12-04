@@ -27,6 +27,7 @@
  */
 package it.tidalwave.integritychecker2;
 
+import it.tidalwave.solidblue2.ui.JFXIntegrityCheckerPresentation;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -37,18 +38,28 @@ import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import static java.nio.file.FileVisitOption.*;
+import java.util.concurrent.Executors;
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
 /***********************************************************************************************************************
  *
- * @author  Fabrizio Giudici <Fabrizio dot Giudici at tidalwave dot it>
+ * @author  Fabrizio Giudici (Fabrizio.Giudici@tidalwave.it)
  * @version $Id: Main.java,v b4f706516290 2015/11/07 08:47:17 fabrizio $
  *
  **********************************************************************************************************************/
-public class Main
+public class Main extends Application
   {
     private static final List<String> FILE_EXTENSIONS = Arrays.asList("nef", "arw", "dng", "tif", "jpg");
 
     private static final Logger log = LoggerFactory.getLogger(Main.class);
+
+    private static Path targetPath;
+
+    private JFXIntegrityCheckerPresentation presentation;
 
     /*******************************************************************************************************************
      *
@@ -58,7 +69,8 @@ public class Main
     public static void main (final String ... args)
       throws IOException
       {
-        new Main().scan(Paths.get(args[0]));
+        targetPath = Paths.get(args[0]);
+        launch(args);
       }
 
     /*******************************************************************************************************************
@@ -66,22 +78,49 @@ public class Main
      *
      *
      ******************************************************************************************************************/
-    private void scan (final Path targetPath)
+    @Override
+    public void start (final Stage primaryStage)
       throws IOException
       {
-        log.info("Scanning {}...", targetPath);
-        final ProgressTracker progressTracker = new ProgressTracker();
+        final FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/tidalwave/solidblue2/ui/JFXIntegrityCheckerPresentation.fxml"));
+        loader.load();
+        final Parent root = loader.getRoot();
+        presentation = loader.getController();
 
-        try (final Stream<Path> stream = Files.walk(targetPath, FOLLOW_LINKS);
-             final FileStorage storage = new FileStorage(targetPath))
+        final Scene scene = new Scene(root, 600, 200);
+        primaryStage.setTitle("SolidBlue II");
+        primaryStage.setScene(scene);
+        primaryStage.show();
+        Executors.newSingleThreadExecutor().execute(() -> scan());
+      }
+
+    /*******************************************************************************************************************
+     *
+     *
+     *
+     ******************************************************************************************************************/
+    private void scan()
+      {
+        try
           {
-            stream.filter(Main::matchesExtension)
-                  .peek(progressTracker::notifyDiscoveredFile)
-                  .collect(storage.getIntermediateCollector())
-                  .stream()
-                  .map(FileAndFingerprint::new)
-                  .peek(progressTracker::notifyScannedFile)
-                  .collect(storage.getFinalCollector());
+            log.info("Scanning {}...", targetPath);
+            final ProgressTracker progressTracker = new ProgressTracker(presentation);
+
+            try (final Stream<Path> stream = Files.walk(targetPath, FOLLOW_LINKS);
+                 final FileStorage storage = new FileStorage(targetPath))
+              {
+                stream.filter(Main::matchesExtension)
+                      .peek(progressTracker::notifyDiscoveredFile)
+                      .collect(storage.getIntermediateCollector())
+                      .stream()
+                      .map(FileAndFingerprint::new)
+                      .peek(progressTracker::notifyScannedFile)
+                      .collect(storage.getFinalCollector());
+              }
+          }
+        catch (IOException e)
+          {
+            log.error("", e);
           }
       }
 

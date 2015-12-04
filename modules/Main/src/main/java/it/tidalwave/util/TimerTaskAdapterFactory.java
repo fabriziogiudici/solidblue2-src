@@ -25,11 +25,11 @@
  * *********************************************************************************************************************
  * #L%
  */
-package it.tidalwave.integritychecker2;
+package it.tidalwave.util;
 
-import java.nio.file.Path;
-import java.util.stream.Collector;
-import java.util.stream.Stream;
+import java.util.TimerTask;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /***********************************************************************************************************************
  *
@@ -37,11 +37,33 @@ import java.util.stream.Stream;
  * @version $Id: Class.java,v 631568052e17 2013/02/19 15:45:02 fabrizio $
  *
  **********************************************************************************************************************/
-public interface Storage extends AutoCloseable
+public final class TimerTaskAdapterFactory
   {
-    public Collector<Path, ?, ? extends Storage> getIntermediateCollector();
+    private static final Logger log = LoggerFactory.getLogger(TimerTaskAdapterFactory.class);
 
-    public Collector<FileAndFingerprint, ?, ? extends Storage> getFinalCollector();
+    @FunctionalInterface
+    public static interface Task
+      {
+        public void run()
+          throws Exception;
+      }
 
-    public Stream<Path> stream();
+    public static TimerTask toTimerTask (final Task task)
+      {
+        return new TimerTask()
+          {
+            @Override
+            public void run()
+              {
+                try
+                  {
+                    task.run();
+                  }
+                catch (Exception e)
+                  {
+                    log.error("", e);
+                  }
+              }
+          };
+      }
   }

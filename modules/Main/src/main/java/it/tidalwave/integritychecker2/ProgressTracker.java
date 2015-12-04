@@ -27,17 +27,20 @@
  */
 package it.tidalwave.integritychecker2;
 
+import it.tidalwave.solidblue2.ui.IntegrityCheckerFieldsBean;
+import it.tidalwave.solidblue2.ui.JFXIntegrityCheckerPresentation;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
+import javafx.application.Platform;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /***********************************************************************************************************************
  *
- * @author  Fabrizio Giudici <Fabrizio dot Giudici at tidalwave dot it>
+ * @author  Fabrizio Giudici (Fabrizio.Giudici@tidalwave.it)
  * @version $Id: ProgressTracker.java,v 91dd9dc0d25a 2015/11/03 20:25:03 fabrizio $
  *
  **********************************************************************************************************************/
@@ -49,6 +52,13 @@ public class ProgressTracker
     private final AtomicInteger scanCount = new AtomicInteger();
     private final AtomicLong discoverySize = new AtomicLong();
     private final AtomicLong scanSize = new AtomicLong();
+
+    private final JFXIntegrityCheckerPresentation presentation;
+
+    public ProgressTracker (final JFXIntegrityCheckerPresentation presentation)
+      {
+        this.presentation = presentation;
+      }
 
     /*******************************************************************************************************************
      *
@@ -107,5 +117,10 @@ public class ProgressTracker
         log.info("{}", String.format("Processed files: %d/%d (%d%%) - size: %dMB/%dMB (%d%%)",
                                      sc, dc, (100 * sc / dc),
                                      ss / 1_000_000, ds / 1_000_000, (100 * ss / ds)));
+        final IntegrityCheckerFieldsBean fields = new IntegrityCheckerFieldsBean();
+        fields.setProcessed(String.format("%d/%d", sc, dc));
+        fields.setTotal(String.format("%dMB/%dMB", ss / 1_000_000, ds / 1_000_000));
+        fields.setProgress((float)ss / ds);
+        Platform.runLater(() -> presentation.populate(fields));
       }
   }

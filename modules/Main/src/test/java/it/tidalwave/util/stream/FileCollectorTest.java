@@ -40,7 +40,7 @@ import static java.util.stream.Collectors.*;
 
 /***********************************************************************************************************************
  *
- * @author  Fabrizio Giudici <Fabrizio dot Giudici at tidalwave dot it>
+ * @author  Fabrizio Giudici (Fabrizio.Giudici@tidalwave.it)
  * @version $Id: FileCollectorTest.java,v ef3854f8082e 2015/11/07 08:38:53 fabrizio $
  *
  **********************************************************************************************************************/

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane id="topNode" fx:id="root" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="470.0" xmlns:fx="http://javafx.com/fxml" fx:controller="it.tidalwave.solidblue2.ui.JFXIntegrityCheckerPresentation">
+  <right>
+    <VBox id="root" prefHeight="265.0" prefWidth="600.0">
+      <children>
+        <GridPane fx:id="pnText" prefWidth="600.0">
+          <children>
+            <Label id="lbElapsedTime" alignment="CENTER_RIGHT" prefWidth="300.0" styleClass="smallText" text="elapsed time:" textAlignment="RIGHT" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+            <Label id="lbEstimatedRemainingTime" alignment="CENTER_RIGHT" prefWidth="300.0" styleClass="smallText" text="estimated remaining time:" textAlignment="RIGHT" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+            <Label id="lbTotalData" alignment="CENTER_RIGHT" prefWidth="300.0" styleClass="smallText" text="total data:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+            <Label id="lbProcessedData" alignment="CENTER_RIGHT" prefWidth="300.0" styleClass="smallText" text="processed data:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+            <Label id="lbSpeed" alignment="CENTER_RIGHT" prefWidth="300.0" styleClass="smallText" text="speed:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+            <Label fx:id="lbElapsedTime" text="44 minutes and 7 seconds" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+            <Label fx:id="lbEstimatedRemainingTime" text="1 hour and 34 minutes" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <Label fx:id="lbTotalData" text="458034,32 Mb in 48 files" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <Label fx:id="lbProcessedData" text="82444,23 Mb in 13 files" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <Label fx:id="lbSpeed" text="85.34 Mb/sec" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+          </children>
+          <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="20.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+          </columnConstraints>
+          <rowConstraints>
+            <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          </rowConstraints>
+        </GridPane>
+        <StackPane id="StackPane">
+          <children>
+            <ProgressBar fx:id="pbProgress" prefHeight="16.0" prefWidth="600.0" progress="0.68" />
+            <Label fx:id="lbProgress" alignment="CENTER" contentDisplay="CENTER" prefWidth="411.0" styleClass="progressBarText" text="72%" />
+          </children>
+        </StackPane>
+      </children>
+    </VBox>
+  </right>
+  <stylesheets>
+    <URL value="@style.css" />
+  </stylesheets>
+</BorderPane>
