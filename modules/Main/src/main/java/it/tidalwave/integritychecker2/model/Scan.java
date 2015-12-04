@@ -114,7 +114,7 @@ public class Scan
      * @return              the retrieved {@link Scan}s
      *
      ******************************************************************************************************************/
-    public static List<Scan> loadAll (final ScanRepository repository)
+    public static List<Scan> loadAllFrom (final ScanRepository repository)
       {
         return repository.findAllScans().stream().map(PersistentScan::toModel).collect(toList());
       }
@@ -126,7 +126,7 @@ public class Scan
      * @param   repository  the source repository
      *
      ******************************************************************************************************************/
-    public void store (final ScanRepository repository)
+    public void storeTo (final ScanRepository repository)
       {
         repository.runInTransaction(() ->
           {

@@ -98,9 +98,9 @@ public abstract class PersistenceIntegrationTestSupport
                                 .with(new FileAndFingerprint(Paths.get("file2a"), "fp2a"))
                                 .with(new FileAndFingerprint(Paths.get("file2b"), "fp2b"))
                                 .with(new FileAndFingerprint(Paths.get("file2c"), "fp2c"));
-        scan1.store(scanRepository);
-        scan2.store(scanRepository);
-        final List<Scan> allScans = Scan.loadAll(scanRepository);
+        scan1.storeTo(scanRepository);
+        scan2.storeTo(scanRepository);
+        final List<Scan> allScans = Scan.loadAllFrom(scanRepository);
 
         assertThat(allScans.get(0), is(scan1));
         assertThat(allScans.get(1), is(scan2));
@@ -114,8 +114,8 @@ public abstract class PersistenceIntegrationTestSupport
         final Path actualFile = Paths.get("target/fingerprints-exported.txt");
 
         final Scan scan = importController.importFile(LocalDateTime.of(2015, 11, 30, 11, 42, 03), expectedFile);
-        scan.store(scanRepository);
-        Scan.loadAll(scanRepository).get(0).export(actualFile);
+        scan.storeTo(scanRepository);
+        Scan.loadAllFrom(scanRepository).get(0).export(actualFile);
 
         assertSameContents(expectedFile.toFile(), actualFile.toFile());
       }
