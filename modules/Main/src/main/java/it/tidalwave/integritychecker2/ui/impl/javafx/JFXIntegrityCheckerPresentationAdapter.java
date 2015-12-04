@@ -25,8 +25,10 @@
  * *********************************************************************************************************************
  * #L%
  */
-package it.tidalwave.integritychecker2.ui;
+package it.tidalwave.integritychecker2.ui.impl.javafx;
 
+import it.tidalwave.integritychecker2.ui.IntegrityCheckerFieldsBean;
+import it.tidalwave.integritychecker2.ui.IntegrityCheckerPresentation;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;

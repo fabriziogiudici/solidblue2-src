@@ -25,8 +25,10 @@
  * *********************************************************************************************************************
  * #L%
  */
-package it.tidalwave.integritychecker2.ui;
+package it.tidalwave.integritychecker2.ui.impl.javafx;
 
+import it.tidalwave.integritychecker2.ui.IntegrityCheckerFieldsBean;
+import it.tidalwave.integritychecker2.ui.IntegrityCheckerPresentation;
 import java.io.IOException;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -46,7 +48,7 @@ public class JFXIntegrityCheckerPresentation implements IntegrityCheckerPresenta
     public JFXIntegrityCheckerPresentation (final Stage primaryStage)
       throws IOException
       {
-        final FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/tidalwave/integritychecker2/ui/JFXIntegrityCheckerPresentation.fxml"));
+        final FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/tidalwave/integritychecker2/ui/impl/javafx/JFXIntegrityCheckerPresentation.fxml"));
         loader.load();
         final Parent root = loader.getRoot();
         adapter = loader.getController();
