@@ -21,12 +21,10 @@
     </root>
 
 <!--    o.h.e.jdbc.spi.SqlExceptionHelper-->
-    <logger name="org.apache.commons.dbcp2" level="DEBUG" />
+    <!--<logger name="org.apache.commons.dbcp2" level="DEBUG" />-->
     <logger name="org.hibernate" level="INFO" />
     <logger name="org.hibernate.SQL" level="DEBUG" />
     <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="TRACE" />
-    <logger name="org.springframework" level="INFO" />
-    <logger name="org.springframework.orm.jpa.JpaTransactionManager" level="DEBUG" />
 
     <root level="info">
         <appender-ref ref="STDERR" />

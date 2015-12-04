@@ -27,51 +27,29 @@
  */
 package it.tidalwave.integritychecker2.persistence.impl.hibernate;
 
-import it.tidalwave.integritychecker2.persistence.PersistentScan;
+import com.google.inject.AbstractModule;
+import it.tidalwave.integritychecker2.persistence.ImportController;
+import it.tidalwave.integritychecker2.persistence.Persistence;
 import it.tidalwave.integritychecker2.persistence.ScanRepository;
+import it.tidalwave.integritychecker2.persistence.impl.DefaultIdFactory;
+import it.tidalwave.integritychecker2.persistence.impl.DefaultImportController;
+import it.tidalwave.integritychecker2.persistence.impl.DefaultPersistence;
 import it.tidalwave.role.IdFactory;
-import java.time.LocalDateTime;
-import java.util.List;
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import com.google.inject.persist.Transactional;
-//import javax.transaction.Transactional; FIXME
-import lombok.RequiredArgsConstructor;
-import static lombok.AccessLevel.PACKAGE;
 
 /***********************************************************************************************************************
  *
- * @author  Fabrizio Giudici <Fabrizio dot Giudici at tidalwave dot it>
+ * @author Fabrizio Giudici <Fabrizio dot Giudici at tidalwave dot it>
  * @version $Id: Class.java,v 631568052e17 2013/02/19 15:45:02 fabrizio $
  *
  **********************************************************************************************************************/
-@RequiredArgsConstructor(access = PACKAGE, onConstructor = @__({@Inject}))
-public class HScanRepository implements ScanRepository
+public class HModule extends AbstractModule
   {
-    private final EntityManager em;
-
-    private final IdFactory idFactory;
-
     @Override
-    @Transactional
-    public PersistentScan createScan (final LocalDateTime dateTime)
+    protected void configure()
       {
-        final HPersistentScan scan = new HPersistentScan(idFactory.createId(HScanRepository.class), dateTime);
-        em.persist(scan);
-        return scan;
-      }
-
-    @Override
-    @Transactional
-    public List<PersistentScan> findAllScans()
-      {
-        return em.createQuery("SELECT s FROM HPersistentScan s", PersistentScan.class).getResultList();
-      }
-
-    @Override
-    @Transactional
-    public void runInTransaction (final Runnable task)
-      {
-        task.run();
+        bind(IdFactory.class).to(DefaultIdFactory.class);
+        bind(ImportController.class).to(DefaultImportController.class);
+        bind(Persistence.class).to(DefaultPersistence.class);
+        bind(ScanRepository.class).to(HScanRepository.class);
       }
   }
