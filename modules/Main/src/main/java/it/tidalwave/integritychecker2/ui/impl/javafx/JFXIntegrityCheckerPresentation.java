@@ -48,7 +48,7 @@ public class JFXIntegrityCheckerPresentation implements IntegrityCheckerPresenta
     public JFXIntegrityCheckerPresentation (final Stage primaryStage)
       throws IOException
       {
-        final FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/tidalwave/integritychecker2/ui/impl/javafx/JFXIntegrityCheckerPresentation.fxml"));
+        final FXMLLoader loader = new FXMLLoader(getClass().getResource("JFXIntegrityCheckerPresentation.fxml"));
         loader.load();
         final Parent root = loader.getRoot();
         adapter = loader.getController();
