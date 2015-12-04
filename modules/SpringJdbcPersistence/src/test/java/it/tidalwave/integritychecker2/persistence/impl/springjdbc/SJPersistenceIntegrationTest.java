@@ -34,6 +34,8 @@ import it.tidalwave.integritychecker2.persistence.impl.DefaultPersistence;
 import it.tidalwave.role.IdFactory;
 import java.sql.SQLException;
 import javax.sql.DataSource;
+import lombok.extern.slf4j.Slf4j;
+import org.h2.jdbcx.JdbcDataSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.testng.annotations.BeforeMethod;
@@ -44,18 +46,29 @@ import org.testng.annotations.BeforeMethod;
  * @version $Id: Class.java,v 631568052e17 2013/02/19 15:45:02 fabrizio $
  *
  **********************************************************************************************************************/
+@Slf4j
 public class SJPersistenceIntegrationTest extends PersistenceIntegrationTestSupport
   {
     @BeforeMethod
     public void prepare()
       throws SQLException
       {
-        persistence = new DefaultPersistence();
-        final DataSource dataSource = persistence.createDataSource();
+        final DataSource dataSource = createDataSource();
+        persistence = new DefaultPersistence(dataSource);
         persistence.createTables();
         final NamedParameterJdbcOperations jdbcOps = new NamedParameterJdbcTemplate(dataSource);
         final IdFactory idFactory = new DefaultIdFactory();
         scanRepository = new SJScanRepository(jdbcOps, idFactory);
         importController = new DefaultImportController();
       }
+
+    private static DataSource createDataSource()
+      {
+        log.info("createDataSource()");
+        final JdbcDataSource dataSource = new JdbcDataSource(); // FIXME: use DBCP
+        dataSource.setURL("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1");
+        return dataSource;
+      }
+
+    // FIXME: missing shutdown of persistence
   }

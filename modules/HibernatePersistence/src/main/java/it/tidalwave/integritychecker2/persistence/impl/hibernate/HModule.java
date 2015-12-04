@@ -35,6 +35,8 @@ import it.tidalwave.integritychecker2.persistence.impl.DefaultIdFactory;
 import it.tidalwave.integritychecker2.persistence.impl.DefaultImportController;
 import it.tidalwave.integritychecker2.persistence.impl.DefaultPersistence;
 import it.tidalwave.role.IdFactory;
+import javax.sql.DataSource;
+import org.h2.jdbcx.JdbcDataSource;
 
 /***********************************************************************************************************************
  *
@@ -47,9 +49,18 @@ public class HModule extends AbstractModule
     @Override
     protected void configure()
       {
+        bind(DataSource.class).toInstance(createDataSource());
         bind(IdFactory.class).to(DefaultIdFactory.class);
         bind(ImportController.class).to(DefaultImportController.class);
         bind(Persistence.class).to(DefaultPersistence.class);
         bind(ScanRepository.class).to(HScanRepository.class);
+      }
+
+    static DataSource createDataSource()
+      {
+//        log.info("createDataSource()");
+        final JdbcDataSource dataSource = new JdbcDataSource(); // FIXME: use DBCP
+        dataSource.setURL("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1");
+        return dataSource;
       }
   }

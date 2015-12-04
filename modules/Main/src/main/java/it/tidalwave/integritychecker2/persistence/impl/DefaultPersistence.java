@@ -33,9 +33,10 @@ import it.tidalwave.integritychecker2.persistence.PersistentScan;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import javax.inject.Inject;
 import javax.sql.DataSource;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.h2.jdbcx.JdbcDataSource;
 
 /***********************************************************************************************************************
  *
@@ -43,10 +44,11 @@ import org.h2.jdbcx.JdbcDataSource;
  * @version $Id: Class.java,v 631568052e17 2013/02/19 15:45:02 fabrizio $
  *
  **********************************************************************************************************************/
+@RequiredArgsConstructor(onConstructor = @__({@Inject}))
 @Slf4j
 public class DefaultPersistence implements Persistence
   {
-    protected DataSource dataSource;
+    protected final DataSource dataSource;
 
     @Override
     public void scratch()
@@ -72,14 +74,5 @@ public class DefaultPersistence implements Persistence
             PersistentFileScan.createTable(statement);
             connection.commit();
           }
-      }
-
-    @Override
-    public DataSource createDataSource()
-      {
-        log.info("createDataSource()");
-        final JdbcDataSource dataSource = new JdbcDataSource();
-        dataSource.setURL("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1");
-        return this.dataSource = dataSource;
       }
   }

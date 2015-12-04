@@ -62,15 +62,14 @@ public class HPersistenceWithGuiceIntegrationTest extends PersistenceIntegration
         final Properties properties = new Properties();
         properties.put("hibernate.connection.driver_class", "org.h2.Driver");
         properties.put("hibernate.connection.url", "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1");
-        properties.put("hibernate.connection.pool_size", "1");
         properties.put("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
         properties.put("hibernate.cache.provider_class", "org.hibernate.cache.NoCacheProvider");
+        properties.put("hibernate.connection.datasource", HModule.createDataSource()); // FIXME: using 2 datasources
 
         injector = Guice.createInjector(new HModule(), new JpaPersistModule("SLBPU").properties(properties));
         persistService = injector.getInstance(PersistService.class);
         persistService.start();
         persistence = injector.getInstance(Persistence.class);
-        persistence.createDataSource(); // FIXME: Hibernate is not using it
         persistence.createTables();
         scanRepository = injector.getInstance(ScanRepository.class);
         importController = injector.getInstance(ImportController.class);

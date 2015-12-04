@@ -38,8 +38,6 @@ import javax.sql.DataSource;
  **********************************************************************************************************************/
 public interface Persistence
   {
-    public DataSource createDataSource();
-
     public void scratch()
       throws SQLException;
 
