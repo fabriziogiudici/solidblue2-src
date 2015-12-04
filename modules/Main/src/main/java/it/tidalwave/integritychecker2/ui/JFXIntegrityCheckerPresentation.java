@@ -25,7 +25,7 @@
  * *********************************************************************************************************************
  * #L%
  */
-package it.tidalwave.solidblue2.ui;
+package it.tidalwave.integritychecker2.ui;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;

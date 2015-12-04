@@ -27,7 +27,7 @@
  */
 package it.tidalwave.integritychecker2;
 
-import it.tidalwave.solidblue2.ui.JFXIntegrityCheckerPresentation;
+import it.tidalwave.integritychecker2.ui.JFXIntegrityCheckerPresentation;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -82,7 +82,7 @@ public class Main extends Application
     public void start (final Stage primaryStage)
       throws IOException
       {
-        final FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/tidalwave/solidblue2/ui/JFXIntegrityCheckerPresentation.fxml"));
+        final FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/tidalwave/integritychecker2/ui/JFXIntegrityCheckerPresentation.fxml"));
         loader.load();
         final Parent root = loader.getRoot();
         presentation = loader.getController();
