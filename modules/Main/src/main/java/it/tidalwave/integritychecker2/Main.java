@@ -91,7 +91,7 @@ public class Main extends Application
         primaryStage.setTitle("SolidBlue II");
         primaryStage.setScene(scene);
         primaryStage.show();
-        Executors.newSingleThreadExecutor().execute(() -> scan());
+        Executors.newSingleThreadExecutor().execute(this::scan);
       }
 
     /*******************************************************************************************************************
@@ -104,7 +104,7 @@ public class Main extends Application
         try
           {
             log.info("Scanning {}...", targetPath);
-            final ProgressTracker progressTracker = new ProgressTracker(presentation);
+            final ProgressTracker progressTracker = new DefaultProgressTracker(presentation);
 
             try (final Stream<Path> stream = Files.walk(targetPath, FOLLOW_LINKS);
                  final FileStorage storage = new FileStorage(targetPath))

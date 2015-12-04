@@ -27,38 +27,22 @@
  */
 package it.tidalwave.integritychecker2;
 
-import it.tidalwave.integritychecker2.ui.IntegrityCheckerFieldsBean;
-import it.tidalwave.integritychecker2.ui.JFXIntegrityCheckerPresentation;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
-import javafx.application.Platform;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /***********************************************************************************************************************
  *
- * @author  Fabrizio Giudici (Fabrizio.Giudici@tidalwave.it)
- * @version $Id: ProgressTracker.java,v 91dd9dc0d25a 2015/11/03 20:25:03 fabrizio $
+ * @author  Fabrizio Giudici <Fabrizio dot Giudici at tidalwave dot it>
+ * @version $Id: Class.java,v 631568052e17 2013/02/19 15:45:02 fabrizio $
  *
  **********************************************************************************************************************/
-public class ProgressTracker
+public interface ProgressTracker
   {
-    private static final Logger log = LoggerFactory.getLogger(ProgressTracker.class);
-
-    private final AtomicInteger discoveryCount = new AtomicInteger();
-    private final AtomicInteger scanCount = new AtomicInteger();
-    private final AtomicLong discoverySize = new AtomicLong();
-    private final AtomicLong scanSize = new AtomicLong();
-
-    private final JFXIntegrityCheckerPresentation presentation;
-
-    public ProgressTracker (final JFXIntegrityCheckerPresentation presentation)
-      {
-        this.presentation = presentation;
-      }
+    /*******************************************************************************************************************
+     *
+     * Logs the current progress.
+     *
+     ******************************************************************************************************************/
+    public void logProgress();
 
     /*******************************************************************************************************************
      *
@@ -67,20 +51,7 @@ public class ProgressTracker
      * @param   file            the file
      *
      ******************************************************************************************************************/
-    public void notifyDiscoveredFile (final Path file)
-      {
-        try
-          {
-            log.info("Discovered {}", file.getFileName());
-            discoveryCount.incrementAndGet();
-            discoverySize.accumulateAndGet(Files.size(file), Long::sum);
-            logProgress();
-          }
-        catch (IOException e)
-          {
-            log.warn("", e);
-          }
-      }
+    public void notifyDiscoveredFile (Path file);
 
     /*******************************************************************************************************************
      *
@@ -89,38 +60,5 @@ public class ProgressTracker
      * @param   file            the file
      *
      ******************************************************************************************************************/
-    public void notifyScannedFile (final FileAndFingerprint faf)
-      {
-        try
-          {
-            scanCount.incrementAndGet();
-            scanSize.accumulateAndGet(Files.size(faf.getFile()), Long::sum);
-            logProgress();
-          }
-        catch (IOException e)
-          {
-            log.warn("", e);
-          }
-      }
-
-    /*******************************************************************************************************************
-     *
-     * Logs the current progress.
-     *
-     ******************************************************************************************************************/
-    public void logProgress()
-      {
-        final int sc = scanCount.get();
-        final int dc = discoveryCount.get();
-        final long ss = scanSize.get();
-        final long ds = discoverySize.get();
-        log.info("{}", String.format("Processed files: %d/%d (%d%%) - size: %dMB/%dMB (%d%%)",
-                                     sc, dc, (100 * sc / dc),
-                                     ss / 1_000_000, ds / 1_000_000, (100 * ss / ds)));
-        final IntegrityCheckerFieldsBean fields = new IntegrityCheckerFieldsBean();
-        fields.setProcessed(String.format("%d/%d", sc, dc));
-        fields.setTotal(String.format("%dMB/%dMB", ss / 1_000_000, ds / 1_000_000));
-        fields.setProgress((float)ss / ds);
-        Platform.runLater(() -> presentation.populate(fields));
-      }
+    public void notifyScannedFile (FileAndFingerprint faf);
   }
