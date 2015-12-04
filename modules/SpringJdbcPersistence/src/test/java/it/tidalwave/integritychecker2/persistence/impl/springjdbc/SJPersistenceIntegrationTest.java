@@ -33,7 +33,6 @@ import it.tidalwave.integritychecker2.persistence.impl.PersistenceIntegrationTes
 import it.tidalwave.integritychecker2.persistence.impl.DefaultPersistence;
 import it.tidalwave.role.IdFactory;
 import java.sql.SQLException;
-import javax.sql.DataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.h2.jdbcx.JdbcDataSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
@@ -54,7 +53,7 @@ public class SJPersistenceIntegrationTest extends PersistenceIntegrationTestSupp
       throws SQLException
       {
         final JdbcDataSource dataSource = new JdbcDataSource();
-        dataSource.setURL("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1");
+        dataSource.setURL(TEST_DB_URL);
         persistence = new DefaultPersistence(dataSource);
         persistence.createTables();
         final NamedParameterJdbcOperations jdbcOps = new NamedParameterJdbcTemplate(dataSource);

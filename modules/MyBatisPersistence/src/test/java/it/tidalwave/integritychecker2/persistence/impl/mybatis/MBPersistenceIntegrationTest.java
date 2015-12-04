@@ -35,6 +35,7 @@ import it.tidalwave.integritychecker2.persistence.impl.PersistenceIntegrationTes
 import java.sql.SQLException;
 import org.testng.annotations.BeforeMethod;
 import it.tidalwave.integritychecker2.persistence.ScanRepository;
+import java.util.Properties;
 
 /***********************************************************************************************************************
  *
@@ -50,7 +51,10 @@ public class MBPersistenceIntegrationTest extends PersistenceIntegrationTestSupp
     public void prepare()
       throws SQLException
       {
-        injector = Guice.createInjector(new MBModule());
+        final Properties properties = new Properties();
+        properties.setProperty("mybatis.environment.id", "test");
+        properties.setProperty("db.url", TEST_DB_URL);
+        injector = Guice.createInjector(new MBModule().properties(properties));
         persistence = injector.getInstance(Persistence.class);
         persistence.createTables();
         scanRepository = injector.getInstance(ScanRepository.class);

@@ -27,6 +27,7 @@
  */
 package it.tidalwave.integritychecker2.persistence.impl.mybatis;
 
+import com.google.inject.Key;
 import com.google.inject.name.Names;
 import it.tidalwave.integritychecker2.persistence.ImportController;
 import it.tidalwave.integritychecker2.persistence.Persistence;
@@ -35,11 +36,12 @@ import it.tidalwave.integritychecker2.persistence.impl.DefaultIdFactory;
 import it.tidalwave.integritychecker2.persistence.impl.DefaultImportController;
 import it.tidalwave.integritychecker2.persistence.impl.DefaultPersistence;
 import it.tidalwave.role.IdFactory;
+import java.util.Map;
 import java.util.Properties;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.mybatis.guice.MyBatisModule;
 import org.mybatis.guice.datasource.builtin.PooledDataSourceProvider;
-import org.mybatis.guice.datasource.helper.JdbcHelper;
+import static com.google.inject.name.Names.named;
 
 /***********************************************************************************************************************
  *
@@ -49,13 +51,19 @@ import org.mybatis.guice.datasource.helper.JdbcHelper;
  **********************************************************************************************************************/
 public class MBModule extends MyBatisModule
   {
+    private final Properties properties = new Properties();
+
+    public MBModule properties (final Map<?, ?> properties)
+      {
+        this.properties.putAll(properties);
+        return this;
+      }
+
     @Override
     protected void initialize()
       {
-        install(JdbcHelper.H2_IN_MEMORY_NAMED);
-        final Properties properties = new Properties();
-        properties.setProperty("mybatis.environment.id", "test");
-        properties.setProperty("JDBC.schema", "test;DB_CLOSE_DELAY=-1");
+        binder().bindConstant().annotatedWith(named("JDBC.driver")).to("org.h2.Driver");
+        binder().bind(Key.get(String.class, named("JDBC.url"))).toInstance(properties.getProperty("db.url"));
 
         bindDataSourceProviderType(PooledDataSourceProvider.class);
         bindTransactionFactoryType(JdbcTransactionFactory.class);

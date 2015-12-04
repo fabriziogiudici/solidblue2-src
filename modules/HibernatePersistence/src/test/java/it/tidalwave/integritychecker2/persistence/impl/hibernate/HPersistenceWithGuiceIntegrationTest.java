@@ -60,7 +60,7 @@ public class HPersistenceWithGuiceIntegrationTest extends PersistenceIntegration
         log.info("***** prepare()");
 
         final Properties properties = new Properties();
-        properties.put("db.url", "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1");
+        properties.put("db.url", TEST_DB_URL);
 
         injector = Guice.createInjector(new HModule().properties(properties));
         persistService = injector.getInstance(PersistService.class);

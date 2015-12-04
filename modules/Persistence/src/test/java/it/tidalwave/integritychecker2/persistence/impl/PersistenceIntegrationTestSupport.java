@@ -53,6 +53,8 @@ import static org.junit.Assert.assertThat;
  **********************************************************************************************************************/
 public abstract class PersistenceIntegrationTestSupport
   {
+    protected static final String TEST_DB_URL = "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1";
+
     protected ScanRepository scanRepository;
 
     protected Persistence persistence;
