@@ -51,7 +51,7 @@ public class DefaultPersistence implements Persistence
     protected final DataSource dataSource;
 
     @Override
-    public void scratch()
+    public void shutdown()
       throws SQLException
       {
         log.info("scratch()");

@@ -73,7 +73,7 @@ public abstract class PersistenceIntegrationTestSupport
     public void cleanup()
       throws SQLException
       {
-        persistence.scratch();
+        persistence.shutdown();
       }
 
     @Test
