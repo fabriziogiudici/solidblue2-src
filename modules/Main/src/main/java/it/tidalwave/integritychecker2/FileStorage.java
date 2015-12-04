@@ -60,11 +60,19 @@ public class FileStorage implements Storage
 
     private final Timer timer = new Timer();
 
-    public FileStorage (final Path targetPath)
+    /*******************************************************************************************************************
+     *
+     * Creates a new instance with a backing file in the given folder.
+     *
+     * @param   folder          the folder
+     * @throws  IOException     in case of I/O error
+     *
+     ******************************************************************************************************************/
+    public FileStorage (final Path folder)
       throws IOException
       {
-        final Path folder = targetPath.resolve(".it.tidalwave.solidblue2");
-        storageFile = folder.resolve("fingerprints-j8.txt");
+        final Path storageFolder = folder.resolve(".it.tidalwave.solidblue2");
+        storageFile = storageFolder.resolve("fingerprints-j8.txt");
         Files.createDirectories(folder);
         log.info("Storing results into {} ...", storageFile);
         timer.scheduleAtFixedRate(new TimerTask()
@@ -84,6 +92,11 @@ public class FileStorage implements Storage
           }, STORE_INTERVAL, STORE_INTERVAL);
       }
 
+    /*******************************************************************************************************************
+     *
+     * {@inheritDoc}
+     *
+     ******************************************************************************************************************/
     @Override
     public Collector<Path, ?, FileStorage> getIntermediateCollector()
       {
@@ -92,6 +105,11 @@ public class FileStorage implements Storage
                             (a, b) -> a);
       }
 
+    /*******************************************************************************************************************
+     *
+     * {@inheritDoc}
+     *
+     ******************************************************************************************************************/
     @Override
     public Collector<FileAndFingerprint, ?, FileStorage> getFinalCollector()
       {
@@ -100,11 +118,22 @@ public class FileStorage implements Storage
                             (a, b) -> a);
       }
 
+    /*******************************************************************************************************************
+     *
+     * {@inheritDoc}
+     *
+     ******************************************************************************************************************/
+    @Override
     public Stream<Path> stream()
       {
         return map.keySet().stream();
       }
 
+    /*******************************************************************************************************************
+     *
+     * {@inheritDoc}
+     *
+     ******************************************************************************************************************/
     @Override
     public void close()
       throws IOException
@@ -114,11 +143,25 @@ public class FileStorage implements Storage
         store();
       }
 
+    /*******************************************************************************************************************
+     *
+     * Preliminarily stores a file.
+     *
+     * @param   file    the file
+     *
+     ******************************************************************************************************************/
     private void storeItem (final Path file)
       {
         map.put(file, "unavailable");
       }
 
+    /*******************************************************************************************************************
+     *
+     * Stores a file and its fingerprint.
+     *
+     * @param   faf     the file and fingerprint
+     *
+     ******************************************************************************************************************/
     private void storeItem (final FileAndFingerprint faf)
       {
         map.put(faf.getFile(), faf.getFingerPrint());

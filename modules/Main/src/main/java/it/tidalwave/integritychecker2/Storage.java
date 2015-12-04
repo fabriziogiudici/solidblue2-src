@@ -33,15 +33,38 @@ import java.util.stream.Stream;
 
 /***********************************************************************************************************************
  *
+ * The persistent storage for the fingerprint data.
+ *
  * @author  Fabrizio Giudici <Fabrizio dot Giudici at tidalwave dot it>
  * @version $Id: Class.java,v 631568052e17 2013/02/19 15:45:02 fabrizio $
  *
  **********************************************************************************************************************/
 public interface Storage extends AutoCloseable
   {
+    /*******************************************************************************************************************
+     *
+     * Returns the intermediate {@link Collector} that creates a preliminary storage entry for all the collected files.
+     *
+     * @return      the {@code Collector}
+     *
+     ******************************************************************************************************************/
     public Collector<Path, ?, ? extends Storage> getIntermediateCollector();
 
+    /*******************************************************************************************************************
+     *
+     * Returns the final {@link Collector} that holds the fingerprint data.
+     *
+     * @return      the {@code Collector}
+     *
+     ******************************************************************************************************************/
     public Collector<FileAndFingerprint, ?, ? extends Storage> getFinalCollector();
 
+    /*******************************************************************************************************************
+     *
+     * Returns a {@link Stream} of {@link Path}s for all the entries preliminary stored.
+     *
+     * @return      the {@code Stream}
+     *
+     ******************************************************************************************************************/
     public Stream<Path> stream();
   }
