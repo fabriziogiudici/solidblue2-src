@@ -28,26 +28,15 @@
 package it.tidalwave.integritychecker2;
 
 import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.nio.MappedByteBuffer;
-import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import static it.tidalwave.util.stream.FileCollector.*;
-import static java.nio.channels.FileChannel.MapMode.*;
 import static java.nio.file.FileVisitOption.*;
-import static java.util.Comparator.*;
-import static java.util.stream.Collectors.*;
 
 /***********************************************************************************************************************
  *
@@ -60,8 +49,6 @@ public class Main
     private static final List<String> FILE_EXTENSIONS = Arrays.asList("nef", "arw", "dng", "tif", "jpg");
 
     private static final Logger log = LoggerFactory.getLogger(Main.class);
-
-    private final ProgressTracker progressTracker = new ProgressTracker();
 
     /*******************************************************************************************************************
      *
@@ -83,94 +70,19 @@ public class Main
       throws IOException
       {
         log.info("Scanning {}...", targetPath);
+        final ProgressTracker progressTracker = new ProgressTracker();
 
-        try (final Stream<Path> s = Files.walk(targetPath, FOLLOW_LINKS))
+        try (final Stream<Path> stream = Files.walk(targetPath, FOLLOW_LINKS);
+             final FileStorage storage = new FileStorage(targetPath))
           {
-            final Map<String, String> storage = s.filter(Main::matchesExtension)
-                                                 .peek(progressTracker::notifyDiscoveredFile)
-                                                 .collect(toList())
-                                                 .stream()
-                                                 .collect(toMap(p -> p.getFileName().toString(),
-                                                                p -> computeFingerprint(p, "MD5"),
-                                                                (v1, v2) -> v2));
-            store(targetPath, storage);
+            stream.filter(Main::matchesExtension)
+                  .peek(progressTracker::notifyDiscoveredFile)
+                  .collect(storage.getIntermediateCollector())
+                  .stream()
+                  .map(FileAndFingerprint::new)
+                  .peek(progressTracker::notifyScannedFile)
+                  .collect(storage.getFinalCollector());
           }
-      }
-
-    /*******************************************************************************************************************
-     *
-     * Stores the collected data.
-     *
-     * @param   targetPath      the scanned directory
-     * @param   storage         the data
-     *
-     ******************************************************************************************************************/
-    private void store (final Path targetPath, final Map<String, String> storage)
-      throws IOException
-      {
-        final Path folder = targetPath.resolve(".it.tidalwave.solidblue2");
-        final Path file = folder.resolve("fingerprints-j8.txt");
-        Files.createDirectories(folder);
-        log.info("Storing results into {} ...", file);
-        storage.entrySet().stream()
-                          .sorted(comparing(Entry::getKey))
-                          .map(e -> String.format("MD5(%s)=%s", e.getKey(), e.getValue()))
-                          .collect(toFile(file, Charset.forName("UTF-8")));
-      }
-
-    /*******************************************************************************************************************
-     *
-     * Computes the fingerprint of a file.
-     *
-     * @param   file            the file
-     * @param   algorithm       the algorithm to use
-     * @return                  the fingerprint
-     *
-     ******************************************************************************************************************/
-    private String computeFingerprint (final Path file, final String algorithm)
-      {
-        try
-          {
-            log.info("computeFingerprint({}, {})", file, algorithm);
-            final MessageDigest digestComputer = MessageDigest.getInstance(algorithm);
-
-            try (final RandomAccessFile raf = new RandomAccessFile(file.toFile(), "r"))
-              {
-                final MappedByteBuffer byteBuffer = raf.getChannel().map(READ_ONLY, 0, Files.size(file));
-                digestComputer.update(byteBuffer);
-              }
-
-            return toString(digestComputer.digest());
-          }
-        catch (NoSuchAlgorithmException | IOException e)
-          {
-            return e.getMessage();
-          }
-        finally
-          {
-            progressTracker.notifyScannedFile(file);
-          }
-      }
-
-    /*******************************************************************************************************************
-     *
-     * Returns a hex representation of an array of bytes.
-     *
-     * @param   bytes           the bytes
-     * @return                  the string
-     *
-     ******************************************************************************************************************/
-    private static String toString (final byte[] bytes)
-      {
-        final StringBuilder builder = new StringBuilder();
-
-        for (final byte b : bytes)
-          {
-            final int value = b & 0xff;
-            builder.append(Integer.toHexString(value >>> 4)).append(Integer.toHexString(value & 0x0f));
-          }
-
-        return builder.toString();
       }
 
     /*******************************************************************************************************************
