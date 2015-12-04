@@ -80,9 +80,7 @@ public class FileStorage implements Storage
 
     /*******************************************************************************************************************
      *
-     * Returns the intermediate {@link Collector} which stores placeholder entries for all the files.
-     *
-     * @return  the {@code Collector}
+     * {@inheritDoc}
      *
      ******************************************************************************************************************/
     @Override
@@ -95,9 +93,7 @@ public class FileStorage implements Storage
 
     /*******************************************************************************************************************
      *
-     * Returns the final {@link Collector} which stores final data.
-     *
-     * @return  the {@code Collector}
+     * {@inheritDoc}
      *
      ******************************************************************************************************************/
     @Override
@@ -110,16 +106,24 @@ public class FileStorage implements Storage
 
     /*******************************************************************************************************************
      *
-     * Returns a {@link Stream} of the {@link Path}s previously collected by the intermediate [@link Collector}.
-     *
-     * @see     #getIntermediateCollector()
-     * @return  the {@code Stream}
+     * {@inheritDoc}
      *
      ******************************************************************************************************************/
     @Override
     public Stream<Path> stream()
       {
         return map.keySet().stream();
+      }
+
+    /*******************************************************************************************************************
+     *
+     * {@inheritDoc}
+     *
+     ******************************************************************************************************************/
+    @Override
+    public Stream<Path> parallelStream()
+      {
+        return map.keySet().parallelStream();
       }
 
     /*******************************************************************************************************************
