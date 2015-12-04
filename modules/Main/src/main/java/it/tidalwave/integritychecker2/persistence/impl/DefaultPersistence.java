@@ -63,7 +63,7 @@ public class DefaultPersistence implements Persistence
       }
 
     @Override
-    public void createTables()
+    public void createTables() // FIXME: move to ScanRepository?
       throws SQLException
       {
         log.info("createTables()");
