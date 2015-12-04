@@ -20,7 +20,7 @@
  *
  * *********************************************************************************************************************
  *
- * $Id: JFXIntegrityCheckerPresentation.java,v a805d99df4b0 2015/11/03 19:51:11 fabrizio $
+ * $Id: JFXIntegrityCheckerPresentationAdapter.java,v a805d99df4b0 2015/11/03 19:51:11 fabrizio $
  *
  * *********************************************************************************************************************
  * #L%
@@ -35,10 +35,10 @@ import javafx.application.Platform;
 /***********************************************************************************************************************
  *
  * @author  Fabrizio Giudici (Fabrizio.Giudici@tidalwave.it)
- * @version $Id: JFXIntegrityCheckerPresentation.java,v a805d99df4b0 2015/11/03 19:51:11 fabrizio $
+ * @version $Id: JFXIntegrityCheckerPresentationAdapter.java,v a805d99df4b0 2015/11/03 19:51:11 fabrizio $
  *
  **********************************************************************************************************************/
-public class JFXIntegrityCheckerPresentation implements IntegrityCheckerPresentation
+public class JFXIntegrityCheckerPresentationAdapter implements IntegrityCheckerPresentation
   {
     @FXML
     private Label lbElapsedTime;
