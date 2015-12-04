@@ -1,0 +1,7 @@
+target/
+pom.xml.versionsBackup
+release.properties
+*.bak
+*.orig
+.description
+/.repository/
