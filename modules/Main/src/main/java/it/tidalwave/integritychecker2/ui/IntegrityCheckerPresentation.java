@@ -20,14 +20,12 @@
  *
  * *********************************************************************************************************************
  *
- * $Id: ProgressTracker.java,v 91dd9dc0d25a 2015/11/03 20:25:03 fabrizio $
+ * $Id: JFXIntegrityCheckerPresentation.java,v a805d99df4b0 2015/11/03 19:51:11 fabrizio $
  *
  * *********************************************************************************************************************
  * #L%
  */
-package it.tidalwave.integritychecker2;
-
-import java.nio.file.Path;
+package it.tidalwave.integritychecker2.ui;
 
 /***********************************************************************************************************************
  *
@@ -35,30 +33,7 @@ import java.nio.file.Path;
  * @version $Id: Class.java,v 631568052e17 2013/02/19 15:45:02 fabrizio $
  *
  **********************************************************************************************************************/
-public interface ProgressTracker extends AutoCloseable
+public interface IntegrityCheckerPresentation
   {
-    /*******************************************************************************************************************
-     *
-     * Logs the current progress.
-     *
-     ******************************************************************************************************************/
-    public void logProgress();
-
-    /*******************************************************************************************************************
-     *
-     * Updates the statistics for a freshly discovered file.
-     *
-     * @param   file            the file
-     *
-     ******************************************************************************************************************/
-    public void notifyDiscoveredFile (Path file);
-
-    /*******************************************************************************************************************
-     *
-     * Updates the statistics for a freshly scanned file.
-     *
-     * @param   file            the file
-     *
-     ******************************************************************************************************************/
-    public void notifyScannedFile (FileAndFingerprint faf);
+    public void bind (IntegrityCheckerFieldsBean fields);
   }

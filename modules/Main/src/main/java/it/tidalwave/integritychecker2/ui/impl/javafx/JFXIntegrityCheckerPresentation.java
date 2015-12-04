@@ -20,45 +20,48 @@
  *
  * *********************************************************************************************************************
  *
- * $Id: ProgressTracker.java,v 91dd9dc0d25a 2015/11/03 20:25:03 fabrizio $
+ * $Id: JFXIntegrityCheckerPresentationAdapter.java,v a805d99df4b0 2015/11/03 19:51:11 fabrizio $
  *
  * *********************************************************************************************************************
  * #L%
  */
-package it.tidalwave.integritychecker2;
+package it.tidalwave.integritychecker2.ui.impl.javafx;
 
-import java.nio.file.Path;
+import it.tidalwave.integritychecker2.ui.IntegrityCheckerFieldsBean;
+import it.tidalwave.integritychecker2.ui.IntegrityCheckerPresentation;
+import java.io.IOException;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
 /***********************************************************************************************************************
  *
- * @author  Fabrizio Giudici <Fabrizio dot Giudici at tidalwave dot it>
+ * @author  Fabrizio Giudici (Fabrizio.Giudici@tidalwave.it)
  * @version $Id: Class.java,v 631568052e17 2013/02/19 15:45:02 fabrizio $
  *
  **********************************************************************************************************************/
-public interface ProgressTracker extends AutoCloseable
+public class JFXIntegrityCheckerPresentation implements IntegrityCheckerPresentation
   {
-    /*******************************************************************************************************************
-     *
-     * Logs the current progress.
-     *
-     ******************************************************************************************************************/
-    public void logProgress();
+    private final IntegrityCheckerPresentation adapter;
 
-    /*******************************************************************************************************************
-     *
-     * Updates the statistics for a freshly discovered file.
-     *
-     * @param   file            the file
-     *
-     ******************************************************************************************************************/
-    public void notifyDiscoveredFile (Path file);
+    public JFXIntegrityCheckerPresentation (final Stage primaryStage)
+      throws IOException
+      {
+        final FXMLLoader loader = new FXMLLoader(getClass().getResource("JFXIntegrityCheckerPresentation.fxml"));
+        loader.load();
+        final Parent root = loader.getRoot();
+        adapter = loader.getController();
 
-    /*******************************************************************************************************************
-     *
-     * Updates the statistics for a freshly scanned file.
-     *
-     * @param   file            the file
-     *
-     ******************************************************************************************************************/
-    public void notifyScannedFile (FileAndFingerprint faf);
+        final Scene scene = new Scene(root, 600, 200);
+        primaryStage.setTitle("SolidBlue II");
+        primaryStage.setScene(scene);
+        primaryStage.show();
+      }
+
+    @Override
+    public void bind (final IntegrityCheckerFieldsBean fields)
+      {
+        adapter.bind(fields);
+      }
   }
