@@ -67,6 +67,12 @@ public class FileAndFingerprint
         this.fingerPrint = computeFingerprint("MD5");
       }
 
+    public FileAndFingerprint (final Path file, final String fingerPrint)
+      {
+        this.file = file;
+        this.fingerPrint = fingerPrint;
+      }
+
     /*******************************************************************************************************************
      *
      * Returns the file.

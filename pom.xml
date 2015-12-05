@@ -63,33 +63,33 @@
             <dependency>
                 <groupId>it.tidalwave.solidblue2</groupId>
                 <artifactId>solidblue2-main</artifactId>
-                <version>1.0-ALPHA-5-SNAPSHOT</version>
+                <version>1.0-ALPHA-7-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>it.tidalwave.solidblue2</groupId>
                 <artifactId>solidblue2-persistence</artifactId>
-                <version>1.0-ALPHA-5-SNAPSHOT</version>
+                <version>1.0-ALPHA-7-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>it.tidalwave.solidblue2</groupId>
                 <artifactId>solidblue2-persistence</artifactId>
-                <version>1.0-ALPHA-5-SNAPSHOT</version>
+                <version>1.0-ALPHA-7-SNAPSHOT</version>
                 <classifier>tests</classifier>
             </dependency>
             <dependency>
                 <groupId>it.tidalwave.solidblue2</groupId>
                 <artifactId>solidblue2-persistence-springjdbc</artifactId>
-                <version>1.0-ALPHA-5-SNAPSHOT</version>
+                <version>1.0-ALPHA-7-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>it.tidalwave.solidblue2</groupId>
                 <artifactId>solidblue2-persistence-mybatis</artifactId>
-                <version>1.0-ALPHA-5-SNAPSHOT</version>
+                <version>1.0-ALPHA-7-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>it.tidalwave.solidblue2</groupId>
                 <artifactId>solidblue2-persistence-hibernate</artifactId>
-                <version>1.0-ALPHA-5-SNAPSHOT</version>
+                <version>1.0-ALPHA-7-SNAPSHOT</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
