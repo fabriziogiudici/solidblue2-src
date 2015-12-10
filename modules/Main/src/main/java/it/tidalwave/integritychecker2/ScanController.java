@@ -20,56 +20,27 @@
  *
  * *********************************************************************************************************************
  *
- * $Id: Main.java,v b4f706516290 2015/11/07 08:47:17 fabrizio $
+ * $Id: ProgressTracker.java,v 91dd9dc0d25a 2015/11/03 20:25:03 fabrizio $
  *
  * *********************************************************************************************************************
  * #L%
  */
 package it.tidalwave.integritychecker2;
 
-import it.tidalwave.integritychecker2.impl.DefaultScanController;
-import it.tidalwave.integritychecker2.ui.IntegrityCheckerPresentation;
-import it.tidalwave.integritychecker2.ui.impl.javafx.JFXIntegrityCheckerPresentation;
-import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.concurrent.Executors;
-import javafx.application.Application;
-import javafx.stage.Stage;
 
 /***********************************************************************************************************************
  *
  * @author  Fabrizio Giudici (Fabrizio.Giudici@tidalwave.it)
- * @version $Id: Main.java,v b4f706516290 2015/11/07 08:47:17 fabrizio $
+ * @version $Id: Interface.java,v 631568052e17 2013/02/19 15:45:02 fabrizio $
  *
  **********************************************************************************************************************/
-public class Main extends Application
+public interface ScanController
   {
-    private static Path targetPath;
-
     /*******************************************************************************************************************
      *
-     *
-     *
-     ******************************************************************************************************************/
-    public static void main (final String ... args)
-      throws IOException
-      {
-        targetPath = Paths.get(args[0]);
-        launch(args);
-      }
-
-    /*******************************************************************************************************************
-     *
-     *
+     * {@inheritDoc}
      *
      ******************************************************************************************************************/
-    @Override
-    public void start (final Stage primaryStage)
-      throws IOException
-      {
-        final IntegrityCheckerPresentation presentation = new JFXIntegrityCheckerPresentation(primaryStage);
-        final ScanController scanController = new DefaultScanController(presentation);
-        Executors.newSingleThreadExecutor().execute(() -> scanController.scan(targetPath));
-      }
+    public void scan (Path targetPath);
   }
