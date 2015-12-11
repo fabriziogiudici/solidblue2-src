@@ -25,8 +25,10 @@
  * *********************************************************************************************************************
  * #L%
  */
-package it.tidalwave.integritychecker2;
+package it.tidalwave.integritychecker2.impl;
 
+import it.tidalwave.integritychecker2.FileAndFingerprint;
+import it.tidalwave.integritychecker2.Storage;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;

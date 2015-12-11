@@ -27,9 +27,7 @@
  */
 package it.tidalwave.integritychecker2.impl;
 
-import it.tidalwave.integritychecker2.DefaultProgressTracker;
 import it.tidalwave.integritychecker2.FileAndFingerprint;
-import it.tidalwave.integritychecker2.FileStorage;
 import it.tidalwave.integritychecker2.Main;
 import it.tidalwave.integritychecker2.ProgressTracker;
 import it.tidalwave.integritychecker2.ScanController;
