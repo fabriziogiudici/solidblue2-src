@@ -71,9 +71,8 @@ public class FileStorage implements Storage
     public FileStorage (final Path folder)
       throws IOException
       {
-        final Path storageFolder = folder.resolve(".it.tidalwave.solidblue2");
+        final Path storageFolder = Files.createDirectories(folder.resolve(".it.tidalwave.solidblue2"));
         storageFile = storageFolder.resolve("fingerprints-j8.txt");
-        Files.createDirectories(storageFolder);
         log.info("Storing results into {} ...", storageFile);
         timer.scheduleAtFixedRate(toTimerTask(this::store), STORE_INTERVAL, STORE_INTERVAL);
       }
