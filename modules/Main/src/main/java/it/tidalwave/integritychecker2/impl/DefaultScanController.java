@@ -20,16 +20,26 @@
  *
  * *********************************************************************************************************************
  *
- * $Id: FileCollector.java,v bfe8bea5b104 2015/11/07 08:41:06 fabrizio $
+ * $Id: ProgressTracker.java,v 91dd9dc0d25a 2015/11/03 20:25:03 fabrizio $
  *
  * *********************************************************************************************************************
  * #L%
  */
-package it.tidalwave.integritychecker2;
+package it.tidalwave.integritychecker2.impl;
 
+import it.tidalwave.integritychecker2.FileAndFingerprint;
+import it.tidalwave.integritychecker2.Main;
+import it.tidalwave.integritychecker2.ProgressTracker;
+import it.tidalwave.integritychecker2.ScanController;
+import it.tidalwave.integritychecker2.ui.IntegrityCheckerPresentation;
+import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.stream.Collector;
 import java.util.stream.Stream;
+import java.util.Arrays;
+import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import static java.nio.file.FileVisitOption.FOLLOW_LINKS;
 
 /***********************************************************************************************************************
  *
@@ -37,43 +47,66 @@ import java.util.stream.Stream;
  * @version $Id: Class.java,v 631568052e17 2013/02/19 15:45:02 fabrizio $
  *
  **********************************************************************************************************************/
-public interface Storage extends AutoCloseable
+public class DefaultScanController implements ScanController
   {
-    /*******************************************************************************************************************
-     *
-     * Returns the intermediate {@link Collector} which stores placeholder entries for all the files.
-     *
-     * @return  the {@code Collector}
-     *
-     ******************************************************************************************************************/
-    public Collector<Path, ?, ? extends Storage> getIntermediateCollector();
+    private static final Logger log = LoggerFactory.getLogger(Main.class);
+
+    private static final List<String> FILE_EXTENSIONS = Arrays.asList("nef", "arw", "dng", "tif", "jpg");
+
+    private final IntegrityCheckerPresentation presentation;
 
     /*******************************************************************************************************************
      *
-     * Returns the final {@link Collector} which stores final data.
      *
-     * @return  the {@code Collector}
      *
      ******************************************************************************************************************/
-    public Collector<FileAndFingerprint, ?, ? extends Storage> getFinalCollector();
+    public DefaultScanController (final IntegrityCheckerPresentation presentation)
+      {
+        this.presentation = presentation;
+      }
 
     /*******************************************************************************************************************
      *
-     * Returns a {@link Stream} of the {@link Path}s previously collected by the intermediate [@link Collector}.
-     *
-     * @see     #getIntermediateCollector()
-     * @return  the {@code Stream}
+     * {@inheritDoc}
      *
      ******************************************************************************************************************/
-    public Stream<Path> stream();
+    @Override
+    public void scan (final Path targetPath)
+      {
+        try
+          {
+            log.info("Scanning {}...", targetPath);
+
+            try (final Stream<Path> stream = Files.walk(targetPath, FOLLOW_LINKS);
+                 final FileStorage storage = new FileStorage(targetPath);
+                 final ProgressTracker progressTracker = new DefaultProgressTracker(presentation))
+              {
+                stream.filter(DefaultScanController::matchesExtension)
+                      .peek(progressTracker::notifyDiscoveredFile)
+                      .collect(storage.getIntermediateCollector())
+                      .parallelStream()
+                      .map(FileAndFingerprint::new)
+                      .peek(progressTracker::notifyScannedFile)
+                      .collect(storage.getFinalCollector());
+              }
+          }
+        catch (Exception e)
+          {
+            log.error("", e);
+          }
+      }
 
     /*******************************************************************************************************************
      *
-     * Returns a parallel {@link Stream} of the {@link Path}s previously collected by the intermediate [@link Collector}.
+     * Filters files with the supported extensions.
      *
-     * @see     #getIntermediateCollector()
-     * @return  the {@code Stream}
+     * @param   file            the file
+     * @return                  {@code true} if the file matches
      *
      ******************************************************************************************************************/
-    public Stream<Path> parallelStream();
+    private static boolean matchesExtension (final Path file)
+      {
+        final String extension = file.getFileName().toString().replaceAll("^.*\\.", "").toLowerCase();
+        return Files.isRegularFile(file) && FILE_EXTENSIONS.contains(extension);
+      }
   }

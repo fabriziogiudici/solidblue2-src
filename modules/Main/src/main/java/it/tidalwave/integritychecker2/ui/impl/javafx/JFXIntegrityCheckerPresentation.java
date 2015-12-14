@@ -45,9 +45,12 @@ public class JFXIntegrityCheckerPresentation implements IntegrityCheckerPresenta
   {
     private final IntegrityCheckerPresentation adapter;
 
+    private final Stage primaryStage;
+
     public JFXIntegrityCheckerPresentation (final Stage primaryStage)
       throws IOException
       {
+        this.primaryStage = primaryStage;
         final FXMLLoader loader = new FXMLLoader(getClass().getResource("JFXIntegrityCheckerPresentation.fxml"));
         loader.load();
         final Parent root = loader.getRoot();
@@ -63,5 +66,11 @@ public class JFXIntegrityCheckerPresentation implements IntegrityCheckerPresenta
     public void bind (final IntegrityCheckerFieldsBean fields)
       {
         adapter.bind(fields);
+      }
+
+    @Override
+    public void dispose()
+      {
+        primaryStage.close();
       }
   }

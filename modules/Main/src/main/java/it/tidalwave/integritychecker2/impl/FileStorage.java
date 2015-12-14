@@ -25,8 +25,10 @@
  * *********************************************************************************************************************
  * #L%
  */
-package it.tidalwave.integritychecker2;
+package it.tidalwave.integritychecker2.impl;
 
+import it.tidalwave.integritychecker2.FileAndFingerprint;
+import it.tidalwave.integritychecker2.Storage;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -79,7 +81,9 @@ public class FileStorage implements Storage
 
     /*******************************************************************************************************************
      *
-     * {@inheritDoc}
+     * Returns the intermediate {@link Collector} which stores placeholder entries for all the files.
+     *
+     * @return  the {@code Collector}
      *
      ******************************************************************************************************************/
     @Override
@@ -92,7 +96,9 @@ public class FileStorage implements Storage
 
     /*******************************************************************************************************************
      *
-     * {@inheritDoc}
+     * Returns the final {@link Collector} which stores final data.
+     *
+     * @return  the {@code Collector}
      *
      ******************************************************************************************************************/
     @Override

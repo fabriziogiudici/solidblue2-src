@@ -25,8 +25,10 @@
  * *********************************************************************************************************************
  * #L%
  */
-package it.tidalwave.integritychecker2;
+package it.tidalwave.integritychecker2.impl;
 
+import it.tidalwave.integritychecker2.FileAndFingerprint;
+import it.tidalwave.integritychecker2.ProgressTracker;
 import it.tidalwave.integritychecker2.ui.IntegrityCheckerFieldsBean;
 import it.tidalwave.integritychecker2.ui.IntegrityCheckerPresentation;
 import java.io.IOException;
@@ -133,7 +135,9 @@ public class DefaultProgressTracker implements ProgressTracker
      *
      ******************************************************************************************************************/
     @Override
-    public void close() throws Exception
+    public void close()
+      throws Exception
       {
+        presentation.dispose();
       }
   }
