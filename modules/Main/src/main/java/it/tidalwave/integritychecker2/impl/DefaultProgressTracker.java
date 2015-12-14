@@ -135,7 +135,9 @@ public class DefaultProgressTracker implements ProgressTracker
      *
      ******************************************************************************************************************/
     @Override
-    public void close() throws Exception
+    public void close()
+      throws Exception
       {
+        presentation.dispose();
       }
   }
