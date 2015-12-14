@@ -74,7 +74,7 @@ public class FileStorage implements Storage
         final Path storageFolder = Files.createDirectories(folder.resolve(".it.tidalwave.solidblue2"));
         storageFile = storageFolder.resolve("fingerprints-j8.txt");
         log.info("Storing results into {} ...", storageFile);
-        timer.scheduleAtFixedRate(toTimerTask(this::store), STORE_INTERVAL, STORE_INTERVAL);
+        timer.scheduleAtFixedRate(toTimerTask(this::storeToDisk), STORE_INTERVAL, STORE_INTERVAL);
       }
 
     /*******************************************************************************************************************
@@ -136,7 +136,7 @@ public class FileStorage implements Storage
       {
         log.info("close()");
         timer.cancel();
-        store();
+        storeToDisk();
       }
 
     /*******************************************************************************************************************
@@ -162,7 +162,7 @@ public class FileStorage implements Storage
      * Stores the collected data.
      *
      ******************************************************************************************************************/
-    private void store()
+    private void storeToDisk()
       throws IOException
       {
         map.entrySet().stream()
