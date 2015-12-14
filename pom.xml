@@ -12,7 +12,7 @@
 
     <groupId>it.tidalwave.solidblue2</groupId>
     <artifactId>solidblue2</artifactId>
-    <version>1.0-ALPHA-7-SNAPSHOT</version>
+    <version>1.0-ALPHA-7</version>
     <packaging>pom</packaging>
     <name>SolidBlue2 (master)</name>
 
@@ -55,7 +55,7 @@
         <connection>scm:git:${scm.repo.readonly.url}</connection>
         <developerConnection>scm:git:${scm.repo.effective.url}</developerConnection>
         <url>${scm.repo.browse.url}</url>
-        <tag>HEAD</tag>
+        <tag>1.0-ALPHA-7</tag>
     </scm>
 
     <modules>
