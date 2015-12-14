@@ -12,7 +12,7 @@
 
     <groupId>it.tidalwave.solidblue2</groupId>
     <artifactId>solidblue2</artifactId>
-    <version>1.0-ALPHA-7-SNAPSHOT</version>
+    <version>1.0-ALPHA-8-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>SolidBlue2 (master)</name>
 

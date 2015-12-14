@@ -6,13 +6,13 @@
     <parent>
         <groupId>it.tidalwave.solidblue2</groupId>
         <artifactId>solidblue2-modules</artifactId>
-        <version>1.0-ALPHA-7-SNAPSHOT</version>
+        <version>1.0-ALPHA-8-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <groupId>it.tidalwave.solidblue2</groupId>
     <artifactId>solidblue2-main</artifactId>
-    <version>1.0-ALPHA-7-SNAPSHOT</version>
+    <version>1.0-ALPHA-8-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>SolidBlue2 - Main</name>
 

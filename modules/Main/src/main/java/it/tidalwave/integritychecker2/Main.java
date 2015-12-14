@@ -27,23 +27,21 @@
  */
 package it.tidalwave.integritychecker2;
 
-import it.tidalwave.solidblue2.ui.JFXIntegrityCheckerPresentation;
+import it.tidalwave.integritychecker2.ui.IntegrityCheckerPresentation;
+import it.tidalwave.integritychecker2.ui.impl.javafx.JFXIntegrityCheckerPresentation;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.Executors;
 import java.util.stream.Stream;
+import javafx.application.Application;
+import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import static java.nio.file.FileVisitOption.*;
-import java.util.concurrent.Executors;
-import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
 
 /***********************************************************************************************************************
  *
@@ -59,7 +57,7 @@ public class Main extends Application
 
     private static Path targetPath;
 
-    private JFXIntegrityCheckerPresentation presentation;
+    private IntegrityCheckerPresentation presentation;
 
     /*******************************************************************************************************************
      *
@@ -82,16 +80,8 @@ public class Main extends Application
     public void start (final Stage primaryStage)
       throws IOException
       {
-        final FXMLLoader loader = new FXMLLoader(getClass().getResource("/it/tidalwave/solidblue2/ui/JFXIntegrityCheckerPresentation.fxml"));
-        loader.load();
-        final Parent root = loader.getRoot();
-        presentation = loader.getController();
-
-        final Scene scene = new Scene(root, 600, 200);
-        primaryStage.setTitle("SolidBlue II");
-        primaryStage.setScene(scene);
-        primaryStage.show();
-        Executors.newSingleThreadExecutor().execute(() -> scan());
+        presentation = new JFXIntegrityCheckerPresentation(primaryStage);
+        Executors.newSingleThreadExecutor().execute(this::scan);
       }
 
     /*******************************************************************************************************************
@@ -104,10 +94,10 @@ public class Main extends Application
         try
           {
             log.info("Scanning {}...", targetPath);
-            final ProgressTracker progressTracker = new ProgressTracker(presentation);
 
             try (final Stream<Path> stream = Files.walk(targetPath, FOLLOW_LINKS);
-                 final FileStorage storage = new FileStorage(targetPath))
+                 final FileStorage storage = new FileStorage(targetPath);
+                 final ProgressTracker progressTracker = new DefaultProgressTracker(presentation))
               {
                 stream.filter(Main::matchesExtension)
                       .peek(progressTracker::notifyDiscoveredFile)
@@ -118,7 +108,7 @@ public class Main extends Application
                       .collect(storage.getFinalCollector());
               }
           }
-        catch (IOException e)
+        catch (Exception e)
           {
             log.error("", e);
           }

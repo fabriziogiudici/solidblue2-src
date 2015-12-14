@@ -20,13 +20,15 @@
  *
  * *********************************************************************************************************************
  *
- * $Id: JFXIntegrityCheckerPresentation.java,v a805d99df4b0 2015/11/03 19:51:11 fabrizio $
+ * $Id: JFXIntegrityCheckerPresentationAdapter.java,v a805d99df4b0 2015/11/03 19:51:11 fabrizio $
  *
  * *********************************************************************************************************************
  * #L%
  */
-package it.tidalwave.solidblue2.ui;
+package it.tidalwave.integritychecker2.ui.impl.javafx;
 
+import it.tidalwave.integritychecker2.ui.IntegrityCheckerFieldsBean;
+import it.tidalwave.integritychecker2.ui.IntegrityCheckerPresentation;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
@@ -34,11 +36,11 @@ import javafx.application.Platform;
 
 /***********************************************************************************************************************
  *
- * @author  Fabrizio Giudici
- * @version $Id: JFXIntegrityCheckerPresentation.java,v a805d99df4b0 2015/11/03 19:51:11 fabrizio $
+ * @author  Fabrizio Giudici (Fabrizio.Giudici@tidalwave.it)
+ * @version $Id: JFXIntegrityCheckerPresentationAdapter.java,v a805d99df4b0 2015/11/03 19:51:11 fabrizio $
  *
  **********************************************************************************************************************/
-public class JFXIntegrityCheckerPresentation
+public class JFXIntegrityCheckerPresentationAdapter implements IntegrityCheckerPresentation
   {
     @FXML
     private Label lbElapsedTime;
@@ -61,29 +63,24 @@ public class JFXIntegrityCheckerPresentation
     @FXML
     private Label lbProgress;
 
-    public void initialize()
-      {
-        populate(new IntegrityCheckerFieldsBean());
-      }
-
-    public void renderBeginOfScan()
-      {
-        Platform.runLater(() -> pbProgress.setProgress(-1)); // indeterminate
-      }
-
-    public void populate (final IntegrityCheckerFieldsBean fields)
+    @Override
+    public void bind (final IntegrityCheckerFieldsBean fields)
       {
         Platform.runLater(() ->
           {
-            lbTotalData.setText(fields.getTotal());
-            lbProcessedData.setText(fields.getProcessed());
-            lbElapsedTime.setText(fields.getElapsedTime());
-            lbEstimatedRemainingTime.setText(fields.getRemainingTime());
-            lbSpeed.setText(fields.getSpeed());
-            final double progress = fields.getProgress();
-            final boolean indeterminate = (progress == 0) && (pbProgress.getProgress() < 0);
-            pbProgress.setProgress(indeterminate ? -1 : progress);
-            lbProgress.setText(indeterminate || (progress == 0) ? "" : String.format("%.1f %%", 100 * progress));
+            lbTotalData.textProperty().bind(fields.totalProperty());
+            lbProcessedData.textProperty().bind(fields.processedProperty());
+            lbElapsedTime.textProperty().bind(fields.elapsedTimeProperty());
+            lbEstimatedRemainingTime.textProperty().bind(fields.remainingTimeProperty());
+            lbSpeed.textProperty().bind(fields.speedProperty());
+
+            fields.progressProperty().addListener((observable, oldValue, newValue) ->
+              {
+                final double progress = newValue.floatValue();
+                final boolean indeterminate = (progress == 0) && (pbProgress.getProgress() < 0);
+                pbProgress.setProgress(indeterminate ? -1 : progress);
+                lbProgress.setText(indeterminate || (progress == 0) ? "" : String.format("%.1f %%", 100 * progress));
+              });
           });
       }
   }
