@@ -6,7 +6,7 @@
     <parent>
         <groupId>it.tidalwave.superpom</groupId>
         <artifactId>superpom</artifactId>
-        <version>2.16</version>
+        <version>3.0</version>
         <relativePath />
     </parent>
 
@@ -14,7 +14,17 @@
     <artifactId>solidblue2</artifactId>
     <version>1.0-ALPHA-8-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>SolidBlue2 (master)</name>
+    <name>SolidBlue2</name>
+    <description>
+![Build Status](https://drone.io/bitbucket.org/tidalwave/solidblue2-src/status.png)](https://drone.io/bitbucket.org/tidalwave/solidblue2-src/latest)
+
+This project is a tiny utility to compute fingerprints of files. It is mainly used as the reference code for
+a series of posts about Java 8 lambda programming, starting at:
+
+http://tidalwave.it/fabrizio/blog/java-8-parallelism-exercise-part-i/
+
+But it can also be used as a working tool.
+    </description>
 
     <properties>
         <tft.project.url>http://solidblue.tidalwave.it</tft.project.url>
@@ -36,18 +46,9 @@
         <tidalwave.ci.view>SolidBlue2</tidalwave.ci.view>
         <tidalwave.issues>SLBII</tidalwave.issues>
 
-        <!--        <tft.netbeans.vmargs>-Xms25m -Xmx128m -XX:CompileCommand=exclude,java/nio/MappedByteBuffer,load -Dit.tidalwave.netbeans.disableTabs=true -Dit.tidalwave.netbeans.disableQuaua=false -Dit.tidalwave.netbeans.quaqua.disableSheet=true</tft.netbeans.vmargs>
-        <tft.netbeans.vmargsj>-J-Xms25m -J-Xmx128m -J-XX:CompileCommand=exclude,java/nio/MappedByteBuffer,load -J-Dit.tidalwave.netbeans.disableTabs=true -J-Dit.tidalwave.netbeans.disableQuaua=false -J-Dit.tidalwave.netbeans.quaqua.disableSheet=true</tft.netbeans.vmargsj>-->
+        <!--  -XX:CompileCommand=exclude,java/nio/MappedByteBuffer,load -->
 
-        <tft.javadoc.doclint>-Xdoclint:none</tft.javadoc.doclint>
-
-        <!-- tft.release.preparationGoals>scm:update clean install verify</tft.release.preparationGoals -->
-
-        <!-- Clirr is not compatible with JDK 8 -->
-        <tft.clirr.skip>true</tft.clirr.skip>
-
-        <!-- disables javancss since it's broken with JDK 1.7 -->
-        <tft.profile.metrics.defaultGoal>install findbugs:findbugs pmd:cpd pmd:pmd checkstyle:checkstyle clirr:clirr dependency:analyze</tft.profile.metrics.defaultGoal>
+        <tft.clirr.skip>true</tft.clirr.skip> <!-- Clirr is not compatible with JDK 8 -->
     </properties>
 
     <!-- Repeated because of http://jira.codehaus.org/browse/SCM-442 -->
