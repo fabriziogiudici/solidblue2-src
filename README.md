@@ -1,7 +1,7 @@
 SolidBlue2
 ================================
 
-![Build Status](https://drone.io/bitbucket.org/tidalwave/solidblue2-src/status.png)](https://drone.io/bitbucket.org/tidalwave/solidblue2-src/latest)
+[![Build Status](https://drone.io/bitbucket.org/tidalwave/solidblue2-src/status.png)](https://drone.io/bitbucket.org/tidalwave/solidblue2-src/latest)
 
 This project is a tiny utility to compute fingerprints of files. It is mainly used as the reference code for
 a series of posts about Java 8 lambda programming, starting at:
