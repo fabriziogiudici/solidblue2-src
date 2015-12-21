@@ -34,6 +34,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.concurrent.Semaphore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import static java.nio.channels.FileChannel.MapMode.READ_ONLY;
@@ -53,6 +54,8 @@ public class FileAndFingerprint
     private final Path file;
 
     private final String fingerPrint;
+
+    private static final Semaphore semaphore = new Semaphore(2);
 
     /*******************************************************************************************************************
      *
@@ -115,6 +118,7 @@ public class FileAndFingerprint
       {
         try
           {
+            semaphore.acquire();
             log.info("computeFingerprint({}, {})", file, algorithm);
             final MessageDigest digestComputer = MessageDigest.getInstance(algorithm);
 
@@ -126,9 +130,13 @@ public class FileAndFingerprint
 
             return toString(digestComputer.digest());
           }
-        catch (NoSuchAlgorithmException | IOException e)
+        catch (NoSuchAlgorithmException | IOException | InterruptedException e)
           {
             return e.getMessage();
+          }
+        finally
+          {
+            semaphore.release();
           }
       }
 
