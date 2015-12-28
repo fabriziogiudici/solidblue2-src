@@ -1,7 +1,10 @@
+![Maven Central](https://img.shields.io/maven-central/v/it.tidalwave.solidblue2/solidblue2.svg)
+[![Build Status](https://img.shields.io/jenkins/s/http/services.tidalwave.it/ci/SolidBlue2_Build_from_Scratch.svg)](http://services.tidalwave.it/ci/view/SolidBlue2)
+[![Test Status](https://img.shields.io/jenkins/t/http/services.tidalwave.it/ci/SolidBlue2.svg)](http://services.tidalwave.it/ci/view/SolidBlue2)
+[![Coverage](https://img.shields.io/jenkins/c/http/services.tidalwave.it/ci/SolidBlue2.svg)](http://services.tidalwave.it/ci/view/SolidBlue2)
+
 SolidBlue2
 ================================
-
-[![Build Status](https://drone.io/bitbucket.org/tidalwave/solidblue2-src/status.png)](https://drone.io/bitbucket.org/tidalwave/solidblue2-src/latest)
 
 This project is a tiny utility to compute fingerprints of files. It is mainly used as the reference code for
 a series of posts about Java 8 lambda programming, starting at:
@@ -24,7 +27,7 @@ The project can be opened and built by a recent version of the NetBeans, Eclipse
 Documentation
 -------------
 
-More information can be found on the [homepage](http://tidalwave.kenai.com/solidblue2) of the project.
+More information can be found on the [homepage](http://tidalwave.tidalwave.it/solidblue2) of the project.
 
 
 Where can I get the latest release?
@@ -45,7 +48,7 @@ Alternatively you can pull it from the central Maven repositories:
 Contributing
 ------------
 
-We accept pull requests via BitBucket or GitHub.
+We accept pull requests via Bitbucket or GitHub.
 
 There are some guidelines which will make applying pull requests easier for us:
 
@@ -70,4 +73,4 @@ Additional Resources
 
 * [Tidalwave Homepage](http://tidalwave.it)
 * [Project Issue Tracker (Jira)](http://services.tidalwave.it/jira/browse/SLBII)
-* [Project Continuous Integration (hudson)](http://ci.tidalwave.it/ci/view/SolidBlue2)
+* [Project Continuous Integration (Jenkins)](http://services.tidalwave.it/ci/view/SolidBlue2)
