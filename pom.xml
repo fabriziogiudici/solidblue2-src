@@ -63,4 +63,13 @@ But it can also be used as a working tool.
         <module>modules</module>
     </modules>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.eluder.coveralls</groupId>
+                <artifactId>coveralls-maven-plugin</artifactId>
+                <version>4.1.0</version>
+            </plugin>
+        </plugins>
+    </build>
 </project>
