@@ -39,9 +39,41 @@ import java.util.stream.Stream;
  **********************************************************************************************************************/
 public interface Storage extends AutoCloseable
   {
+    /*******************************************************************************************************************
+     *
+     * Returns the intermediate {@link Collector} which stores placeholder entries for all the files.
+     *
+     * @return  the {@code Collector}
+     *
+     ******************************************************************************************************************/
     public Collector<Path, ?, ? extends Storage> getIntermediateCollector();
 
+    /*******************************************************************************************************************
+     *
+     * Returns the final {@link Collector} which stores final data.
+     *
+     * @return  the {@code Collector}
+     *
+     ******************************************************************************************************************/
     public Collector<FileAndFingerprint, ?, ? extends Storage> getFinalCollector();
 
+    /*******************************************************************************************************************
+     *
+     * Returns a {@link Stream} of the {@link Path}s previously collected by the intermediate [@link Collector}.
+     *
+     * @see     #getIntermediateCollector()
+     * @return  the {@code Stream}
+     *
+     ******************************************************************************************************************/
     public Stream<Path> stream();
+
+    /*******************************************************************************************************************
+     *
+     * Returns a parallel {@link Stream} of the {@link Path}s previously collected by the intermediate [@link Collector}.
+     *
+     * @see     #getIntermediateCollector()
+     * @return  the {@code Stream}
+     *
+     ******************************************************************************************************************/
+    public Stream<Path> parallelStream();
   }

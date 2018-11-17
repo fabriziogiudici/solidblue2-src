@@ -39,8 +39,10 @@ public interface ScanController
   {
     /*******************************************************************************************************************
      *
-     * {@inheritDoc}
+     * Scans a folder.
+     *
+     * @param   folder  the folder to scan
      *
      ******************************************************************************************************************/
-    public void scan (Path targetPath);
+    public void scan (Path folder);
   }

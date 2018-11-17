@@ -84,7 +84,7 @@ public class DefaultScanController implements ScanController
                 stream.filter(DefaultScanController::matchesExtension)
                       .peek(progressTracker::notifyDiscoveredFile)
                       .collect(storage.getIntermediateCollector())
-                      .stream()
+                      .parallelStream()
                       .map(FileAndFingerprint::new)
                       .peek(progressTracker::notifyScannedFile)
                       .collect(storage.getFinalCollector());

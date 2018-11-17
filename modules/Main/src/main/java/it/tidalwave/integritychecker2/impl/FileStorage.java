@@ -73,11 +73,10 @@ public class FileStorage implements Storage
     public FileStorage (final Path folder)
       throws IOException
       {
-        final Path storageFolder = folder.resolve(".it.tidalwave.solidblue2");
+        final Path storageFolder = Files.createDirectories(folder.resolve(".it.tidalwave.solidblue2"));
         storageFile = storageFolder.resolve("fingerprints-j8.txt");
-        Files.createDirectories(storageFolder);
         log.info("Storing results into {} ...", storageFile);
-        timer.scheduleAtFixedRate(toTimerTask(this::store), STORE_INTERVAL, STORE_INTERVAL);
+        timer.scheduleAtFixedRate(toTimerTask(this::storeToDisk), STORE_INTERVAL, STORE_INTERVAL);
       }
 
     /*******************************************************************************************************************
@@ -112,10 +111,7 @@ public class FileStorage implements Storage
 
     /*******************************************************************************************************************
      *
-     * Returns a {@link Stream} of the {@link Path}s previously collected by the intermediate [@link Collector}.
-     *
-     * @see     #getIntermediateCollector()
-     * @return  the {@code Stream}
+     * {@inheritDoc}
      *
      ******************************************************************************************************************/
     @Override
@@ -130,12 +126,23 @@ public class FileStorage implements Storage
      *
      ******************************************************************************************************************/
     @Override
+    public Stream<Path> parallelStream()
+      {
+        return map.keySet().parallelStream();
+      }
+
+    /*******************************************************************************************************************
+     *
+     * {@inheritDoc}
+     *
+     ******************************************************************************************************************/
+    @Override
     public void close()
       throws IOException
       {
         log.info("close()");
         timer.cancel();
-        store();
+        storeToDisk();
       }
 
     /*******************************************************************************************************************
@@ -161,7 +168,7 @@ public class FileStorage implements Storage
      * Stores the collected data.
      *
      ******************************************************************************************************************/
-    private void store()
+    private void storeToDisk()
       throws IOException
       {
         map.entrySet().stream()
