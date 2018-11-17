@@ -36,4 +36,6 @@ package it.tidalwave.integritychecker2.ui;
 public interface IntegrityCheckerPresentation
   {
     public void bind (IntegrityCheckerFieldsBean fields);
+
+    public void dispose();
   }

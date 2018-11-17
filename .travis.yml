@@ -1,0 +1,4 @@
+language: java
+jdk:
+  - oraclejdk8
+script: mvn clean install jacoco:report coveralls:report -B -Pit.tidalwave-metrics-v2

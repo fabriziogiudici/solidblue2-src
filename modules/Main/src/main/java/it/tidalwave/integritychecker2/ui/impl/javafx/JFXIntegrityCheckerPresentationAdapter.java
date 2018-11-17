@@ -83,4 +83,9 @@ public class JFXIntegrityCheckerPresentationAdapter implements IntegrityCheckerP
               });
           });
       }
+    
+    @Override
+    public void dispose()
+      {
+      }
   }
