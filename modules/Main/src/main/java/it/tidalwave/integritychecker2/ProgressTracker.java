@@ -5,7 +5,7 @@
  * SolidBlue - open source safe data
  * http://solidblue.tidalwave.it - hg clone https://bitbucket.org/tidalwave/solidblue2-src
  * %%
- * Copyright (C) 2015 - 2015 Tidalwave s.a.s. (http://tidalwave.it)
+ * Copyright (C) 2015 - 2019 Tidalwave s.a.s. (http://tidalwave.it)
  * %%
  * *********************************************************************************************************************
  *
